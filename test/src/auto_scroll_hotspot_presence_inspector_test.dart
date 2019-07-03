@@ -1,6 +1,6 @@
-import 'package:drag_select_grid_view/auto_scroll_hotspot_presence_inspector.dart';
 import 'package:drag_select_grid_view/drag_select_grid_view.dart';
-import 'package:drag_select_grid_view/spacing_details/spacing_details_mixin.dart';
+import 'package:drag_select_grid_view/src/auto_scroll_hotspot_presence_inspector.dart';
+import 'package:drag_select_grid_view/src/spacing_details/spacing_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -26,7 +26,7 @@ void main() {
   }
 
   setUpAll(() {
-    SpacingDetailsMixin.mockAttributes(
+    SpacingDetails.mockAttributes(
       distanceFromTop: distanceFromTop,
       distanceFromLeft: distanceFromLeft,
       distanceFromRight: distanceFromRight,
@@ -137,7 +137,8 @@ void main() {
 
       final inspector = AutoScrollHotspotPresenceInspector(
         dragSelectState,
-        Offset(distanceFromLeft + widgetWidth + 1, distanceFromTop + widgetHeight),
+        Offset(
+            distanceFromLeft + widgetWidth + 1, distanceFromTop + widgetHeight),
       );
 
       expect(inspector.isInsideUpperAutoScrollHotspot(), isFalse);

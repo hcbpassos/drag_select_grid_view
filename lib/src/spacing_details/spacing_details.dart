@@ -19,12 +19,13 @@ class SpacingDetails {
     double height,
     double width,
   }) {
-    _distanceFromTopMock = distanceFromTop ?? _distanceFromTopMock;
-    _distanceFromLeftMock = distanceFromLeft ?? _distanceFromLeftMock;
-    _distanceFromRightMock = distanceFromRight ?? _distanceFromRightMock;
-    _distanceFromBottomMock = distanceFromBottom ?? _distanceFromBottomMock;
-    _heightMock = height ?? _heightMock;
-    _widthMock = width ?? _widthMock;
+    if (distanceFromTop != null) _distanceFromTopMock = distanceFromTop;
+    if (distanceFromLeft != null) _distanceFromLeftMock = distanceFromTop;
+    if (distanceFromRight != null) _distanceFromRightMock = distanceFromRight;
+    if (distanceFromBottom != null)
+      _distanceFromBottomMock = distanceFromBottom;
+    if (height != null) _heightMock = height;
+    if (width != null) _widthMock = width;
   }
 
   Size _screenSize;

@@ -1,4 +1,4 @@
-import 'package:drag_select_grid_view/auto_scroller/auto_scroll.dart';
+import 'package:drag_select_grid_view/src/auto_scroller/auto_scroll.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:drag_select_grid_view/drag_select_grid_view.dart';
@@ -37,7 +37,7 @@ void main() {
 
   testWidgets(
     'isInDragSelectMode is correctly changed '
-        'when DragSelectGridView is long-pressed.',
+    'when DragSelectGridView is long-pressed.',
     (WidgetTester tester) async {
       await setUp(tester);
 
@@ -95,7 +95,7 @@ void main() {
 
   testWidgets(
     'Auto-scroll is disabled with correct direction '
-        'when pointer goes up from upper-hotspot.',
+    'when pointer goes up from upper-hotspot.',
     (WidgetTester tester) async {
       await setUp(tester);
 
@@ -119,7 +119,7 @@ void main() {
 
   testWidgets(
     'Auto-scroll is disabled with correct direction '
-        'when pointer goes up from lower-hotspot.',
+    'when pointer goes up from lower-hotspot.',
     (WidgetTester tester) async {
       await setUp(tester);
 

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:drag_select_grid_view/auto_scroller/auto_scroll.dart';
+import 'package:drag_select_grid_view/src/auto_scroller/auto_scroll.dart';
 import 'package:flutter/widgets.dart';
 
 class AutoScroller {

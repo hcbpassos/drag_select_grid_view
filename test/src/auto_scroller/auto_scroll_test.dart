@@ -1,5 +1,6 @@
-import 'package:drag_select_grid_view/auto_scroller/auto_scroll.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:drag_select_grid_view/src/auto_scroller/auto_scroll.dart';
+import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart' show throwsAssertionError;
 
 void main() {
   group('AutoScroll', () {
@@ -96,9 +97,9 @@ void main() {
           duration: Duration(seconds: 1),
         ).toString(),
         'AutoScroll{isStopped: false, '
-            'stopEvent: StopAutoScrollEvent{_isConsumed: true}, '
-            'direction: AutoScrollDirection.down, '
-            'duration: 0:00:01.000000}',
+        'stopEvent: StopAutoScrollEvent{_isConsumed: true}, '
+        'direction: AutoScrollDirection.down, '
+        'duration: 0:00:01.000000}',
       );
     });
 
