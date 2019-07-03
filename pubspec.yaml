@@ -5,7 +5,7 @@ author: Hugo Passos
 homepage:
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -14,5 +14,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  test: any
 
 flutter:
