@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  const distanceFromTop = 80.0;
-  const distanceFromLeft = 20.0;
-  const distanceFromRight = 40.0;
-  const distanceFromBottom = 60.0;
-  const widgetHeight = 600.0;
-  const widgetWidth = 800.0;
+  const double distanceFromTop = 80.0;
+  const double distanceFromLeft = 20.0;
+  const double distanceFromRight = 40.0;
+  const double distanceFromBottom = 60.0;
+  const double widgetHeight = 600.0;
+  const double widgetWidth = 800.0;
 
   DragSelectGridViewState dragSelectState;
 
@@ -20,6 +20,7 @@ void main() {
         grid: GridView.extent(
           maxCrossAxisExtent: 1,
           children: [],
+          controller: ScrollController(),
         ),
       ),
     );
@@ -56,32 +57,32 @@ void main() {
   }
 
   testWidgets(
-    'AutoScrollHotspotPresenceInspector inside to upper hotspot.',
+    'AutoScrollHotspotPresenceInspector inside upper hotspot.',
     (WidgetTester tester) async {
       await setUp(tester);
 
-      final inspector = AutoScrollHotspotPresenceInspector(
+      final presenceInspector = AutoScrollHotspotPresenceInspector(
         dragSelectState,
         Offset(distanceFromLeft + 1, distanceFromTop + 1),
       );
 
-      expect(inspector.isInsideUpperAutoScrollHotspot(), isTrue);
-      expect(inspector.isInsideLowerAutoScrollHotspot(), isFalse);
+      expect(presenceInspector.isInsideUpperAutoScrollHotspot(), isTrue);
+      expect(presenceInspector.isInsideLowerAutoScrollHotspot(), isFalse);
     },
   );
 
   testWidgets(
-    'AutoScrollHotspotPresenceInspector inside to lower hotspot.',
+    'AutoScrollHotspotPresenceInspector inside lower hotspot.',
     (WidgetTester tester) async {
       await setUp(tester);
 
-      final inspector = AutoScrollHotspotPresenceInspector(
+      final presenceInspector = AutoScrollHotspotPresenceInspector(
         dragSelectState,
         Offset(distanceFromLeft + 1, distanceFromTop + widgetHeight),
       );
 
-      expect(inspector.isInsideUpperAutoScrollHotspot(), isFalse);
-      expect(inspector.isInsideLowerAutoScrollHotspot(), isTrue);
+      expect(presenceInspector.isInsideUpperAutoScrollHotspot(), isFalse);
+      expect(presenceInspector.isInsideLowerAutoScrollHotspot(), isTrue);
     },
   );
 
@@ -90,13 +91,13 @@ void main() {
     (WidgetTester tester) async {
       await setUp(tester);
 
-      final inspector = AutoScrollHotspotPresenceInspector(
+      final presenceInspector = AutoScrollHotspotPresenceInspector(
         dragSelectState,
         Offset(distanceFromLeft + 1, 0),
       );
 
-      expect(inspector.isInsideUpperAutoScrollHotspot(), isFalse);
-      expect(inspector.isInsideLowerAutoScrollHotspot(), isFalse);
+      expect(presenceInspector.isInsideUpperAutoScrollHotspot(), isFalse);
+      expect(presenceInspector.isInsideLowerAutoScrollHotspot(), isFalse);
     },
   );
 
@@ -105,44 +106,44 @@ void main() {
     (WidgetTester tester) async {
       await setUp(tester);
 
-      final inspector = AutoScrollHotspotPresenceInspector(
+      final presenceInspector = AutoScrollHotspotPresenceInspector(
         dragSelectState,
         Offset(distanceFromLeft + 1, distanceFromTop + widgetHeight + 1),
       );
 
-      expect(inspector.isInsideUpperAutoScrollHotspot(), isFalse);
-      expect(inspector.isInsideLowerAutoScrollHotspot(), isFalse);
+      expect(presenceInspector.isInsideUpperAutoScrollHotspot(), isFalse);
+      expect(presenceInspector.isInsideLowerAutoScrollHotspot(), isFalse);
     },
   );
 
   testWidgets(
-    'AutoScrollHotspotPresenceInspector at the left of hotspots.',
+    'AutoScrollHotspotPresenceInspector at the left side of hotspots.',
     (WidgetTester tester) async {
       await setUp(tester);
 
-      final inspector = AutoScrollHotspotPresenceInspector(
+      final presenceInspector = AutoScrollHotspotPresenceInspector(
         dragSelectState,
         Offset(0, distanceFromTop + 1),
       );
 
-      expect(inspector.isInsideUpperAutoScrollHotspot(), isFalse);
-      expect(inspector.isInsideLowerAutoScrollHotspot(), isFalse);
+      expect(presenceInspector.isInsideUpperAutoScrollHotspot(), isFalse);
+      expect(presenceInspector.isInsideLowerAutoScrollHotspot(), isFalse);
     },
   );
 
   testWidgets(
-    'AutoScrollHotspotPresenceInspector at the right of hotspots.',
+    'AutoScrollHotspotPresenceInspector at the right side of hotspots.',
     (WidgetTester tester) async {
       await setUp(tester);
 
-      final inspector = AutoScrollHotspotPresenceInspector(
+      final presenceInspector = AutoScrollHotspotPresenceInspector(
         dragSelectState,
         Offset(
             distanceFromLeft + widgetWidth + 1, distanceFromTop + widgetHeight),
       );
 
-      expect(inspector.isInsideUpperAutoScrollHotspot(), isFalse);
-      expect(inspector.isInsideLowerAutoScrollHotspot(), isFalse);
+      expect(presenceInspector.isInsideUpperAutoScrollHotspot(), isFalse);
+      expect(presenceInspector.isInsideLowerAutoScrollHotspot(), isFalse);
     },
   );
 }
