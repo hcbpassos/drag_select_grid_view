@@ -16,7 +16,7 @@ void main() {
       );
     });
 
-    test('`scrollDuration` cannot be null.', () {
+    test('`duration` cannot be null.', () {
       expect(
         () {
           AutoScroll(
@@ -28,7 +28,7 @@ void main() {
       );
     });
 
-    test('`scrollDuration` cannot be zero.', () {
+    test('`duration` cannot be zero.', () {
       expect(
         () {
           AutoScroll(
@@ -38,29 +38,19 @@ void main() {
         },
         throwsAssertionError,
       );
-
-      expect(
-        () {
-          AutoScroll(
-            direction: AutoScrollDirection.down,
-            duration: Duration(minutes: 0),
-          );
-        },
-        throwsAssertionError,
-      );
     });
 
-    test('`isStopped` getter returns correct value.', () {
+    test('`isScrolling` initializes as `true`.', () {
       expect(
         AutoScroll(
           direction: AutoScrollDirection.down,
           duration: Duration(seconds: 1),
-        ).isStopped,
-        isFalse,
+        ).isScrolling,
+        isTrue,
       );
     });
 
-    test('`stopEvent` getter returns correct value.', () {
+    test('`stopEvent` initializes consumed.', () {
       expect(
         AutoScroll(
           direction: AutoScrollDirection.down,
@@ -70,85 +60,65 @@ void main() {
       );
     });
 
-    test('`direction` getter returns correct value.', () {
-      expect(
-        AutoScroll(
-          direction: AutoScrollDirection.down,
-          duration: Duration(seconds: 1),
-        ).direction,
-        AutoScrollDirection.down,
-      );
-    });
-
-    test('`scrollDuration` getter returns correct value.', () {
-      expect(
-        AutoScroll(
-          direction: AutoScrollDirection.down,
-          duration: Duration(seconds: 1),
-        ).duration,
-        Duration(seconds: 1),
-      );
-    });
-
     test('toString().', () {
       expect(
         AutoScroll(
           direction: AutoScrollDirection.down,
           duration: Duration(seconds: 1),
         ).toString(),
-        'AutoScroll{isStopped: false, '
-        'stopEvent: StopAutoScrollEvent{_isConsumed: true}, '
-        'direction: AutoScrollDirection.down, '
-        'duration: 0:00:01.000000}',
+        isNot("Instance of 'AutoScroll'"),
       );
     });
 
-    test('equals and hashCode.', () {
-      AutoScroll autoScrollA = AutoScroll(
+    test('`operator ==` and `hashCode`.', () {
+      AutoScroll autoScroll = AutoScroll(
         direction: AutoScrollDirection.down,
         duration: Duration(seconds: 1),
       );
 
-      AutoScroll autoScrollB = AutoScroll(
+      AutoScroll equalAutoScroll = AutoScroll(
         direction: AutoScrollDirection.down,
         duration: Duration(seconds: 1),
       );
 
-      expect(autoScrollA, autoScrollB);
-      expect(autoScrollA.hashCode, autoScrollB.hashCode);
-
-      AutoScroll autoScrollC =
+      AutoScroll differentAutoScroll =
           AutoScroll.stopped(direction: AutoScrollDirection.down);
 
-      expect(autoScrollA, isNot(autoScrollC));
-      expect(autoScrollA.hashCode, isNot(autoScrollC.hashCode));
+      expect(autoScroll, equalAutoScroll);
+      expect(autoScroll.hashCode, equalAutoScroll.hashCode);
+
+      expect(autoScroll, isNot(differentAutoScroll));
+      expect(autoScroll.hashCode, isNot(differentAutoScroll.hashCode));
     });
   });
 
   group('StopAutoScrollEvent', () {
-    test('`consume()` for consumed stop events never return true.', () {
+    test('`consume()` for consumed events never return true.', () {
       StopAutoScrollEvent stopEvent = StopAutoScrollEvent();
       expect(stopEvent.consume(), isTrue);
       expect(stopEvent.consume(), isFalse);
 
-      expect(StopAutoScrollEvent.consumed().consume(), isFalse);
+      stopEvent = StopAutoScrollEvent.consumed();
+      expect(stopEvent.consume(), isFalse);
     });
 
     test('toString().', () {
-      // Already tested inside the group AutoScroll.
+      expect(
+        StopAutoScrollEvent().toString(),
+        isNot("Instance of 'StopAutoScrollEvent'"),
+      );
     });
 
-    test('equals and hashCode.', () {
-      StopAutoScrollEvent stopEventA = StopAutoScrollEvent();
-      StopAutoScrollEvent stopEventB = StopAutoScrollEvent();
+    test('`operator ==` and `hashCode`.', () {
+      StopAutoScrollEvent stopEvent = StopAutoScrollEvent();
+      StopAutoScrollEvent equalStopEvent = StopAutoScrollEvent();
+      StopAutoScrollEvent differentStopEvent = StopAutoScrollEvent.consumed();
 
-      expect(stopEventA, stopEventB);
-      expect(stopEventA.hashCode, stopEventB.hashCode);
+      expect(stopEvent, equalStopEvent);
+      expect(stopEvent.hashCode, equalStopEvent.hashCode);
 
-      StopAutoScrollEvent stopEventC = StopAutoScrollEvent.consumed();
-
-      expect(stopEventA, isNot(stopEventC));
-      expect(stopEventA.hashCode, isNot(stopEventC.hashCode));
+      expect(stopEvent, isNot(differentStopEvent));
+      expect(stopEvent.hashCode, isNot(differentStopEvent.hashCode));
     });
   });
 }

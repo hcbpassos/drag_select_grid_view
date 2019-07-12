@@ -17,7 +17,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   }
 
   void startAutoScrollingUp() {
-    _updateAutoScroll(
+    _updateAutoScrollIfDifferent(
       AutoScroll(
         direction: AutoScrollDirection.up,
         duration: Duration(seconds: 3),
@@ -26,7 +26,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   }
 
   void startAutoScrollingDown() {
-    _updateAutoScroll(
+    _updateAutoScrollIfDifferent(
       AutoScroll(
         direction: AutoScrollDirection.down,
         duration: Duration(seconds: 3),
@@ -35,16 +35,16 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   }
 
   void stopScrolling() {
-    if (!autoScroll.isStopped) {
-      _updateAutoScroll(
+    if (autoScroll.isScrolling) {
+      _updateAutoScrollIfDifferent(
         AutoScroll.stopped(direction: autoScroll.direction),
       );
     }
   }
 
-  void _updateAutoScroll(AutoScroll newAutoScroll) {
-    if (newAutoScroll != this.autoScroll) {
-      setState(() => this.autoScroll = newAutoScroll);
+  void _updateAutoScrollIfDifferent(AutoScroll newAutoScroll) {
+    if (newAutoScroll != autoScroll) {
+      setState(() => autoScroll = newAutoScroll);
     }
   }
 }

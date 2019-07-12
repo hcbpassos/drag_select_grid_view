@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:drag_select_grid_view/src/auto_scroller/auto_scroll.dart';
 import 'package:flutter/widgets.dart';
 
+@immutable
 class AutoScroller {
   static const minimumScrollDurationPerPixelInMs = 2;
   static const amountOfOverscrollOnScrollStop = 100;
@@ -29,7 +30,7 @@ class AutoScroller {
   }
 
   bool mustPerformAutoScroll() =>
-      !autoScroll.stopEvent.isConsumed || !autoScroll.isStopped;
+      !autoScroll.stopEvent.isConsumed || autoScroll.isScrolling;
 
   Future<void> performAutoScroll() async {
     if (!isAbleToPerformAutoScroll()) return;
@@ -37,17 +38,21 @@ class AutoScroller {
 
     if (autoScroll.stopEvent.consume()) {
       await _performScrollStopOverscroll();
-    } else if (!autoScroll.isStopped) {
+    } else if (autoScroll.isScrolling) {
       await _performAutoScroll();
     }
   }
 
+  /// Performs an elegant overscroll.
+  ///
+  /// This is supposed to run when the user leaves the auto-scroll-hotspot.
+  /// Instead of suddenly stopping the auto-scroll, it continues for a short
+  /// time, then stops.
+  ///
+  /// The amount of overscroll is defined by [amountOfOverscrollOnScrollStop].
   Future<void> _performScrollStopOverscroll() {
-    double targetPosition =
-        _currentPositionIncrementOrDecrementDependingOnTheScrollDirection();
-
     return controller.animateTo(
-      targetPosition,
+      _currentPositionIncrementOrDecrementDependingOnTheScrollDirection(),
       duration: Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
@@ -61,34 +66,63 @@ class AutoScroller {
   Future<void> _performAutoScroll() {
     double targetPosition = _getMinOrMaxPositionDependingOnTheScrollDirection();
 
-    int durationInMs =
-        _calculateScrollDurationWithSpeedThatDoesNotVaryAccordingToTheScrollAmount(
-      targetPosition,
-    );
-
     return controller.animateTo(
       targetPosition,
-      duration: Duration(milliseconds: durationInMs),
+      duration: _calculateScrollDurationWithUniformScrollSpeed(targetPosition),
       curve: Curves.linear,
     );
   }
 
+  /// Gets the minimum or maximum position of the [ScrollController].
+  ///
+  /// In case of [AutoScrollDirection.down], we want to get the last position.
+  /// In case of [AutoScrollDirection.up], we want to get the first position.
   double _getMinOrMaxPositionDependingOnTheScrollDirection() =>
       autoScroll.direction == AutoScrollDirection.down
           ? controller.position.maxScrollExtent
           : 0;
 
-  int _calculateScrollDurationWithSpeedThatDoesNotVaryAccordingToTheScrollAmount(
+  /// Calculates an scroll duration that makes the scroll speed consistent.
+  ///
+  /// [ScrollController.animateTo] expects a position and a duration.
+  /// Considering that the position varies and the duration is constant, the
+  /// scroll speed is going to vary, since it has the same time to perform a
+  /// scroll to longer and shorter distances.
+  ///
+  /// However, we don't want the scroll speed to change according to the current
+  /// position or the size of the list.
+  ///
+  /// To solve this problem, the duration cannot be constant, so when the
+  /// position changes, the duration is also going to change in order to make
+  /// the scroll speed constant.
+  Duration _calculateScrollDurationWithUniformScrollSpeed(
     double targetPosition,
   ) {
     double amountToBeScrolled = (targetPosition - _currentPosition).abs();
-    return (amountToBeScrolled * minimumScrollDurationPerPixelInMs).toInt();
+
+    int scrollDurationInMs =
+        (amountToBeScrolled * minimumScrollDurationPerPixelInMs).toInt();
+
+    return Duration(milliseconds: scrollDurationInMs);
   }
 
+  /// Checks whether it is able to perform auto-scroll.
+  ///
+  /// Rarely returns `false`, only when [ScrollController] has never been
+  /// attached or the direction of auto-scroll in `null`.
+  ///
+  /// Errors are guaranteed to be thrown when trying to perform auto-scroll when
+  /// this method returns `false`.
   @visibleForTesting
   bool isAbleToPerformAutoScroll() =>
       _currentPosition != null && autoScroll.direction != null;
 
+  /// Checks whether there's anything to scroll.
+  ///
+  /// In case of [AutoScrollDirection.down], we want to know whether we already
+  /// are at the end of the [GridView].
+  /// In case of [AutoScrollDirection.up], we want to know whether we already
+  /// are at the top of the [GridView].
   @visibleForTesting
   bool hasNothingLeftToScroll() =>
       ((autoScroll.direction == AutoScrollDirection.down) &&
