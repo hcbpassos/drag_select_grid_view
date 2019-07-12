@@ -9,6 +9,7 @@ mixin SpacingDetailsMixin<T extends StatefulWidget> on State<T> {
   /// of the State that uses this mixin.
   ///
   /// Example:
+  /// ```dart
   /// class FooState extends State<Foo> with SpacingDetailsMixin<Foo> {
   ///   @override
   ///   Widget build(BuildContext context) {
@@ -18,6 +19,7 @@ mixin SpacingDetailsMixin<T extends StatefulWidget> on State<T> {
   ///     );
   ///   }
   /// }
+  /// ```
   ///
   GlobalKey rootWidgetOfBuildMethodKey = GlobalKey();
 

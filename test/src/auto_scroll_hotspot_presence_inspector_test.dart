@@ -57,7 +57,7 @@ void main() {
   }
 
   testWidgets(
-    'AutoScrollHotspotPresenceInspector inside upper hotspot.',
+    '`AutoScrollHotspotPresenceInspector` inside upper hotspot.',
     (WidgetTester tester) async {
       await setUp(tester);
 
@@ -72,7 +72,7 @@ void main() {
   );
 
   testWidgets(
-    'AutoScrollHotspotPresenceInspector inside lower hotspot.',
+    '`AutoScrollHotspotPresenceInspector` inside lower hotspot.',
     (WidgetTester tester) async {
       await setUp(tester);
 
@@ -87,7 +87,7 @@ void main() {
   );
 
   testWidgets(
-    'AutoScrollHotspotPresenceInspector above hotspots.',
+    '`AutoScrollHotspotPresenceInspector` above hotspots.',
     (WidgetTester tester) async {
       await setUp(tester);
 
@@ -102,7 +102,7 @@ void main() {
   );
 
   testWidgets(
-    'AutoScrollHotspotPresenceInspector below hotspots.',
+    '`AutoScrollHotspotPresenceInspector` below hotspots.',
     (WidgetTester tester) async {
       await setUp(tester);
 
@@ -117,7 +117,7 @@ void main() {
   );
 
   testWidgets(
-    'AutoScrollHotspotPresenceInspector at the left side of hotspots.',
+    '`AutoScrollHotspotPresenceInspector` at the left side of hotspots.',
     (WidgetTester tester) async {
       await setUp(tester);
 
@@ -132,14 +132,16 @@ void main() {
   );
 
   testWidgets(
-    'AutoScrollHotspotPresenceInspector at the right side of hotspots.',
+    '`AutoScrollHotspotPresenceInspector` at the right side of hotspots.',
     (WidgetTester tester) async {
       await setUp(tester);
 
       final presenceInspector = AutoScrollHotspotPresenceInspector(
         dragSelectState,
         Offset(
-            distanceFromLeft + widgetWidth + 1, distanceFromTop + widgetHeight),
+          distanceFromLeft + widgetWidth + 1,
+          distanceFromTop + widgetHeight,
+        ),
       );
 
       expect(presenceInspector.isInsideUpperAutoScrollHotspot(), isFalse);

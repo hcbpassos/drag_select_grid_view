@@ -20,7 +20,7 @@ class SpacingDetails {
     double width,
   }) {
     if (distanceFromTop != null) _distanceFromTopMock = distanceFromTop;
-    if (distanceFromLeft != null) _distanceFromLeftMock = distanceFromTop;
+    if (distanceFromLeft != null) _distanceFromLeftMock = distanceFromLeft;
     if (distanceFromRight != null) _distanceFromRightMock = distanceFromRight;
     if (distanceFromBottom != null)
       _distanceFromBottomMock = distanceFromBottom;
