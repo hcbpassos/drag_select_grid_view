@@ -12,7 +12,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   @mustCallSuper
   Widget build(BuildContext context) {
     AutoScroller scroller = AutoScroller(autoScroll, controller);
-    if (scroller.mustPerformAutoScroll()) scroller.performAutoScroll();
+    if (scroller.mustScroll()) scroller.scroll();
     return null;
   }
 

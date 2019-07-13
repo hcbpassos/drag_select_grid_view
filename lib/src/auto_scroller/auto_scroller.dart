@@ -29,17 +29,17 @@ class AutoScroller {
     return hasBeenAttached;
   }
 
-  bool mustPerformAutoScroll() =>
+  bool mustScroll() =>
       !autoScroll.stopEvent.isConsumed || autoScroll.isScrolling;
 
-  Future<void> performAutoScroll() async {
-    if (!isAbleToPerformAutoScroll()) return;
+  Future<void> scroll() async {
+    if (!isAbleToScroll()) return;
     if (hasNothingLeftToScroll()) return;
 
     if (autoScroll.stopEvent.consume()) {
-      await _performScrollStopOverscroll();
+      await performOverscrollOfScrollStop();
     } else if (autoScroll.isScrolling) {
-      await _performAutoScroll();
+      await performScroll();
     }
   }
 
@@ -50,7 +50,8 @@ class AutoScroller {
   /// time, then stops.
   ///
   /// The amount of overscroll is defined by [amountOfOverscrollOnScrollStop].
-  Future<void> _performScrollStopOverscroll() {
+  @visibleForTesting
+  Future<void> performOverscrollOfScrollStop() {
     return controller.animateTo(
       _currentPositionIncrementOrDecrementDependingOnTheScrollDirection(),
       duration: Duration(milliseconds: 300),
@@ -63,7 +64,8 @@ class AutoScroller {
           ? _currentPosition + amountOfOverscrollOnScrollStop
           : _currentPosition - amountOfOverscrollOnScrollStop;
 
-  Future<void> _performAutoScroll() {
+  @visibleForTesting
+  Future<void> performScroll() {
     double targetPosition = _getMinOrMaxPositionDependingOnTheScrollDirection();
 
     return controller.animateTo(
@@ -114,7 +116,7 @@ class AutoScroller {
   /// Errors are guaranteed to be thrown when trying to perform auto-scroll when
   /// this method returns `false`.
   @visibleForTesting
-  bool isAbleToPerformAutoScroll() =>
+  bool isAbleToScroll() =>
       _currentPosition != null && autoScroll.direction != null;
 
   /// Checks whether there's anything to scroll.

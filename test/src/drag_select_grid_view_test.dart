@@ -36,7 +36,7 @@ void main() {
   }
 
   testWidgets(
-    'isInDragSelectMode is correctly changed '
+    '`isInDragSelectMode` is correctly changed '
     'when DragSelectGridView is long-pressed.',
     (WidgetTester tester) async {
       await setUp(tester);
@@ -49,12 +49,12 @@ void main() {
         tester: tester,
         finder: dragSelectFinder,
       );
-      await tester.pumpWidget(widget);
+      await tester.pump();
       expect(dragSelectState.isInDragSelectMode, isTrue);
 
       // On long-press up, isInDragSelectMode is false.
       await gesture.up();
-      await tester.pumpWidget(widget);
+      await tester.pump();
       expect(dragSelectState.isInDragSelectMode, isFalse);
     },
   );
@@ -73,7 +73,7 @@ void main() {
         finder: dragSelectFinder,
         offset: Offset(0, -(dragSelectState.height / 2) + 1),
       );
-      await tester.pumpWidget(widget);
+      await tester.pump();
       expect(dragSelectState.autoScroll.direction, AutoScrollDirection.up);
     },
   );
@@ -86,9 +86,9 @@ void main() {
       await longPressDownAndDrag(
         tester: tester,
         finder: dragSelectFinder,
-        offset: Offset(0, dragSelectState.height / 2),
+        offset: Offset(0, (dragSelectState.height / 2)),
       );
-      await tester.pumpWidget(widget);
+      await tester.pump();
       expect(dragSelectState.autoScroll.direction, AutoScrollDirection.down);
     },
   );
@@ -104,12 +104,12 @@ void main() {
         finder: dragSelectFinder,
         offset: Offset(0, -(dragSelectState.height / 2) + 1),
       );
-      await tester.pumpWidget(widget);
+      await tester.pump();
       expect(dragSelectState.autoScroll.direction, AutoScrollDirection.up);
 
       // Auto-scroll is disabled when pointer goes up.
       await gesture.up();
-      await tester.pumpWidget(widget);
+      await tester.pump();
       expect(
         dragSelectState.autoScroll,
         AutoScroll.stopped(direction: AutoScrollDirection.up),
@@ -128,12 +128,12 @@ void main() {
         finder: dragSelectFinder,
         offset: Offset(0, dragSelectState.height / 2),
       );
-      await tester.pumpWidget(widget);
+      await tester.pump();
       expect(dragSelectState.autoScroll.direction, AutoScrollDirection.down);
 
       // Auto-scroll is disabled when pointer goes up.
       await gesture.up();
-      await tester.pumpWidget(widget);
+      await tester.pump();
       expect(
         dragSelectState.autoScroll,
         AutoScroll.stopped(direction: AutoScrollDirection.down),
@@ -151,12 +151,12 @@ void main() {
         finder: dragSelectFinder,
         offset: Offset(0, dragSelectState.height / 2),
       );
-      await tester.pumpWidget(widget);
+      await tester.pump();
       expect(dragSelectState.autoScroll.direction, AutoScrollDirection.down);
 
       // Auto-scroll is disabled when dragging out of the hotspot.
       await gesture.moveTo(tester.getCenter(dragSelectFinder));
-      await tester.pumpWidget(widget);
+      await tester.pump();
       expect(
         dragSelectState.autoScroll,
         AutoScroll.stopped(direction: AutoScrollDirection.down),
