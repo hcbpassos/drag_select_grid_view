@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import 'drag_select_grid_view.dart';
+import '../drag_select_grid_view.dart';
 
 @immutable
 class AutoScrollHotspotPresenceInspector {
@@ -11,36 +11,36 @@ class AutoScrollHotspotPresenceInspector {
   final DragSelectGridViewState dragSelectState;
   final Offset position;
 
-  bool isInsideUpperAutoScrollHotspot() =>
-      !_isAboveUpperHotspot() &&
-      !_isBelowUpperHotspot() &&
-      !_isAtTheLeftSideOfHotspots() &&
-      !_isAtTheRightSideOfHotspots();
+  bool get isInsideUpperAutoScrollHotspot =>
+      !_isAboveUpperHotspot &&
+      !_isBelowUpperHotspot &&
+      !_isAtTheLeftSideOfHotspots &&
+      !_isAtTheRightSideOfHotspots;
 
-  bool isInsideLowerAutoScrollHotspot() =>
-      !_isAboveLowerHotspot() &&
-      !_isBelowLowerHotspot() &&
-      !_isAtTheLeftSideOfHotspots() &&
-      !_isAtTheRightSideOfHotspots();
+  bool get isInsideLowerAutoScrollHotspot =>
+      !_isAboveLowerHotspot &&
+      !_isBelowLowerHotspot &&
+      !_isAtTheLeftSideOfHotspots &&
+      !_isAtTheRightSideOfHotspots;
 
-  bool _isAboveUpperHotspot() => position.dy <= dragSelectState.distanceFromTop;
+  bool get _isAboveUpperHotspot => position.dy <= dragSelectState.distanceFromTop;
 
-  bool _isBelowUpperHotspot() =>
+  bool get _isBelowUpperHotspot =>
       position.dy >
       (dragSelectState.distanceFromTop +
           dragSelectState.autoScrollHotspotHeight);
 
-  bool _isAboveLowerHotspot() =>
+  bool get _isAboveLowerHotspot =>
       position.dy <=
       (dragSelectState.distanceFromTop +
           (dragSelectState.height - dragSelectState.autoScrollHotspotHeight));
 
-  bool _isBelowLowerHotspot() =>
+  bool get _isBelowLowerHotspot =>
       position.dy > (dragSelectState.distanceFromTop + dragSelectState.height);
 
-  bool _isAtTheLeftSideOfHotspots() =>
+  bool get _isAtTheLeftSideOfHotspots =>
       position.dx <= dragSelectState.distanceFromLeft;
 
-  bool _isAtTheRightSideOfHotspots() =>
+  bool get _isAtTheRightSideOfHotspots =>
       position.dx > (dragSelectState.distanceFromLeft + dragSelectState.width);
 }

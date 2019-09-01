@@ -1,5 +1,5 @@
 import 'package:drag_select_grid_view/drag_select_grid_view.dart';
-import 'package:drag_select_grid_view/src/auto_scroll_hotspot_presence_inspector.dart';
+import 'package:drag_select_grid_view/src/auto_scroll_hotspot_presence_inspector/auto_scroll_hotspot_presence_inspector.dart';
 import 'package:drag_select_grid_view/src/spacing_details/spacing_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -92,8 +92,8 @@ void main() {
         Offset(distanceFromLeft + 1, distanceFromTop + 1),
       );
 
-      expect(presenceInspector.isInsideUpperAutoScrollHotspot(), isTrue);
-      expect(presenceInspector.isInsideLowerAutoScrollHotspot(), isFalse);
+      expect(presenceInspector.isInsideUpperAutoScrollHotspot, isTrue);
+      expect(presenceInspector.isInsideLowerAutoScrollHotspot, isFalse);
     },
   );
 
@@ -107,8 +107,8 @@ void main() {
         Offset(distanceFromLeft + 1, distanceFromTop + widgetHeight),
       );
 
-      expect(presenceInspector.isInsideUpperAutoScrollHotspot(), isFalse);
-      expect(presenceInspector.isInsideLowerAutoScrollHotspot(), isTrue);
+      expect(presenceInspector.isInsideUpperAutoScrollHotspot, isFalse);
+      expect(presenceInspector.isInsideLowerAutoScrollHotspot, isTrue);
     },
   );
 
@@ -122,8 +122,8 @@ void main() {
         Offset(distanceFromLeft + 1, 0),
       );
 
-      expect(presenceInspector.isInsideUpperAutoScrollHotspot(), isFalse);
-      expect(presenceInspector.isInsideLowerAutoScrollHotspot(), isFalse);
+      expect(presenceInspector.isInsideUpperAutoScrollHotspot, isFalse);
+      expect(presenceInspector.isInsideLowerAutoScrollHotspot, isFalse);
     },
   );
 
@@ -137,8 +137,8 @@ void main() {
         Offset(distanceFromLeft + 1, distanceFromTop + widgetHeight + 1),
       );
 
-      expect(presenceInspector.isInsideUpperAutoScrollHotspot(), isFalse);
-      expect(presenceInspector.isInsideLowerAutoScrollHotspot(), isFalse);
+      expect(presenceInspector.isInsideUpperAutoScrollHotspot, isFalse);
+      expect(presenceInspector.isInsideLowerAutoScrollHotspot, isFalse);
     },
   );
 
@@ -152,8 +152,8 @@ void main() {
         Offset(0, distanceFromTop + 1),
       );
 
-      expect(presenceInspector.isInsideUpperAutoScrollHotspot(), isFalse);
-      expect(presenceInspector.isInsideLowerAutoScrollHotspot(), isFalse);
+      expect(presenceInspector.isInsideUpperAutoScrollHotspot, isFalse);
+      expect(presenceInspector.isInsideLowerAutoScrollHotspot, isFalse);
     },
   );
 
@@ -170,8 +170,8 @@ void main() {
         ),
       );
 
-      expect(presenceInspector.isInsideUpperAutoScrollHotspot(), isFalse);
-      expect(presenceInspector.isInsideLowerAutoScrollHotspot(), isFalse);
+      expect(presenceInspector.isInsideUpperAutoScrollHotspot, isFalse);
+      expect(presenceInspector.isInsideLowerAutoScrollHotspot, isFalse);
     },
   );
 }

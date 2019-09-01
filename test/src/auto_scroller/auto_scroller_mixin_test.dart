@@ -1,14 +1,14 @@
 import 'package:drag_select_grid_view/src/auto_scroller/auto_scroll.dart';
-import 'package:drag_select_grid_view/src/auto_scroller/auto_scroller_mixin.dart';
+import 'package:drag_select_grid_view/src/drag_select_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final dragSelectGridViewFinder = find.byType(DragSelectGridViewTest);
+  final dragSelectGridViewFinder = find.byType(DragSelectGridView);
 
   Widget createWidget() {
     return MaterialApp(
-      home: DragSelectGridViewTest(
+      home: DragSelectGridView(
         grid: GridView.extent(
           maxCrossAxisExtent: 1,
           children: [],
@@ -30,7 +30,7 @@ void main() {
       expect(dragSelectGridViewFinder, findsOneWidget);
 
       final dragSelectGridViewState =
-          tester.state(dragSelectGridViewFinder) as DragSelectGridViewTestState;
+          tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
 
       // First scroll up attempt.
 
@@ -70,7 +70,7 @@ void main() {
       expect(dragSelectGridViewFinder, findsOneWidget);
 
       final dragSelectGridViewState =
-          tester.state(dragSelectGridViewFinder) as DragSelectGridViewTestState;
+          tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
 
       // First scroll down attempt.
 
@@ -110,7 +110,7 @@ void main() {
       expect(dragSelectGridViewFinder, findsOneWidget);
 
       final dragSelectGridViewState =
-          tester.state(dragSelectGridViewFinder) as DragSelectGridViewTestState;
+          tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
 
       dragSelectGridViewState.startAutoScrollingDown();
 
@@ -142,30 +142,4 @@ void main() {
       );
     },
   );
-}
-
-class DragSelectGridViewTest extends StatefulWidget {
-  final GridView grid;
-
-  DragSelectGridViewTest({
-    @required this.grid,
-  })  : assert(grid != null),
-        assert(grid.gridDelegate is SliverGridDelegateWithMaxCrossAxisExtent);
-
-  @override
-  DragSelectGridViewTestState createState() => DragSelectGridViewTestState();
-}
-
-class DragSelectGridViewTestState extends State<DragSelectGridViewTest>
-    with AutoScrollerMixin<DragSelectGridViewTest> {
-  GridView get grid => widget.grid;
-
-  @override
-  ScrollController get controller => grid.controller;
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return grid;
-  }
 }

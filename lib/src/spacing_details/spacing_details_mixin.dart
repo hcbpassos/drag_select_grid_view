@@ -20,8 +20,7 @@ mixin SpacingDetailsMixin<T extends StatefulWidget> on State<T> {
   ///   }
   /// }
   /// ```
-  ///
-  GlobalKey rootWidgetOfBuildMethodKey = GlobalKey();
+  final rootWidgetOfBuildMethodKey = GlobalKey();
 
   double get distanceFromTop => _spacingDetails?.distanceFromTop ?? 0;
 

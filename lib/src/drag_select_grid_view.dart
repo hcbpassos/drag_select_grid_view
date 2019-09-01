@@ -1,9 +1,10 @@
 import 'package:flutter/widgets.dart';
 
-import 'auto_scroll_hotspot_presence_inspector.dart';
+import 'auto_scroll_hotspot_presence_inspector/auto_scroll_hotspot_presence_inspector.dart';
 import 'auto_scroller/auto_scroller_mixin.dart';
 import 'spacing_details/spacing_details_mixin.dart';
 
+@immutable
 class DragSelectGridView extends StatefulWidget {
   static const defaultAutoScrollHotspotHeight = 64.0;
 
@@ -73,9 +74,9 @@ class DragSelectGridViewState extends State<DragSelectGridView>
 
   bool isInsideUpperAutoScrollHotspot(Offset position) =>
       AutoScrollHotspotPresenceInspector(this, position)
-          .isInsideUpperAutoScrollHotspot();
+          .isInsideUpperAutoScrollHotspot;
 
   bool isInsideLowerAutoScrollHotspot(Offset position) =>
       AutoScrollHotspotPresenceInspector(this, position)
-          .isInsideLowerAutoScrollHotspot();
+          .isInsideLowerAutoScrollHotspot;
 }
