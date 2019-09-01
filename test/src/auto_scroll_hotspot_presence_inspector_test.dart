@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  const double distanceFromTop = 80.0;
-  const double distanceFromLeft = 20.0;
-  const double distanceFromRight = 40.0;
-  const double distanceFromBottom = 60.0;
-  const double widgetHeight = 600.0;
-  const double widgetWidth = 800.0;
+  const distanceFromTop = 80.0;
+  const distanceFromLeft = 20.0;
+  const distanceFromRight = 40.0;
+  const distanceFromBottom = 60.0;
+  const widgetHeight = 600.0;
+  const widgetWidth = 800.0;
+
+  final dragSelectFinder = find.byType(DragSelectGridView);
 
   DragSelectGridViewState dragSelectState;
 
@@ -49,10 +51,8 @@ void main() {
   /// from the fact that the tests are not going to work if I change their
   /// order.
   Future<void> setUp(WidgetTester tester) async {
-    Widget widget = createWidget();
+    final widget = createWidget();
     await tester.pumpWidget(widget);
-
-    Finder dragSelectFinder = find.byType(DragSelectGridView);
     dragSelectState = tester.state(dragSelectFinder);
   }
 

@@ -15,8 +15,8 @@ Future<TestGesture> longPressDown({
   assert(finder != null);
 
   return TestAsyncUtils.guard<TestGesture>(() async {
-    Offset pressPosition = tester.getCenter(finder);
-    final TestGesture gesture = await tester.startGesture(pressPosition);
+    final pressPosition = tester.getCenter(finder);
+    final gesture = await tester.startGesture(pressPosition);
     await tester.pump(kLongPressTimeout + kPressTimeout);
     return gesture;
   });
@@ -33,8 +33,8 @@ Future<TestGesture> longPressDownAndDrag({
   assert(offset != null);
 
   return TestAsyncUtils.guard<TestGesture>(() async {
-    Offset pressPosition = tester.getCenter(finder);
-    final TestGesture gesture = await tester.startGesture(pressPosition);
+    final pressPosition = tester.getCenter(finder);
+    final gesture = await tester.startGesture(pressPosition);
     await tester.pump(kLongPressTimeout + kPressTimeout);
     await gesture.moveBy(offset);
     return gesture;

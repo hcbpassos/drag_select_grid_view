@@ -71,17 +71,17 @@ void main() {
     });
 
     test('`operator ==` and `hashCode`.', () {
-      AutoScroll autoScroll = AutoScroll(
+      final autoScroll = AutoScroll(
         direction: AutoScrollDirection.down,
         duration: Duration(seconds: 1),
       );
 
-      AutoScroll equalAutoScroll = AutoScroll(
+      final equalAutoScroll = AutoScroll(
         direction: AutoScrollDirection.down,
         duration: Duration(seconds: 1),
       );
 
-      AutoScroll differentAutoScroll =
+      final differentAutoScroll =
           AutoScroll.stopped(direction: AutoScrollDirection.down);
 
       expect(autoScroll, equalAutoScroll);
@@ -94,7 +94,7 @@ void main() {
 
   group('StopAutoScrollEvent', () {
     test('`consume()` for consumed events never return true.', () {
-      StopAutoScrollEvent stopEvent = StopAutoScrollEvent();
+      var stopEvent = StopAutoScrollEvent();
       expect(stopEvent.consume(), isTrue);
       expect(stopEvent.consume(), isFalse);
 
@@ -110,9 +110,9 @@ void main() {
     });
 
     test('`operator ==` and `hashCode`.', () {
-      StopAutoScrollEvent stopEvent = StopAutoScrollEvent();
-      StopAutoScrollEvent equalStopEvent = StopAutoScrollEvent();
-      StopAutoScrollEvent differentStopEvent = StopAutoScrollEvent.consumed();
+      final stopEvent = StopAutoScrollEvent();
+      final equalStopEvent = StopAutoScrollEvent();
+      final differentStopEvent = StopAutoScrollEvent.consumed();
 
       expect(stopEvent, equalStopEvent);
       expect(stopEvent.hashCode, equalStopEvent.hashCode);

@@ -9,7 +9,7 @@ class AutoScroller {
   static const amountOfOverscrollOnScrollStop = 100;
 
   static bool _hasScrollControllerBeenAttached(ScrollController controller) {
-    bool hasBeenAttached = true;
+    var hasBeenAttached = true;
 
     try {
       controller.position;
@@ -39,11 +39,11 @@ class AutoScroller {
           ? currentPosition + amountOfOverscrollOnScrollStop
           : currentPosition - amountOfOverscrollOnScrollStop;
 
-  /// Returns the minimum or maximum position of the [ScrollController].
+  /// Returns the target position of the auto-scroll.
   ///
-  /// In case of [AutoScrollDirection.down], we want to get the last position.
-  /// In case of [AutoScrollDirection.up], we want to get the first position.
-  double get _minOrMaxPositionDependingOnTheScrollDirection =>
+  /// If the auto-scroll direction is down, we want to get the last position.
+  /// If the auto-scroll direction is up, we want to get the first position.
+  double get _targetPositionOfTheAutoScroll =>
       autoScroll.direction == AutoScrollDirection.down
           ? controller.position.maxScrollExtent
           : 0;
@@ -69,8 +69,8 @@ class AutoScroller {
   bool get hasAnythingLeftToScroll =>
       ((autoScroll.direction == AutoScrollDirection.down) &&
           (currentPosition < controller.position.maxScrollExtent)) ||
-          ((autoScroll.direction == AutoScrollDirection.up) &&
-              (currentPosition > 0));
+      ((autoScroll.direction == AutoScrollDirection.up) &&
+          (currentPosition > 0));
 
   Future<void> scroll() async {
     if (!isAbleToScroll) return;
@@ -101,12 +101,12 @@ class AutoScroller {
 
   @visibleForTesting
   Future<void> performScroll() {
-    double targetPosition = _minOrMaxPositionDependingOnTheScrollDirection;
-
     return controller.animateTo(
-      targetPosition,
-      duration: _calculateScrollDurationWithUniformScrollSpeed(targetPosition),
+      _targetPositionOfTheAutoScroll,
       curve: Curves.linear,
+      duration: _calculateScrollDurationWithUniformScrollSpeed(
+        _targetPositionOfTheAutoScroll,
+      ),
     );
   }
 
@@ -126,9 +126,9 @@ class AutoScroller {
   Duration _calculateScrollDurationWithUniformScrollSpeed(
     double targetPosition,
   ) {
-    double amountToBeScrolled = (targetPosition - currentPosition).abs();
+    final amountToBeScrolled = (targetPosition - currentPosition).abs();
 
-    int scrollDurationInMs =
+    final scrollDurationInMs =
         (amountToBeScrolled * minimumScrollDurationPerPixelInMs).toInt();
 
     return Duration(milliseconds: scrollDurationInMs);

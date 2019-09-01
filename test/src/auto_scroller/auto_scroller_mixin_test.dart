@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  final dragSelectGridViewFinder = find.byType(DragSelectGridViewTest);
+
   Widget createWidget() {
     return MaterialApp(
       home: DragSelectGridViewTest(
@@ -22,14 +24,13 @@ void main() {
     "but auto-scroll doesn't change "
     "when trying to scroll up again.",
     (WidgetTester tester) async {
-      Widget widget = createWidget();
+      final widget = createWidget();
       await tester.pumpWidget(widget);
 
-      Finder dragSelectGridViewFinder = find.byType(DragSelectGridViewTest);
       expect(dragSelectGridViewFinder, findsOneWidget);
 
-      DragSelectGridViewTestState dragSelectGridViewState =
-          tester.state(dragSelectGridViewFinder);
+      final dragSelectGridViewState =
+          tester.state(dragSelectGridViewFinder) as DragSelectGridViewTestState;
 
       // First scroll up attempt.
 
@@ -46,7 +47,7 @@ void main() {
 
       // Second scroll up attempt.
 
-      AutoScroll oldAutoScroll = dragSelectGridViewState.autoScroll;
+      final oldAutoScroll = dragSelectGridViewState.autoScroll;
 
       dragSelectGridViewState.startAutoScrollingUp();
 
@@ -63,14 +64,13 @@ void main() {
     "but auto-scroll doesn't change "
     "when trying to scroll down again.",
     (WidgetTester tester) async {
-      Widget widget = createWidget();
+      final widget = createWidget();
       await tester.pumpWidget(widget);
 
-      Finder dragSelectGridViewFinder = find.byType(DragSelectGridViewTest);
       expect(dragSelectGridViewFinder, findsOneWidget);
 
-      DragSelectGridViewTestState dragSelectGridViewState =
-          tester.state(dragSelectGridViewFinder);
+      final dragSelectGridViewState =
+          tester.state(dragSelectGridViewFinder) as DragSelectGridViewTestState;
 
       // First scroll down attempt.
 
@@ -87,7 +87,7 @@ void main() {
 
       // Second scroll down attempt.
 
-      AutoScroll oldAutoScroll = dragSelectGridViewState.autoScroll;
+      final oldAutoScroll = dragSelectGridViewState.autoScroll;
 
       dragSelectGridViewState.startAutoScrollingDown();
 
@@ -104,14 +104,13 @@ void main() {
     "but auto-scroll doesn't change "
     "when trying to stop scrolling again.",
     (WidgetTester tester) async {
-      Widget widget = createWidget();
+      final widget = createWidget();
       await tester.pumpWidget(widget);
 
-      Finder dragSelectGridViewFinder = find.byType(DragSelectGridViewTest);
       expect(dragSelectGridViewFinder, findsOneWidget);
 
-      DragSelectGridViewTestState dragSelectGridViewState =
-          tester.state(dragSelectGridViewFinder);
+      final dragSelectGridViewState =
+          tester.state(dragSelectGridViewFinder) as DragSelectGridViewTestState;
 
       dragSelectGridViewState.startAutoScrollingDown();
 
@@ -133,7 +132,7 @@ void main() {
 
       // Second stop attempt.
 
-      AutoScroll oldAutoScroll = dragSelectGridViewState.autoScroll;
+      final oldAutoScroll = dragSelectGridViewState.autoScroll;
 
       dragSelectGridViewState.stopScrolling();
 

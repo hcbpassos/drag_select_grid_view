@@ -6,8 +6,9 @@ import 'package:drag_select_grid_view/drag_select_grid_view.dart';
 import 'test_utils.dart';
 
 void main() {
+  final dragSelectFinder = find.byType(DragSelectGridView);
+
   Widget widget;
-  Finder dragSelectFinder;
   DragSelectGridViewState dragSelectState;
 
   Widget createWidget() {
@@ -30,8 +31,6 @@ void main() {
   Future<void> setUp(WidgetTester tester) async {
     widget = createWidget();
     await tester.pumpWidget(widget);
-
-    dragSelectFinder = find.byType(DragSelectGridView);
     dragSelectState = tester.state(dragSelectFinder);
   }
 
@@ -45,7 +44,7 @@ void main() {
       expect(dragSelectState.isInDragSelectMode, isFalse);
 
       // On long-press down, isInDragSelectMode is true.
-      TestGesture gesture = await longPressDown(
+      final gesture = await longPressDown(
         tester: tester,
         finder: dragSelectFinder,
       );
@@ -99,7 +98,7 @@ void main() {
     (WidgetTester tester) async {
       await setUp(tester);
 
-      TestGesture gesture = await longPressDownAndDrag(
+      final gesture = await longPressDownAndDrag(
         tester: tester,
         finder: dragSelectFinder,
         offset: Offset(0, -(dragSelectState.height / 2) + 1),
@@ -123,7 +122,7 @@ void main() {
     (WidgetTester tester) async {
       await setUp(tester);
 
-      TestGesture gesture = await longPressDownAndDrag(
+      final gesture = await longPressDownAndDrag(
         tester: tester,
         finder: dragSelectFinder,
         offset: Offset(0, dragSelectState.height / 2),
@@ -146,7 +145,7 @@ void main() {
     (WidgetTester tester) async {
       await setUp(tester);
 
-      TestGesture gesture = await longPressDownAndDrag(
+      final gesture = await longPressDownAndDrag(
         tester: tester,
         finder: dragSelectFinder,
         offset: Offset(0, dragSelectState.height / 2),

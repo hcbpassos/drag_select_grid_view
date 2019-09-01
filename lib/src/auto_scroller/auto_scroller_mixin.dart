@@ -11,7 +11,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   @override
   @mustCallSuper
   Widget build(BuildContext context) {
-    AutoScroller scroller = AutoScroller(autoScroll, controller);
+    final scroller = AutoScroller(autoScroll, controller);
     if (scroller.mustScroll) scroller.scroll();
     return null;
   }
