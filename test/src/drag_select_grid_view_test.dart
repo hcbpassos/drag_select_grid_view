@@ -35,6 +35,33 @@ void main() {
   }
 
   testWidgets(
+    'An AssertionError is throw '
+    'when creating a DragSelectGridView with null `grid`.',
+    (WidgetTester tester) async {
+      expect(
+        () => DragSelectGridView(grid: null),
+        throwsAssertionError,
+      );
+    },
+  );
+
+  testWidgets(
+    'An AssertionError is throw '
+    'when creating a DragSelectGridView with a `grid` which delegate is not a '
+    'SliverGridDelegateWithMaxCrossAxisExtent.',
+    (WidgetTester tester) async {
+      expect(
+        () => MaterialApp(
+          home: DragSelectGridView(
+            grid: GridView.count(crossAxisCount: 3),
+          ),
+        ),
+        throwsAssertionError,
+      );
+    },
+  );
+
+  testWidgets(
     '`isInDragSelectMode` is correctly changed '
     'when DragSelectGridView is long-pressed.',
     (WidgetTester tester) async {

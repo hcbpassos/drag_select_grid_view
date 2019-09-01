@@ -228,7 +228,7 @@ void main() {
       ''
       'when auto-scroll is performed, '
       ''
-      'an overscroll is also performed.',
+      'a downward overscroll is performed.',
       (WidgetTester tester) async {
         final widget = createWidget();
         await tester.pumpWidget(widget);
@@ -244,6 +244,41 @@ void main() {
 
         expect(mockAutoScroller.performOverscrollOfScrollStopCount, 1);
         expect(mockAutoScroller.performScrollCount, 0);
+        expect(
+          mockAutoScroller.positionAfterOverscroll,
+          greaterThan(mockAutoScroller.currentPosition),
+        );
+      },
+    );
+
+    testWidgets(
+      "Given that auto-scroll's direction is up, "
+      "and the stop-event wasn't consumed, "
+      ''
+      'when auto-scroll is performed, '
+      ''
+      'an upward overscroll is performed.',
+      (WidgetTester tester) async {
+        final widget = createWidget();
+        await tester.pumpWidget(widget);
+
+        controller.jumpTo(controller.position.maxScrollExtent);
+
+        final mockAutoScroller = MockAutoScroller(
+          AutoScroll.stopped(direction: AutoScrollDirection.up),
+          controller,
+        );
+
+        expect(mockAutoScroller.performOverscrollOfScrollStopCount, 0);
+
+        mockAutoScroller.scroll();
+
+        expect(mockAutoScroller.performOverscrollOfScrollStopCount, 1);
+        expect(mockAutoScroller.performScrollCount, 0);
+        expect(
+          mockAutoScroller.positionAfterOverscroll,
+          lessThan(mockAutoScroller.currentPosition),
+        );
       },
     );
   });

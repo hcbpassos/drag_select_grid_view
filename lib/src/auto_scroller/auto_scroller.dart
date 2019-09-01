@@ -5,8 +5,9 @@ import 'package:flutter/widgets.dart';
 
 @immutable
 class AutoScroller {
-  static const minimumScrollDurationPerPixelInMs = 2;
+  static const overscrollDuration = Duration(milliseconds: 300);
   static const amountOfOverscrollOnScrollStop = 100;
+  static const minimumScrollDurationPerPixelInMs = 2;
 
   static bool _hasScrollControllerBeenAttached(ScrollController controller) {
     var hasBeenAttached = true;
@@ -29,12 +30,14 @@ class AutoScroller {
   final ScrollController controller;
   final double currentPosition;
 
+  /// Returns whether auto-scroll must be performed.
   bool get mustScroll =>
       !autoScroll.stopEvent.isConsumed || autoScroll.isScrolling;
 
   /// Returns the position in which the [controller] would be after performing
   /// an overscroll.
-  double get _positionAfterOverscroll =>
+  @visibleForTesting
+  double get positionAfterOverscroll =>
       autoScroll.direction == AutoScrollDirection.down
           ? currentPosition + amountOfOverscrollOnScrollStop
           : currentPosition - amountOfOverscrollOnScrollStop;
@@ -43,7 +46,8 @@ class AutoScroller {
   ///
   /// If the auto-scroll direction is down, we want to get the last position.
   /// If the auto-scroll direction is up, we want to get the first position.
-  double get _targetPositionOfTheAutoScroll =>
+  @visibleForTesting
+  double get targetPositionOfTheAutoScroll =>
       autoScroll.direction == AutoScrollDirection.down
           ? controller.position.maxScrollExtent
           : 0;
@@ -93,8 +97,8 @@ class AutoScroller {
   @visibleForTesting
   Future<void> performOverscrollOfScrollStop() {
     return controller.animateTo(
-      _positionAfterOverscroll,
-      duration: Duration(milliseconds: 300),
+      positionAfterOverscroll,
+      duration: overscrollDuration,
       curve: Curves.easeOut,
     );
   }
@@ -102,10 +106,10 @@ class AutoScroller {
   @visibleForTesting
   Future<void> performScroll() {
     return controller.animateTo(
-      _targetPositionOfTheAutoScroll,
+      targetPositionOfTheAutoScroll,
       curve: Curves.linear,
-      duration: _calculateScrollDurationWithUniformScrollSpeed(
-        _targetPositionOfTheAutoScroll,
+      duration: calculateScrollDurationWithUniformScrollSpeed(
+        targetPositionOfTheAutoScroll,
       ),
     );
   }
@@ -123,7 +127,8 @@ class AutoScroller {
   /// To solve this problem, the duration cannot be constant, so when the
   /// position changes, the duration is also going to change in order to make
   /// the scroll speed constant.
-  Duration _calculateScrollDurationWithUniformScrollSpeed(
+  @visibleForTesting
+  Duration calculateScrollDurationWithUniformScrollSpeed(
     double targetPosition,
   ) {
     final amountToBeScrolled = (targetPosition - currentPosition).abs();

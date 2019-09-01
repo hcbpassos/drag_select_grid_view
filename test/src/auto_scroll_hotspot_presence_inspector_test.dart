@@ -57,6 +57,32 @@ void main() {
   }
 
   testWidgets(
+    'An `AssertionError` is thrown '
+    'when creating a `AutoScrollHotspotPresenceInspector` '
+    'with null `dragSelectState`.',
+    (WidgetTester tester) async {
+      expect(
+        () => AutoScrollHotspotPresenceInspector(null, Offset(0, 0)),
+        throwsAssertionError,
+      );
+    },
+  );
+
+  testWidgets(
+    'An `AssertionError` is thrown '
+    'when creating a `AutoScrollHotspotPresenceInspector` with null `position`.',
+    (WidgetTester tester) async {
+      expect(
+        () => AutoScrollHotspotPresenceInspector(
+          DragSelectGridViewState(),
+          null,
+        ),
+        throwsAssertionError,
+      );
+    },
+  );
+
+  testWidgets(
     '`AutoScrollHotspotPresenceInspector` inside upper hotspot.',
     (WidgetTester tester) async {
       await setUp(tester);
