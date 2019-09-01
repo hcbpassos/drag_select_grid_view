@@ -1,6 +1,6 @@
-import 'package:drag_select_grid_view/src/spacing_details/spacing_details.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
+import 'spacing_details.dart';
 
 mixin SpacingDetailsMixin<T extends StatefulWidget> on State<T> {
   SpacingDetails _spacingDetails;

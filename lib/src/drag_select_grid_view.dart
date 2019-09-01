@@ -1,9 +1,8 @@
-import 'package:drag_select_grid_view/src/auto_scroll_hotspot_presence_inspector.dart';
-import 'package:drag_select_grid_view/src/auto_scroller/auto_scroller_mixin.dart';
-import 'package:drag_select_grid_view/src/spacing_details/spacing_details_mixin.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+
+import 'auto_scroll_hotspot_presence_inspector.dart';
+import 'auto_scroller/auto_scroller_mixin.dart';
+import 'spacing_details/spacing_details_mixin.dart';
 
 class DragSelectGridView extends StatefulWidget {
   static const defaultAutoScrollHotspotHeight = 64.0;

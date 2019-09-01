@@ -1,5 +1,6 @@
-import 'package:drag_select_grid_view/drag_select_grid_view.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+
+import 'drag_select_grid_view.dart';
 
 @immutable
 class AutoScrollHotspotPresenceInspector {

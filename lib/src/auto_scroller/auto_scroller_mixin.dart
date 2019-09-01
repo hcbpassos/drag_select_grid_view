@@ -1,6 +1,7 @@
-import 'package:drag_select_grid_view/src/auto_scroller/auto_scroll.dart';
-import 'package:drag_select_grid_view/src/auto_scroller/auto_scroller.dart';
 import 'package:flutter/widgets.dart';
+
+import 'auto_scroll.dart';
+import 'auto_scroller.dart';
 
 mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   @visibleForTesting
