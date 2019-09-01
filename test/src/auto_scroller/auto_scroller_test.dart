@@ -31,7 +31,7 @@ void main() {
           controller,
         );
 
-        expect(autoScroller.isAbleToScroll(), isTrue);
+        expect(autoScroller.isAbleToScroll, isTrue);
       },
     );
 
@@ -44,7 +44,7 @@ void main() {
           ScrollController(),
         );
 
-        expect(autoScroller.isAbleToScroll(), isFalse);
+        expect(autoScroller.isAbleToScroll, isFalse);
       },
     );
 
@@ -60,7 +60,7 @@ void main() {
           controller,
         );
 
-        expect(autoScroller.isAbleToScroll(), isFalse);
+        expect(autoScroller.isAbleToScroll, isFalse);
       },
     );
   });
@@ -81,7 +81,7 @@ void main() {
           controller,
         );
 
-        expect(autoScroller.hasNothingLeftToScroll(), isFalse);
+        expect(autoScroller.hasAnythingLeftToScroll, isTrue);
       },
     );
 
@@ -100,7 +100,7 @@ void main() {
           controller,
         );
 
-        expect(autoScroller.hasNothingLeftToScroll(), isFalse);
+        expect(autoScroller.hasAnythingLeftToScroll, isTrue);
       },
     );
 
@@ -119,7 +119,7 @@ void main() {
           controller,
         );
 
-        expect(autoScroller.hasNothingLeftToScroll(), isTrue);
+        expect(autoScroller.hasAnythingLeftToScroll, isFalse);
       },
     );
 
@@ -138,7 +138,7 @@ void main() {
           controller,
         );
 
-        expect(autoScroller.hasNothingLeftToScroll(), isTrue);
+        expect(autoScroller.hasAnythingLeftToScroll, isFalse);
       },
     );
   });
@@ -159,7 +159,7 @@ void main() {
           controller,
         );
 
-        expect(autoScroller.mustScroll(), isTrue);
+        expect(autoScroller.mustScroll, isTrue);
       },
     );
 
@@ -175,7 +175,7 @@ void main() {
           controller,
         );
 
-        expect(autoScroller.mustScroll(), isTrue);
+        expect(autoScroller.mustScroll, isTrue);
       },
     );
 
@@ -192,7 +192,7 @@ void main() {
           controller,
         );
 
-        expect(autoScroller.mustScroll(), isFalse);
+        expect(autoScroller.mustScroll, isFalse);
       },
     );
   });
@@ -223,8 +223,12 @@ void main() {
     );
 
     testWidgets(
-      "Overscroll of scroll-stop in performed "
-      "when stop-event isn't consumed.",
+      "Given that auto-scroll's direction is down, "
+      "and the stop-event wasn't consumed, "
+      ''
+      'when auto-scroll is performed, '
+      ''
+      'an overscroll is also performed.',
       (WidgetTester tester) async {
         Widget widget = createWidget();
         await tester.pumpWidget(widget);
@@ -254,9 +258,14 @@ class MockAutoScroller extends AutoScroller {
       : super(autoScroll, controller);
 
   @override
-  Future<void> performOverscrollOfScrollStop() async =>
-      performOverscrollOfScrollStopCount++;
+  Future<void> performOverscrollOfScrollStop() {
+    performOverscrollOfScrollStopCount++;
+    return super.performOverscrollOfScrollStop();
+  }
 
   @override
-  Future<void> performScroll() async => performScrollCount++;
+  Future<void> performScroll() {
+    performScrollCount++;
+    return super.performScroll();
+  }
 }
