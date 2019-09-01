@@ -3,12 +3,12 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 class SpacingDetails {
-  static double _distanceFromTopMock;
-  static double _distanceFromLeftMock;
-  static double _distanceFromRightMock;
-  static double _distanceFromBottomMock;
-  static double _heightMock;
-  static double _widthMock;
+  static double _mockDistanceFromTop;
+  static double _mockDistanceFromLeft;
+  static double _mockDistanceFromRight;
+  static double _mockDistanceFromBottom;
+  static double _mockHeight;
+  static double _mockWidth;
 
   @visibleForTesting
   static void mockAttributes({
@@ -19,40 +19,14 @@ class SpacingDetails {
     double height,
     double width,
   }) {
-    if (distanceFromTop != null) _distanceFromTopMock = distanceFromTop;
-    if (distanceFromLeft != null) _distanceFromLeftMock = distanceFromLeft;
-    if (distanceFromRight != null) _distanceFromRightMock = distanceFromRight;
+    if (distanceFromTop != null) _mockDistanceFromTop = distanceFromTop;
+    if (distanceFromLeft != null) _mockDistanceFromLeft = distanceFromLeft;
+    if (distanceFromRight != null) _mockDistanceFromRight = distanceFromRight;
     if (distanceFromBottom != null)
-      _distanceFromBottomMock = distanceFromBottom;
-    if (height != null) _heightMock = height;
-    if (width != null) _widthMock = width;
+      _mockDistanceFromBottom = distanceFromBottom;
+    if (height != null) _mockHeight = height;
+    if (width != null) _mockWidth = width;
   }
-
-  Size _screenSize;
-  Size _widgetSize;
-  Offset _widgetTopLeftPosition;
-
-  double get distanceFromTop => _distanceFromTopMock ?? _distanceFromTop;
-  double _distanceFromTop;
-
-  double get distanceFromLeft => _distanceFromLeftMock ?? _distanceFromLeft;
-  double _distanceFromLeft;
-
-  double get distanceFromRight => _distanceFromRightMock ?? _distanceFromRight;
-  double _distanceFromRight;
-
-  double get distanceFromBottom =>
-      _distanceFromBottomMock ?? _distanceFromBottom;
-  double _distanceFromBottom;
-
-  double get height => _heightMock ?? _height;
-  double _height;
-
-  double get width => _widthMock ?? _width;
-  double _width;
-
-  final GlobalKey widgetKey;
-  final BuildContext context;
 
   SpacingDetails.calculateWith({
     @required this.widgetKey,
@@ -61,6 +35,32 @@ class SpacingDetails {
         assert(context != null) {
     _calculate();
   }
+
+  Size _screenSize;
+  Size _widgetSize;
+  Offset _widgetTopLeftPosition;
+
+  double get distanceFromTop => _mockDistanceFromTop ?? _distanceFromTop;
+  double _distanceFromTop;
+
+  double get distanceFromLeft => _mockDistanceFromLeft ?? _distanceFromLeft;
+  double _distanceFromLeft;
+
+  double get distanceFromRight => _mockDistanceFromRight ?? _distanceFromRight;
+  double _distanceFromRight;
+
+  double get distanceFromBottom =>
+      _mockDistanceFromBottom ?? _distanceFromBottom;
+  double _distanceFromBottom;
+
+  double get height => _mockHeight ?? _height;
+  double _height;
+
+  double get width => _mockWidth ?? _width;
+  double _width;
+
+  final GlobalKey widgetKey;
+  final BuildContext context;
 
   void _calculate() {
     _initializeHelperAttributes();

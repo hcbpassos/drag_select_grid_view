@@ -1,23 +1,11 @@
 import 'package:meta/meta.dart';
 
+/// Possible directions of auto-scroll.
+enum AutoScrollDirection { up, down }
+
 /// Helper class that holds information created and used by [AutoScroller].
 @immutable
 class AutoScroll {
-  /// Whether it is auto-scrolling or not.
-  final bool isScrolling;
-
-  /// Event to stop auto-scroll.
-  final StopAutoScrollEvent stopEvent;
-
-  /// The direction of the auto-scroll.
-  final AutoScrollDirection direction;
-
-  /// The duration of the auto-scroll.
-  ///
-  /// The longer the duration, the slower the scrolling.
-  /// The shorter the duration, the faster the scrolling.
-  final Duration duration;
-
   AutoScroll({@required this.direction, @required this.duration})
       : assert(direction != null),
         assert(duration != null),
@@ -41,6 +29,21 @@ class AutoScroll {
         stopEvent = direction == null
             ? StopAutoScrollEvent.consumed()
             : StopAutoScrollEvent();
+
+  /// Whether it is auto-scrolling or not.
+  final bool isScrolling;
+
+  /// Event to stop auto-scroll.
+  final StopAutoScrollEvent stopEvent;
+
+  /// The direction of the auto-scroll.
+  final AutoScrollDirection direction;
+
+  /// The duration of the auto-scroll.
+  ///
+  /// The longer the duration, the slower the scrolling.
+  /// The shorter the duration, the faster the scrolling.
+  final Duration duration;
 
   @override
   String toString() => 'AutoScroll{'
@@ -68,20 +71,17 @@ class AutoScroll {
       duration.hashCode;
 }
 
-/// Possible directions of auto-scroll.
-enum AutoScrollDirection { up, down }
-
 /// Event to stop auto-scroll.
 ///
 /// This works as an extension of [AutoScroll.isScrolling], helping
 /// [AutoScroller] to decide whether it IS stopped or it SHOULD stop.
 class StopAutoScrollEvent {
-  bool get isConsumed => _isConsumed;
-  bool _isConsumed;
-
   StopAutoScrollEvent() : _isConsumed = false;
 
   StopAutoScrollEvent.consumed() : _isConsumed = true;
+
+  bool get isConsumed => _isConsumed;
+  bool _isConsumed;
 
   bool consume() {
     if (_isConsumed) {

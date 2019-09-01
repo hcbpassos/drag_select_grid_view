@@ -8,9 +8,6 @@ import 'package:flutter/widgets.dart';
 class DragSelectGridView extends StatefulWidget {
   static const defaultAutoScrollHotspotHeight = 64.0;
 
-  final GridView grid;
-  final double autoScrollHotspotHeight;
-
   DragSelectGridView({
     @required this.grid,
     double autoScrollHotspotHeight,
@@ -19,6 +16,9 @@ class DragSelectGridView extends StatefulWidget {
         autoScrollHotspotHeight = autoScrollHotspotHeight == null
             ? defaultAutoScrollHotspotHeight
             : autoScrollHotspotHeight;
+
+  final GridView grid;
+  final double autoScrollHotspotHeight;
 
   @override
   DragSelectGridViewState createState() => DragSelectGridViewState();

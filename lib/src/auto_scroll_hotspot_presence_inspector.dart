@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 @immutable
 class AutoScrollHotspotPresenceInspector {
-  final DragSelectGridViewState dragSelectState;
-  final Offset position;
-
   AutoScrollHotspotPresenceInspector(this.dragSelectState, this.position)
       : assert(dragSelectState != null),
         assert(position != null);
+
+  final DragSelectGridViewState dragSelectState;
+  final Offset position;
 
   bool isInsideUpperAutoScrollHotspot() =>
       !_isAboveUpperHotspot() &&

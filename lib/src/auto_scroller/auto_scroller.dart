@@ -8,14 +8,14 @@ class AutoScroller {
   static const minimumScrollDurationPerPixelInMs = 2;
   static const amountOfOverscrollOnScrollStop = 100;
 
+  AutoScroller(this.autoScroll, this.controller)
+      : currentPosition = _hasScrollControllerBeenAttached(controller)
+      ? controller.offset
+      : null;
+
   final AutoScroll autoScroll;
   final ScrollController controller;
-  final double _currentPosition;
-
-  AutoScroller(this.autoScroll, this.controller)
-      : _currentPosition = _hasScrollControllerBeenAttached(controller)
-            ? controller.offset
-            : null;
+  final double currentPosition;
 
   static bool _hasScrollControllerBeenAttached(ScrollController controller) {
     bool hasBeenAttached = true;
@@ -61,8 +61,8 @@ class AutoScroller {
 
   double _currentPositionIncrementOrDecrementDependingOnTheScrollDirection() =>
       autoScroll.direction == AutoScrollDirection.down
-          ? _currentPosition + amountOfOverscrollOnScrollStop
-          : _currentPosition - amountOfOverscrollOnScrollStop;
+          ? currentPosition + amountOfOverscrollOnScrollStop
+          : currentPosition - amountOfOverscrollOnScrollStop;
 
   @visibleForTesting
   Future<void> performScroll() {
@@ -100,7 +100,7 @@ class AutoScroller {
   Duration _calculateScrollDurationWithUniformScrollSpeed(
     double targetPosition,
   ) {
-    double amountToBeScrolled = (targetPosition - _currentPosition).abs();
+    double amountToBeScrolled = (targetPosition - currentPosition).abs();
 
     int scrollDurationInMs =
         (amountToBeScrolled * minimumScrollDurationPerPixelInMs).toInt();
@@ -117,7 +117,7 @@ class AutoScroller {
   /// this method returns `false`.
   @visibleForTesting
   bool isAbleToScroll() =>
-      _currentPosition != null && autoScroll.direction != null;
+      currentPosition != null && autoScroll.direction != null;
 
   /// Checks whether there's anything to scroll.
   ///
@@ -128,7 +128,7 @@ class AutoScroller {
   @visibleForTesting
   bool hasNothingLeftToScroll() =>
       ((autoScroll.direction == AutoScrollDirection.down) &&
-          (_currentPosition == controller.position.maxScrollExtent)) ||
+          (currentPosition == controller.position.maxScrollExtent)) ||
       ((autoScroll.direction == AutoScrollDirection.up) &&
-          (_currentPosition == 0));
+          (currentPosition == 0));
 }
