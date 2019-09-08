@@ -9,10 +9,10 @@ void main() {
   Widget createWidget() {
     return MaterialApp(
       home: DragSelectGridView(
-        grid: GridView.extent(
+        itemCount: 0,
+        itemBuilder: (_, __, ___) => SizedBox(),
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent: 1,
-          children: [],
-          controller: ScrollController(),
         ),
       ),
     );

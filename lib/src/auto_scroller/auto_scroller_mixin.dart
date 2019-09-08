@@ -21,7 +21,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
     _updateAutoScrollIfDifferent(
       AutoScroll(
         direction: AutoScrollDirection.up,
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
@@ -30,7 +30,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
     _updateAutoScrollIfDifferent(
       AutoScroll(
         direction: AutoScrollDirection.down,
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
       ),
     );
   }

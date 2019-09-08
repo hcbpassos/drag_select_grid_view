@@ -6,19 +6,31 @@ import 'package:drag_select_grid_view/drag_select_grid_view.dart';
 import 'test_utils.dart';
 
 void main() {
-  final dragSelectFinder = find.byType(DragSelectGridView);
+  final gridFinder = find.byType(DragSelectGridView);
+  final emptySpaceFinder = find.byKey(const ValueKey('empty-space'));
 
   Widget widget;
   DragSelectGridViewState dragSelectState;
 
   Widget createWidget() {
     return MaterialApp(
-      home: DragSelectGridView(
-        grid: GridView.extent(
-          maxCrossAxisExtent: 1,
-          children: [],
-          controller: ScrollController(),
-        ),
+      home: Row(
+        children: [
+          SizedBox(
+            key: const ValueKey('empty-space'),
+            height: double.infinity,
+            width: 10,
+          ),
+          Expanded(
+            child: DragSelectGridView(
+              itemCount: 12,
+              itemBuilder: (_, __, ___) => Container(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -31,29 +43,20 @@ void main() {
   Future<void> setUp(WidgetTester tester) async {
     widget = createWidget();
     await tester.pumpWidget(widget);
-    dragSelectState = tester.state(dragSelectFinder);
+    dragSelectState = tester.state(gridFinder);
   }
 
   testWidgets(
-    'An AssertionError is throw '
-    'when creating a DragSelectGridView with null `grid`.',
-    (WidgetTester tester) async {
-      expect(
-        () => DragSelectGridView(grid: null),
-        throwsAssertionError,
-      );
-    },
-  );
-
-  testWidgets(
-    'An AssertionError is throw '
-    'when creating a DragSelectGridView with a `grid` which delegate is not a '
-    'SliverGridDelegateWithMaxCrossAxisExtent.',
+    "An AssertionError is throw "
+    "when creating a DragSelectGridView with null `itemBuilder`.",
     (WidgetTester tester) async {
       expect(
         () => MaterialApp(
           home: DragSelectGridView(
-            grid: GridView.count(crossAxisCount: 3),
+            itemCount: 0,
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 1,
+            ),
           ),
         ),
         throwsAssertionError,
@@ -62,131 +65,193 @@ void main() {
   );
 
   testWidgets(
-    '`isInDragSelectMode` is correctly changed '
-    'when DragSelectGridView is long-pressed.',
+    "When an item of DragSelectGridView is long-pressed down and up, "
+    "then `isDragging` becomes true, and then false.",
     (WidgetTester tester) async {
       await setUp(tester);
 
-      // Initially, isInDragSelectMode is false.
-      expect(dragSelectState.isInDragSelectMode, isFalse);
+      // Initially, `isDragging` is false.
+      expect(dragSelectState.isDragging, isFalse);
 
-      // On long-press down, isInDragSelectMode is true.
-      final gesture = await longPressDown(
-        tester: tester,
-        finder: dragSelectFinder,
-      );
+      // When an item of DragSelectGridView is long-pressed down.
+      final gesture = await longPressDown(tester: tester, finder: gridFinder);
       await tester.pump();
-      expect(dragSelectState.isInDragSelectMode, isTrue);
 
-      // On long-press up, isInDragSelectMode is false.
+      // Then `isDragging` becomes true.
+      expect(dragSelectState.isDragging, isTrue);
+
+      // When an item of DragSelectGridView is long-pressed up.
       await gesture.up();
       await tester.pump();
-      expect(dragSelectState.isInDragSelectMode, isFalse);
+
+      // `isDragging` becomes false.
+      expect(dragSelectState.isDragging, isFalse);
     },
   );
 
   testWidgets(
-    'Auto-scroll is enabled when dragging to upper-hotspot.',
+    "When an empty space of DragSelectGridView is long-pressed, "
+    "then `isDragging` doesn't change.",
     (WidgetTester tester) async {
       await setUp(tester);
 
-      // Initially, autoScroll is stopped.
-      expect(dragSelectState.autoScroll, AutoScroll.stopped());
+      // Initially, `isDragging` is false.
+      expect(dragSelectState.isDragging, isFalse);
 
-      // Auto-scroll is enabled when dragging to upper hotspot.
-      await longPressDownAndDrag(
-        tester: tester,
-        finder: dragSelectFinder,
-        offset: Offset(0, -(dragSelectState.height / 2) + 1),
-      );
+      // When an empty space of DragSelectGridView is long-pressed.
+      await longPressDown(tester: tester, finder: emptySpaceFinder);
       await tester.pump();
-      expect(dragSelectState.autoScroll.direction, AutoScrollDirection.up);
+
+      // `isDragging` doesn't change.
+      expect(dragSelectState.isDragging, isFalse);
     },
   );
 
   testWidgets(
-    'Auto-scroll is enabled when dragging to lower-hotspot.',
+    "When an empty space of DragSelectGridView is long-pressed, "
+    "then `isDragging` doesn't change.",
     (WidgetTester tester) async {
       await setUp(tester);
 
-      await longPressDownAndDrag(
-        tester: tester,
-        finder: dragSelectFinder,
-        offset: Offset(0, (dragSelectState.height / 2)),
-      );
+      // Initially, `isDragging` is false.
+      expect(dragSelectState.isDragging, isFalse);
+
+      // When an empty space of DragSelectGridView is long-pressed.
+      await longPressDown(tester: tester, finder: emptySpaceFinder);
       await tester.pump();
-      expect(dragSelectState.autoScroll.direction, AutoScrollDirection.down);
+
+      // `isDragging` doesn't change.
+      expect(dragSelectState.isDragging, isFalse);
     },
   );
 
-  testWidgets(
-    'Auto-scroll is disabled with correct direction '
-    'when pointer goes up from upper-hotspot.',
-    (WidgetTester tester) async {
-      await setUp(tester);
+  group('Auto-scroll tests', () {
+    testWidgets(
+      "When there's a long-press and drag to the upper-hotspot, "
+      "then auto-scroll is enabled.",
+      (WidgetTester tester) async {
+        await setUp(tester);
 
-      final gesture = await longPressDownAndDrag(
-        tester: tester,
-        finder: dragSelectFinder,
-        offset: Offset(0, -(dragSelectState.height / 2) + 1),
-      );
-      await tester.pump();
-      expect(dragSelectState.autoScroll.direction, AutoScrollDirection.up);
+        // Initially, autoScroll is stopped.
+        expect(dragSelectState.autoScroll, AutoScroll.stopped());
 
-      // Auto-scroll is disabled when pointer goes up.
-      await gesture.up();
-      await tester.pump();
-      expect(
-        dragSelectState.autoScroll,
-        AutoScroll.stopped(direction: AutoScrollDirection.up),
-      );
-    },
-  );
+        // When the user long-presses and drags to the upper-hotspot.
+        await longPressDownAndDrag(
+          tester: tester,
+          finder: gridFinder,
+          offset: Offset(0, -(dragSelectState.height / 2) + 1),
+        );
+        await tester.pump();
 
-  testWidgets(
-    'Auto-scroll is disabled with correct direction '
-    'when pointer goes up from lower-hotspot.',
-    (WidgetTester tester) async {
-      await setUp(tester);
+        // Then auto-scroll is enabled.
+        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.up);
+      },
+    );
 
-      final gesture = await longPressDownAndDrag(
-        tester: tester,
-        finder: dragSelectFinder,
-        offset: Offset(0, dragSelectState.height / 2),
-      );
-      await tester.pump();
-      expect(dragSelectState.autoScroll.direction, AutoScrollDirection.down);
+    testWidgets(
+      "When there's a long-press and drag to the lower-hotspot, "
+      "then auto-scroll is enabled.",
+      (WidgetTester tester) async {
+        await setUp(tester);
 
-      // Auto-scroll is disabled when pointer goes up.
-      await gesture.up();
-      await tester.pump();
-      expect(
-        dragSelectState.autoScroll,
-        AutoScroll.stopped(direction: AutoScrollDirection.down),
-      );
-    },
-  );
+        await longPressDownAndDrag(
+          tester: tester,
+          finder: gridFinder,
+          offset: Offset(0, (dragSelectState.height / 2)),
+        );
+        await tester.pump();
+        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.down);
+      },
+    );
 
-  testWidgets(
-    'Auto-scroll is disabled when dragging out of the hotspot.',
-    (WidgetTester tester) async {
-      await setUp(tester);
+    testWidgets(
+      "Given that there were a long-press and drag to the upper-hotspot, "
+      "when the long-press is released, "
+      "then the auto-scroll is disabled with `AutoScrollDirection.up` "
+      "and stop-event unconsumed.",
+      (WidgetTester tester) async {
+        await setUp(tester);
 
-      final gesture = await longPressDownAndDrag(
-        tester: tester,
-        finder: dragSelectFinder,
-        offset: Offset(0, dragSelectState.height / 2),
-      );
-      await tester.pump();
-      expect(dragSelectState.autoScroll.direction, AutoScrollDirection.down);
+        // Given that there were a long-press and drag to the upper-hotspot.
+        final gesture = await longPressDownAndDrag(
+          tester: tester,
+          finder: gridFinder,
+          offset: Offset(0, -(dragSelectState.height / 2) + 1),
+        );
+        await tester.pump();
+        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.up);
 
-      // Auto-scroll is disabled when dragging out of the hotspot.
-      await gesture.moveTo(tester.getCenter(dragSelectFinder));
-      await tester.pump();
-      expect(
-        dragSelectState.autoScroll,
-        AutoScroll.stopped(direction: AutoScrollDirection.down),
-      );
-    },
-  );
+        // When the long-press is released.
+        await gesture.up();
+        await tester.pump();
+
+        // Then the auto-scroll is disabled with `AutoScrollDirection.up`
+        // and stop-event unconsumed.
+        expect(
+          dragSelectState.autoScroll,
+          AutoScroll.stopped(direction: AutoScrollDirection.up),
+        );
+      },
+    );
+
+    testWidgets(
+      "Given that there were a long-press and drag to the lower-hotspot, "
+      "when the long-press is released, "
+      "then the auto-scroll is disabled with `AutoScrollDirection.down` "
+      "and stop-event unconsumed.",
+      (WidgetTester tester) async {
+        await setUp(tester);
+
+        // Given that there were a long-press and drag to the lower-hotspot.
+        final gesture = await longPressDownAndDrag(
+          tester: tester,
+          finder: gridFinder,
+          offset: Offset(0, dragSelectState.height / 2),
+        );
+        await tester.pump();
+        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.down);
+
+        // When the long-press is released.
+        await gesture.up();
+        await tester.pump();
+
+        // Then the auto-scroll is disabled with `AutoScrollDirection.down`
+        // and stop-event unconsumed.
+        expect(
+          dragSelectState.autoScroll,
+          AutoScroll.stopped(direction: AutoScrollDirection.down),
+        );
+      },
+    );
+
+    testWidgets(
+      "Given that there were a long-press and drag to the lower-hotspot, "
+      "when dragged out of the lower-hotspot, "
+      "then the auto-scroll is disabled with `AutoScrollDirection.down` "
+      "and stop-event unconsumed.",
+      (WidgetTester tester) async {
+        await setUp(tester);
+
+        // Given that there were a long-press and drag to the lower-hotspot.
+        final gesture = await longPressDownAndDrag(
+          tester: tester,
+          finder: gridFinder,
+          offset: Offset(0, dragSelectState.height / 2),
+        );
+        await tester.pump();
+        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.down);
+
+        // When dragged out of the lower-hotspot.
+        await gesture.moveTo(tester.getCenter(gridFinder));
+        await tester.pump();
+
+        // Then the auto-scroll is disabled with `AutoScrollDirection.down`
+        // and stop-event unconsumed.
+        expect(
+          dragSelectState.autoScroll,
+          AutoScroll.stopped(direction: AutoScrollDirection.down),
+        );
+      },
+    );
+  });
 }

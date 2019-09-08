@@ -3,122 +3,149 @@ import 'package:test/test.dart';
 import 'package:flutter_test/flutter_test.dart' show throwsAssertionError;
 
 void main() {
-  group('AutoScroll', () {
-    test('`direction` cannot be null.', () {
-      expect(
-        () {
-          AutoScroll(
-            direction: null,
-            duration: Duration(seconds: 1),
-          );
-        },
-        throwsAssertionError,
-      );
-    });
+  group("AutoScroll", () {
+    test(
+      "When an `AutoScroll` is created with null `direction`, "
+      "then an `AssertionError` is throw.",
+      () {
+        expect(
+          () => AutoScroll(duration: const Duration(seconds: 1)),
+          throwsAssertionError,
+        );
+      },
+    );
 
-    test('`duration` cannot be null.', () {
-      expect(
-        () {
-          AutoScroll(
-            direction: AutoScrollDirection.down,
-            duration: null,
-          );
-        },
-        throwsAssertionError,
-      );
-    });
+    test(
+      "When an `AutoScroll` is created with null `duration`, "
+      "then an `AssertionError` is throw.",
+      () {
+        expect(
+          () => AutoScroll(direction: AutoScrollDirection.down),
+          throwsAssertionError,
+        );
+      },
+    );
 
-    test('`duration` cannot be zero.', () {
-      expect(
-        () {
-          AutoScroll(
+    test(
+      "When an `AutoScroll` is created with `duration` zero, "
+      "then an `AssertionError` is throw.",
+      () {
+        expect(
+          () => AutoScroll(
             direction: AutoScrollDirection.down,
             duration: Duration.zero,
-          );
-        },
-        throwsAssertionError,
-      );
-    });
+          ),
+          throwsAssertionError,
+        );
+      },
+    );
 
-    test('`isScrolling` initializes as `true`.', () {
+    test("`isScrolling` initializes as `true`.", () {
       expect(
         AutoScroll(
           direction: AutoScrollDirection.down,
-          duration: Duration(seconds: 1),
+          duration: const Duration(seconds: 1),
         ).isScrolling,
         isTrue,
       );
     });
 
-    test('`stopEvent` initializes consumed.', () {
+    test("`stopEvent` initializes consumed.", () {
       expect(
         AutoScroll(
           direction: AutoScrollDirection.down,
-          duration: Duration(seconds: 1),
+          duration: const Duration(seconds: 1),
         ).stopEvent,
         StopAutoScrollEvent.consumed(),
       );
     });
 
-    test('toString().', () {
+    test("toString().", () {
       expect(
         AutoScroll(
           direction: AutoScrollDirection.down,
-          duration: Duration(seconds: 1),
+          duration: const Duration(seconds: 1),
         ).toString(),
         isNot("Instance of 'AutoScroll'"),
       );
     });
 
-    test('`operator ==` and `hashCode`.', () {
-      final autoScroll = AutoScroll(
-        direction: AutoScrollDirection.down,
-        duration: Duration(seconds: 1),
-      );
-
-      final equalAutoScroll = AutoScroll(
-        direction: AutoScrollDirection.down,
-        duration: Duration(seconds: 1),
-      );
-
-      final differentAutoScroll =
+    test("`operator ==` and `hashCode`.", () {
+      final autoScroll =
           AutoScroll.stopped(direction: AutoScrollDirection.down);
 
-      expect(autoScroll, equalAutoScroll);
-      expect(autoScroll.hashCode, equalAutoScroll.hashCode);
+      final equalAutoScroll =
+          AutoScroll.stopped(direction: AutoScrollDirection.down);
 
+      final anotherEqualAutoScroll =
+          AutoScroll.stopped(direction: AutoScrollDirection.down);
+
+      final differentAutoScroll = AutoScroll(
+        direction: AutoScrollDirection.down,
+        duration: const Duration(seconds: 1),
+      );
+
+      // Reflexivity
+      expect(autoScroll, autoScroll);
+      expect(autoScroll.hashCode, autoScroll.hashCode);
+
+      // Symmetry
       expect(autoScroll, isNot(differentAutoScroll));
-      expect(autoScroll.hashCode, isNot(differentAutoScroll.hashCode));
+      expect(differentAutoScroll, isNot(autoScroll));
+
+      // Transitivity
+      expect(autoScroll, equalAutoScroll);
+      expect(equalAutoScroll, anotherEqualAutoScroll);
+      expect(autoScroll, anotherEqualAutoScroll);
+      expect(autoScroll.hashCode, equalAutoScroll.hashCode);
+      expect(equalAutoScroll.hashCode, anotherEqualAutoScroll.hashCode);
+      expect(autoScroll.hashCode, anotherEqualAutoScroll.hashCode);
     });
   });
 
-  group('StopAutoScrollEvent', () {
-    test('`consume()` for consumed events never return true.', () {
-      var stopEvent = StopAutoScrollEvent();
-      expect(stopEvent.consume(), isTrue);
-      expect(stopEvent.consume(), isFalse);
+  group("StopAutoScrollEvent", () {
+    test(
+      "Given that a `StopAutoScrollEvent` was consumed, "
+      "when `consume()` is called, "
+      "then it returns false, since the event is already consumed.",
+      () {
+        var stopEvent = StopAutoScrollEvent();
+        expect(stopEvent.consume(), isTrue);
+        expect(stopEvent.consume(), isFalse);
 
-      stopEvent = StopAutoScrollEvent.consumed();
-      expect(stopEvent.consume(), isFalse);
-    });
+        stopEvent = StopAutoScrollEvent.consumed();
+        expect(stopEvent.consume(), isFalse);
+      },
+    );
 
-    test('toString().', () {
+    test("toString().", () {
       expect(
         StopAutoScrollEvent().toString(),
         isNot("Instance of 'StopAutoScrollEvent'"),
       );
     });
 
-    test('`operator ==` and `hashCode`.', () {
+    test("`operator ==` and `hashCode`.", () {
       final stopEvent = StopAutoScrollEvent();
       final equalStopEvent = StopAutoScrollEvent();
+      final anotherEqualStopEvent = StopAutoScrollEvent();
       final differentStopEvent = StopAutoScrollEvent.consumed();
 
-      expect(stopEvent, equalStopEvent);
-      expect(stopEvent.hashCode, equalStopEvent.hashCode);
+      // Reflexivity
+      expect(stopEvent, stopEvent);
+      expect(stopEvent.hashCode, stopEvent.hashCode);
 
+      // Symmetry
       expect(stopEvent, isNot(differentStopEvent));
-      expect(stopEvent.hashCode, isNot(differentStopEvent.hashCode));
+      expect(differentStopEvent, isNot(stopEvent));
+
+      // Transitivity
+      expect(stopEvent, equalStopEvent);
+      expect(equalStopEvent, anotherEqualStopEvent);
+      expect(stopEvent, anotherEqualStopEvent);
+      expect(stopEvent.hashCode, equalStopEvent.hashCode);
+      expect(equalStopEvent.hashCode, anotherEqualStopEvent.hashCode);
+      expect(stopEvent.hashCode, anotherEqualStopEvent.hashCode);
     });
   });
 }

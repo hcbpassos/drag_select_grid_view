@@ -17,11 +17,11 @@ void main() {
     );
   }
 
-  group('Is able to perform auto-scroll.', () {
+  group("Is able to perform auto-scroll.", () {
     testWidgets(
-      'Auto-scroller is able to scroll '
-      'when it is attached to a `ScrollView` '
-      'and a scrolling-direction is specified.',
+      "When an auto-scroller is attached to a `ScrollView`, "
+      "and a scrolling-direction is specified, "
+      "then the auto-scroller is abble to scroll.",
       (WidgetTester tester) async {
         final widget = createWidget();
         await tester.pumpWidget(widget);
@@ -36,8 +36,8 @@ void main() {
     );
 
     testWidgets(
-      "Auto-scroller won't be able to scroll "
-      "when it isn't attached to any `ScrollView`.",
+      "When an auto-scroller isn't attached to a `ScrollView`, "
+      "then the auto-scroller isn't abble to scroll.",
       (WidgetTester tester) async {
         final autoScroller = AutoScroller(
           AutoScroll.stopped(direction: AutoScrollDirection.up),
@@ -49,8 +49,8 @@ void main() {
     );
 
     testWidgets(
-      "Auto-scroller won't be able to scroll "
-      "when NO scrolling-direction was specified.",
+      "When a scrolling-direction isn't specified to the auto-scroller, "
+      "then the auto-scroller isn't abble to scroll.",
       (WidgetTester tester) async {
         final widget = createWidget();
         await tester.pumpWidget(widget);
@@ -65,7 +65,7 @@ void main() {
     );
   });
 
-  group('Has nothing left to scroll.', () {
+  group("Has nothing left to scroll.", () {
     testWidgets(
       "Auto-scroller still has something to scroll "
       "when it is trying to scroll down "
@@ -105,9 +105,9 @@ void main() {
     );
 
     testWidgets(
-      'Auto-scroller nothing left to scroll '
-      'when it is trying to scroll down '
-      'and it is at the end of the `ScrollView`.',
+      "Auto-scroller nothing left to scroll "
+      "when it is trying to scroll down "
+      "and it is at the end of the `ScrollView`.",
       (WidgetTester tester) async {
         final widget = createWidget();
         await tester.pumpWidget(widget);
@@ -124,9 +124,9 @@ void main() {
     );
 
     testWidgets(
-      'Auto-scroller nothing left to scroll '
-      'when it is trying to scroll up '
-      'and it is at the beginning of the `ScrollView`.',
+      "Auto-scroller nothing left to scroll "
+      "when it is trying to scroll up "
+      "and it is at the beginning of the `ScrollView`.",
       (WidgetTester tester) async {
         final widget = createWidget();
         await tester.pumpWidget(widget);
@@ -143,7 +143,7 @@ void main() {
     );
   });
 
-  group('Must scroll.', () {
+  group("Must scroll.", () {
     testWidgets(
       "Auto-scroll must be performed "
       "when `AutoScroll.isScrolling` is `true`.",
@@ -197,7 +197,7 @@ void main() {
     );
   });
 
-  group('Scroll.', () {
+  group("Scroll.", () {
     testWidgets(
       "Auto-scroll is performed "
       "when `AutoScroll.isScrolling` is `true`.",
@@ -225,10 +225,10 @@ void main() {
     testWidgets(
       "Given that auto-scroll's direction is down, "
       "and the stop-event wasn't consumed, "
-      ''
-      'when auto-scroll is performed, '
-      ''
-      'a downward overscroll is performed.',
+      ""
+      "when auto-scroll is performed, "
+      ""
+      "a downward overscroll is performed.",
       (WidgetTester tester) async {
         final widget = createWidget();
         await tester.pumpWidget(widget);
@@ -254,10 +254,10 @@ void main() {
     testWidgets(
       "Given that auto-scroll's direction is up, "
       "and the stop-event wasn't consumed, "
-      ''
-      'when auto-scroll is performed, '
-      ''
-      'an upward overscroll is performed.',
+      ""
+      "when auto-scroll is performed, "
+      ""
+      "an upward overscroll is performed.",
       (WidgetTester tester) async {
         final widget = createWidget();
         await tester.pumpWidget(widget);

@@ -1,3 +1,4 @@
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 class SpacingDetails {
@@ -68,7 +69,6 @@ class SpacingDetails {
 
   void _initializeHelperAttributes() {
     final renderBox = widgetKey.currentContext.findRenderObject() as RenderBox;
-
     _screenSize = MediaQuery.of(context).size;
     _widgetSize = renderBox.size;
     _widgetTopLeftPosition = renderBox.localToGlobal(Offset.zero);

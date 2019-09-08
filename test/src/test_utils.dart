@@ -2,6 +2,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meta/meta.dart';
 
+/// Flutter's default value for `testWidgets()`.
+const screenHeight = 600.0;
+
+/// Flutter's default value for `testWidgets()`.
+const screenWidth = 800.0;
+
 /// Performs a long press without releasing the pointer.
 ///
 /// A call to [WidgetTester.longPress] results in a press, but with a

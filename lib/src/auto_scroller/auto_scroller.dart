@@ -6,7 +6,7 @@ import 'auto_scroll.dart';
 
 @immutable
 class AutoScroller {
-  static const overscrollDuration = Duration(milliseconds: 300);
+  static const overscrollDuration = const Duration(milliseconds: 300);
   static const amountOfOverscrollOnScrollStop = 100;
   static const minimumScrollDurationPerPixelInMs = 2;
 

@@ -19,10 +19,10 @@ void main() {
   Widget createWidget() {
     return MaterialApp(
       home: DragSelectGridView(
-        grid: GridView.extent(
-          maxCrossAxisExtent: 1,
-          children: [],
-          controller: ScrollController(),
+        itemCount: 0,
+        itemBuilder: (_, __, ___) => SizedBox(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
         ),
       ),
     );
@@ -57,9 +57,9 @@ void main() {
   }
 
   testWidgets(
-    'An `AssertionError` is thrown '
-    'when creating a `AutoScrollHotspotPresenceInspector` '
-    'with null `dragSelectState`.',
+    "When an `AutoScrollHotspotPresenceInspector` is created "
+    "with null `dragSelectState`, "
+    "then an `AssertionError` is thrown.",
     (WidgetTester tester) async {
       expect(
         () => AutoScrollHotspotPresenceInspector(null, Offset(0, 0)),
@@ -69,8 +69,9 @@ void main() {
   );
 
   testWidgets(
-    'An `AssertionError` is thrown '
-    'when creating a `AutoScrollHotspotPresenceInspector` with null `position`.',
+    "When an `AutoScrollHotspotPresenceInspector` is created "
+    "with null `position`, "
+    "then an `AssertionError` is thrown.",
     (WidgetTester tester) async {
       expect(
         () => AutoScrollHotspotPresenceInspector(
@@ -83,7 +84,8 @@ void main() {
   );
 
   testWidgets(
-    '`AutoScrollHotspotPresenceInspector` inside upper hotspot.',
+    "When the pointer gets inside the UPPER hotspot, "
+    "then `AutoScrollHotspotPresenceInspector` detects it.",
     (WidgetTester tester) async {
       await setUp(tester);
 
@@ -98,7 +100,8 @@ void main() {
   );
 
   testWidgets(
-    '`AutoScrollHotspotPresenceInspector` inside lower hotspot.',
+    "When the pointer gets inside the LOWER hotspot, "
+    "then `AutoScrollHotspotPresenceInspector` detects it.",
     (WidgetTester tester) async {
       await setUp(tester);
 
@@ -113,7 +116,8 @@ void main() {
   );
 
   testWidgets(
-    '`AutoScrollHotspotPresenceInspector` above hotspots.',
+    "When the pointer gets ABOVE both hotspots, "
+    "then `AutoScrollHotspotPresenceInspector` doesn't detect any pointer.",
     (WidgetTester tester) async {
       await setUp(tester);
 
@@ -128,7 +132,8 @@ void main() {
   );
 
   testWidgets(
-    '`AutoScrollHotspotPresenceInspector` below hotspots.',
+    "When the pointer gets BELOW both hotspots, "
+    "then `AutoScrollHotspotPresenceInspector` doesn't detect any pointer.",
     (WidgetTester tester) async {
       await setUp(tester);
 
@@ -143,7 +148,8 @@ void main() {
   );
 
   testWidgets(
-    '`AutoScrollHotspotPresenceInspector` at the left side of hotspots.',
+    "When the pointer gets to the left side of both hotspots, "
+    "then `AutoScrollHotspotPresenceInspector` doesn't detect any pointer.",
     (WidgetTester tester) async {
       await setUp(tester);
 
@@ -158,7 +164,8 @@ void main() {
   );
 
   testWidgets(
-    '`AutoScrollHotspotPresenceInspector` at the right side of hotspots.',
+    "When the pointer gets to the right side of both hotspots, "
+    "then `AutoScrollHotspotPresenceInspector` doesn't detect any pointer.",
     (WidgetTester tester) async {
       await setUp(tester);
 

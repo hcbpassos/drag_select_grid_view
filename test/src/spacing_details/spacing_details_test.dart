@@ -4,14 +4,10 @@ import 'package:drag_select_grid_view/src/spacing_details/spacing_details_mixin.
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../test_utils.dart';
+
 /// Tests for both [SpacingDetails] and [SpacingDetailsMixin].
 void main() {
-  /// Flutter's default value for `testWidgets()`.
-  const screenHeight = 600.0;
-
-  /// Flutter's default value for `testWidgets()`.
-  const screenWidth = 800.0;
-
   const distanceFromTop = 50.0;
   const distanceFromLeft = 20.0;
   const distanceFromRight = 40.0;
@@ -30,10 +26,10 @@ void main() {
                 SizedBox(width: distanceFromLeft),
                 Expanded(
                   child: DragSelectGridView(
-                    grid: GridView.extent(
+                    itemCount: 0,
+                    itemBuilder: (_, __, ___) => SizedBox(),
+                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                       maxCrossAxisExtent: 1,
-                      children: [],
-                      controller: ScrollController(),
                     ),
                   ),
                 ),
