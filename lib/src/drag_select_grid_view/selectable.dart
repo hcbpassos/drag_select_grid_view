@@ -1,7 +1,7 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-import '../drag_select_grid_view.dart';
+import '../../drag_select_grid_view.dart';
 
 class Selectable extends ProxyWidget {
   const Selectable({
@@ -19,9 +19,6 @@ class Selectable extends ProxyWidget {
 class SelectableElement extends ProxyElement {
   SelectableElement(Selectable widget) : super(widget);
 
-  /// Refer to [Element.widget].
-  ///
-  /// Overridden to specify return type.
   @override
   Selectable get widget => super.widget;
 
@@ -43,34 +40,11 @@ class SelectableElement extends ProxyElement {
   }
 
   bool containsOffset(RenderObject ancestor, Offset offset) {
-    final box = renderObject as RenderBox;
+    RenderBox box = renderObject;
     final rect = box.localToGlobal(Offset.zero, ancestor: ancestor) & box.size;
     return rect.contains(offset);
-  }
-
-  void showOnScreen(EdgeInsets scrollPadding) {
-    final box = renderObject as RenderBox;
-    box.showOnScreen(
-      rect: scrollPadding.inflateRect(Offset.zero & box.size),
-      duration: const Duration(milliseconds: 150),
-    );
   }
 
   @override
   void notifyClients(ProxyWidget oldWidget) {}
 }
-
-//class MultiChildSelection {
-//  const MultiChildSelection(this.total, this.start, this.end);
-//
-//  static const empty = MultiChildSelection(0, -1, -1);
-//
-//  final int total;
-//  final int start;
-//  final int end;
-//
-//  bool get selecting => total != 0;
-//
-//  @override
-//  String toString() => 'MultiChildSelection{$total, $start, $end}';
-//}

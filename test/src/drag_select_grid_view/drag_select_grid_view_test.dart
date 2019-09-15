@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:drag_select_grid_view/drag_select_grid_view.dart';
 
-import 'test_utils.dart';
+import '../test_utils.dart';
 
 void main() {
   final gridFinder = find.byType(DragSelectGridView);
@@ -108,21 +108,66 @@ void main() {
   );
 
   testWidgets(
-    "When an empty space of DragSelectGridView is long-pressed, "
-    "then `isDragging` doesn't change.",
-    (WidgetTester tester) async {
-      await setUp(tester);
+    "Given that the grid has 4 columns and 3 lines, "
+    "and that the first item of the grid is UNSELECTED, "
+    ""
+    "when the first item of the grid is long-pressed, "
+    ""
+    "then the item gets SELECTED.",
+    (WidgetTester tester) async {},
+  );
 
-      // Initially, `isDragging` is false.
-      expect(dragSelectState.isDragging, isFalse);
+  testWidgets(
+    "Given that the grid has 4 columns and 3 lines, "
+    "and that the first item of the grid is UNSELECTED, "
+    ""
+    "when the first item of the grid is tapped, "
+    ""
+    "then the item stills UNSELECTED.",
+    (WidgetTester tester) async {},
+  );
 
-      // When an empty space of DragSelectGridView is long-pressed.
-      await longPressDown(tester: tester, finder: emptySpaceFinder);
-      await tester.pump();
+  testWidgets(
+    "Given that the grid has 4 columns and 3 lines, "
+    "and that the first item of the grid is SELECTED, "
+    ""
+    "when the item is long-pressed, "
+    ""
+    "then the item stills SELECTED.",
+    (WidgetTester tester) async {},
+  );
 
-      // `isDragging` doesn't change.
-      expect(dragSelectState.isDragging, isFalse);
-    },
+  testWidgets(
+    "Given that the grid has 4 columns and 3 lines, "
+    "and that the first item of the grid is SELECTED, "
+    ""
+    "when the item is tapped, "
+    ""
+    "then the item gets UNSELECTED.",
+    (WidgetTester tester) async {},
+  );
+
+  testWidgets(
+    "Given that the grid has 4 columns and 3 lines, "
+    "and that the first item was long-pressed and is SELECTED, "
+    ""
+    "when dragging to the second item (at the right), "
+    ""
+    "then the second and item gets SELECTED, "
+    "and the first item stills SELECTED.",
+    (WidgetTester tester) async {},
+  );
+
+  testWidgets(
+    "Given that the grid has 4 columns and 3 lines, "
+    "and that the first item was long-pressed and SELECTED, "
+    "and the second item was selected by dragging, "
+    ""
+    "when dragging back to the first item, "
+    ""
+    "then the second item gets UNSELECTED, "
+    "and the first item stills SELECTED.",
+    (WidgetTester tester) async {},
   );
 
   group('Auto-scroll tests', () {

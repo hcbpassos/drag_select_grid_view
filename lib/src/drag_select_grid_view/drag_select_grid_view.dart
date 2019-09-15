@@ -1,15 +1,19 @@
-import 'package:drag_select_grid_view/src/selectable.dart';
+import 'package:drag_select_grid_view/src/drag_select_grid_view/selectable.dart';
+import 'package:drag_select_grid_view/src/misc/utils.dart';
 import 'package:flutter/widgets.dart';
 
-import 'auto_scroll_hotspot_presence_inspector/auto_scroll_hotspot_presence_inspector.dart';
-import 'auto_scroller/auto_scroller_mixin.dart';
-import 'spacing_details/spacing_details_mixin.dart';
+import '../auto_scroll_hotspot_presence_inspector/auto_scroll_hotspot_presence_inspector.dart';
+import '../auto_scroller/auto_scroller_mixin.dart';
+import '../spacing_details/spacing_details_mixin.dart';
+import 'selection.dart';
 
 typedef SelectableWidgetBuilder = Widget Function(
   BuildContext context,
   int index,
   bool selected,
 );
+
+typedef SelectionChangedCallback = void Function(Selection selection);
 
 class DragSelectGridView extends StatefulWidget {
   static const defaultAutoScrollHotspotHeight = 64.0;
@@ -18,6 +22,7 @@ class DragSelectGridView extends StatefulWidget {
     Key key,
     double autoScrollHotspotHeight,
     ScrollController controller,
+    this.onSelectionChanged,
     this.padding,
     this.itemCount,
     @required this.itemBuilder,
@@ -30,6 +35,7 @@ class DragSelectGridView extends StatefulWidget {
 
   final double autoScrollHotspotHeight;
   final ScrollController controller;
+  final SelectionChangedCallback onSelectionChanged;
   final EdgeInsetsGeometry padding;
   final SliverGridDelegate gridDelegate;
   final SelectableWidgetBuilder itemBuilder;
@@ -46,10 +52,10 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   final elements = <SelectableElement>{};
   final selectedIndexes = <int>{};
 
-  int dragStartIndex;
-  int dragEndIndex;
+  int dragStartIndex = -1;
+  int dragEndIndex = -1;
 
-  bool get isDragging => dragStartIndex != null && dragEndIndex != null;
+  bool get isDragging => (dragStartIndex != -1) && (dragEndIndex != -1);
 
   bool get isSelecting => selectedIndexes.isNotEmpty;
 
@@ -63,10 +69,10 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     super.build(context);
     return GestureDetector(
       key: rootWidgetOfBuildMethodKey,
-      onTapUp: onTapUp,
-      onLongPressStart: onLongPressStart,
-      onLongPressMoveUpdate: onLongPressMoveUpdate,
-      onLongPressEnd: onLongPressEnd,
+      onTapUp: _onTapUp,
+      onLongPressStart: _onLongPressStart,
+      onLongPressMoveUpdate: _onLongPressMoveUpdate,
+      onLongPressEnd: _onLongPressEnd,
       behavior: HitTestBehavior.translucent,
       child: IgnorePointer(
         ignoring: isDragging,
@@ -90,10 +96,10 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     );
   }
 
-  void onTapUp(TapUpDetails details) {
+  void _onTapUp(TapUpDetails details) {
     if (!isSelecting) return;
 
-    final pressedIndex = findIndexOfSelectable(details.localPosition);
+    final pressedIndex = _findIndexOfSelectable(details.localPosition);
 
     if (pressedIndex != -1) {
       if (selectedIndexes.contains(pressedIndex)) {
@@ -101,23 +107,26 @@ class DragSelectGridViewState extends State<DragSelectGridView>
       } else {
         setState(() => selectedIndexes.add(pressedIndex));
       }
+
+      notifySelectionChange();
     }
   }
 
-  void onLongPressStart(LongPressStartDetails details) {
-    final pressedIndex = findIndexOfSelectable(details.localPosition);
+  void _onLongPressStart(LongPressStartDetails details) {
+    final pressedIndex = _findIndexOfSelectable(details.localPosition);
 
     if (pressedIndex != -1) {
       dragStartIndex = pressedIndex;
       dragEndIndex = pressedIndex;
       setState(() => selectedIndexes.add(pressedIndex));
+      notifySelectionChange();
     }
   }
 
-  void onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
+  void _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
     if (!isDragging) return;
 
-    final pressedIndex = findIndexOfSelectable(details.localPosition);
+    final pressedIndex = _findIndexOfSelectable(details.localPosition);
 
     if ((pressedIndex != -1) && (pressedIndex != dragEndIndex)) {
       final indexesDraggedBy = intListFromRange(dragEndIndex, pressedIndex);
@@ -153,41 +162,36 @@ class DragSelectGridViewState extends State<DragSelectGridView>
       }
 
       dragEndIndex = pressedIndex;
+      notifySelectionChange();
     }
 
-    if (isInsideUpperAutoScrollHotspot(details.globalPosition)) {
+    if (_isInsideUpperAutoScrollHotspot(details.globalPosition)) {
       startAutoScrollingUp();
-    } else if (isInsideLowerAutoScrollHotspot(details.globalPosition)) {
+    } else if (_isInsideLowerAutoScrollHotspot(details.globalPosition)) {
       startAutoScrollingDown();
     } else {
       stopScrolling();
     }
   }
 
-  void onLongPressEnd(LongPressEndDetails details) {
+  void _onLongPressEnd(LongPressEndDetails details) {
     stopScrolling();
-    dragStartIndex = null;
-    dragEndIndex = null;
+    dragStartIndex = -1;
+    dragEndIndex = -1;
   }
 
-  List<int> intListFromRange(int start, int end) {
-    final actualStart = (start < end) ? start : end;
-    final actualEnd = (start < end) ? end : start;
-    return List.generate(
-      (actualEnd - actualStart) + 1,
-      (index) => actualStart + index,
-    );
-  }
+  void notifySelectionChange() =>
+      widget.onSelectionChanged?.call(Selection(selectedIndexes));
 
-  bool isInsideUpperAutoScrollHotspot(Offset position) =>
+  bool _isInsideUpperAutoScrollHotspot(Offset position) =>
       AutoScrollHotspotPresenceInspector(this, position)
           .isInsideUpperAutoScrollHotspot;
 
-  bool isInsideLowerAutoScrollHotspot(Offset position) =>
+  bool _isInsideLowerAutoScrollHotspot(Offset position) =>
       AutoScrollHotspotPresenceInspector(this, position)
           .isInsideLowerAutoScrollHotspot;
 
-  int findIndexOfSelectable(Offset offset) {
+  int _findIndexOfSelectable(Offset offset) {
     final ancestor = context.findRenderObject();
 
     for (final element in List.of(elements)) {

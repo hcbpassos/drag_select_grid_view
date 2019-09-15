@@ -68,7 +68,7 @@ class SpacingDetails {
   }
 
   void _initializeHelperAttributes() {
-    final renderBox = widgetKey.currentContext.findRenderObject() as RenderBox;
+    RenderBox renderBox = widgetKey.currentContext.findRenderObject();
     _screenSize = MediaQuery.of(context).size;
     _widgetSize = renderBox.size;
     _widgetTopLeftPosition = renderBox.localToGlobal(Offset.zero);

@@ -77,8 +77,8 @@ void main() {
       final widget = createWidget();
       await tester.pumpWidget(widget);
 
-      final dragSelectGridViewState =
-          tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
+      DragSelectGridViewState dragSelectGridViewState =
+          tester.state(dragSelectGridViewFinder);
 
       expect(
         dragSelectGridViewState.height,
@@ -98,8 +98,8 @@ void main() {
       final widget = createWidget();
       await tester.pumpWidget(widget);
 
-      final dragSelectGridViewState =
-          tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
+      DragSelectGridViewState dragSelectGridViewState =
+          tester.state(dragSelectGridViewFinder);
 
       expect(dragSelectGridViewState.distanceFromTop, distanceFromTop);
       expect(dragSelectGridViewState.distanceFromLeft, distanceFromLeft);

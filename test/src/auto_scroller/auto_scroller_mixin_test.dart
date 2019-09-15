@@ -1,5 +1,5 @@
 import 'package:drag_select_grid_view/src/auto_scroller/auto_scroll.dart';
-import 'package:drag_select_grid_view/src/drag_select_grid_view.dart';
+import 'package:drag_select_grid_view/src/drag_select_grid_view/drag_select_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -29,8 +29,8 @@ void main() {
 
       expect(dragSelectGridViewFinder, findsOneWidget);
 
-      final dragSelectGridViewState =
-          tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
+      DragSelectGridViewState dragSelectGridViewState =
+          tester.state(dragSelectGridViewFinder);
 
       // First scroll up attempt.
 
@@ -69,8 +69,8 @@ void main() {
 
       expect(dragSelectGridViewFinder, findsOneWidget);
 
-      final dragSelectGridViewState =
-          tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
+      DragSelectGridViewState dragSelectGridViewState =
+          tester.state(dragSelectGridViewFinder);
 
       // First scroll down attempt.
 
@@ -109,8 +109,8 @@ void main() {
 
       expect(dragSelectGridViewFinder, findsOneWidget);
 
-      final dragSelectGridViewState =
-          tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
+      DragSelectGridViewState dragSelectGridViewState =
+          tester.state(dragSelectGridViewFinder);
 
       dragSelectGridViewState.startAutoScrollingDown();
 
