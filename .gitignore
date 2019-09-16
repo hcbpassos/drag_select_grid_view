@@ -1,12 +1,38 @@
-.DS_Store
-.dart_tool/
+.idea/
 
 .packages
 .pub/
+.dart_tool/
+pubspec.lock
+flutter_export_environment.sh
 
+Podfile
+Podfile.lock
+Pods/
+.symlinks/
+**/Flutter/App.framework/
+**/Flutter/Flutter.framework/
+**/Flutter/Generated.xcconfig
+**/Flutter/flutter_assets/
+ServiceDefinitions.json
+xcuserdata/
+*.xcworkspace
+**/DerivedData/
+
+local.properties
+keystore.properties
+.gradle/
+gradlew
+gradlew.bat
+gradle-wrapper.jar
+*.iml
+
+GeneratedPluginRegistrant.h
+GeneratedPluginRegistrant.m
+GeneratedPluginRegistrant.java
 build/
-ios/.generated/
-ios/Flutter/Generated.xcconfig
-ios/Runner/GeneratedPluginRegistrant.*
+.flutter-plugins
 
-\.idea/
+.project
+.classpath
+.settings
