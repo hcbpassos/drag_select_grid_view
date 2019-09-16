@@ -23,7 +23,7 @@ void main() {
     "when `DragSelectGridView` starts to scroll up, "
     "but auto-scroll doesn't change "
     "when trying to scroll up again.",
-    (WidgetTester tester) async {
+    (tester) async {
       final widget = createWidget();
       await tester.pumpWidget(widget);
 
@@ -63,7 +63,7 @@ void main() {
     "when `DragSelectGridView` starts to scroll down, "
     "but auto-scroll doesn't change "
     "when trying to scroll down again.",
-    (WidgetTester tester) async {
+    (tester) async {
       final widget = createWidget();
       await tester.pumpWidget(widget);
 
@@ -103,7 +103,7 @@ void main() {
     "when stop scrolling, "
     "but auto-scroll doesn't change "
     "when trying to stop scrolling again.",
-    (WidgetTester tester) async {
+    (tester) async {
       final widget = createWidget();
       await tester.pumpWidget(widget);
 

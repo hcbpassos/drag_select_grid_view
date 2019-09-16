@@ -46,7 +46,7 @@ void main() {
   testWidgets(
     'An `AssertionError` is thrown '
     'when creating `SpacingDetails` with null `widgetKey`.',
-    (WidgetTester tester) async {
+    (tester) async {
       expect(
         () => SpacingDetails.calculateWith(
           widgetKey: null,
@@ -60,7 +60,7 @@ void main() {
   testWidgets(
     'An `AssertionError` is thrown '
     'when creating `SpacingDetails` with null `context`.',
-    (WidgetTester tester) async {
+    (tester) async {
       expect(
         () => SpacingDetails.calculateWith(
           widgetKey: GlobalKey(),
@@ -73,7 +73,7 @@ void main() {
 
   testWidgets(
     'The correct height and width are calculated.',
-    (WidgetTester tester) async {
+    (tester) async {
       final widget = createWidget();
       await tester.pumpWidget(widget);
 
@@ -94,7 +94,7 @@ void main() {
 
   testWidgets(
     'The correct distances from top, left, right and bottom are calculated.',
-    (WidgetTester tester) async {
+    (tester) async {
       final widget = createWidget();
       await tester.pumpWidget(widget);
 
