@@ -27,11 +27,7 @@ class SpacingDetails {
     if (width != null) _mockWidth = width;
   }
 
-  SpacingDetails.calculateWith({
-    @required this.widgetKey,
-    @required this.context,
-  })  : assert(widgetKey != null),
-        assert(context != null) {
+  SpacingDetails.calculate(this.context) : assert(context != null) {
     _calculate();
   }
 
@@ -58,7 +54,6 @@ class SpacingDetails {
   double get width => _mockWidth ?? _width;
   double _width;
 
-  final GlobalKey widgetKey;
   final BuildContext context;
 
   void _calculate() {
@@ -68,7 +63,7 @@ class SpacingDetails {
   }
 
   void _initializeHelperAttributes() {
-    RenderBox renderBox = widgetKey.currentContext.findRenderObject();
+    RenderBox renderBox = context.findRenderObject();
     _screenSize = MediaQuery.of(context).size;
     _widgetSize = renderBox.size;
     _widgetTopLeftPosition = renderBox.localToGlobal(Offset.zero);

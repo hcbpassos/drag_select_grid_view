@@ -68,7 +68,6 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   Widget build(BuildContext context) {
     super.build(context);
     return GestureDetector(
-      key: rootWidgetOfBuildMethodKey,
       onTapUp: _onTapUp,
       onLongPressStart: _onLongPressStart,
       onLongPressMoveUpdate: _onLongPressMoveUpdate,
@@ -140,17 +139,17 @@ class DragSelectGridViewState extends State<DragSelectGridView>
         setState(() => selectedIndexes.addAll(indexesDraggedBy));
       }
 
-      final isSelectingDownwards = pressedIndex > dragStartIndex;
-      final isSelectingUpwards = pressedIndex < dragStartIndex;
+      final isSelectingForward = pressedIndex > dragStartIndex;
+      final isSelectingBackward = pressedIndex < dragStartIndex;
 
-      if (isSelectingDownwards) {
+      if (isSelectingForward) {
         final isUnselecting = pressedIndex < dragEndIndex;
         if (isUnselecting) {
           removeIndexesDraggedByExceptTheCurrent();
         } else {
           addIndexesDragged();
         }
-      } else if (isSelectingUpwards) {
+      } else if (isSelectingBackward) {
         final isUnselecting = pressedIndex > dragEndIndex;
         if (isUnselecting) {
           removeIndexesDraggedByExceptTheCurrent();

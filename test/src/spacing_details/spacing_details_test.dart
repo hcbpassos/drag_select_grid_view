@@ -45,27 +45,10 @@ void main() {
 
   testWidgets(
     'An `AssertionError` is thrown '
-    'when creating `SpacingDetails` with null `widgetKey`.',
-    (tester) async {
-      expect(
-        () => SpacingDetails.calculateWith(
-          widgetKey: null,
-          context: StatelessElement(Container()),
-        ),
-        throwsAssertionError,
-      );
-    },
-  );
-
-  testWidgets(
-    'An `AssertionError` is thrown '
     'when creating `SpacingDetails` with null `context`.',
     (tester) async {
       expect(
-        () => SpacingDetails.calculateWith(
-          widgetKey: GlobalKey(),
-          context: null,
-        ),
+        () => SpacingDetails.calculate(null),
         throwsAssertionError,
       );
     },
