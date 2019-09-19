@@ -10,20 +10,17 @@ class AutoScroller {
   static const amountOfOverscrollOnScrollStop = 100;
   static const minimumScrollDurationPerPixelInMs = 2;
 
-  static bool _hasScrollControllerBeenAttached(ScrollController controller) {
-    var hasBeenAttached = true;
-
+  static bool _isScrollControllerAttached(ScrollController controller) {
     try {
       controller.position;
+      return true;
     } on AssertionError {
-      hasBeenAttached = false;
+      return false;
     }
-
-    return hasBeenAttached;
   }
 
   AutoScroller(this.autoScroll, this.controller)
-      : currentPosition = _hasScrollControllerBeenAttached(controller)
+      : currentPosition = _isScrollControllerAttached(controller)
             ? controller.offset
             : null;
 

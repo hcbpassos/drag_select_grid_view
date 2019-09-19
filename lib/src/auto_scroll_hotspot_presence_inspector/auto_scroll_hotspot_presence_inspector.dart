@@ -2,10 +2,6 @@ import 'package:flutter/widgets.dart';
 
 import '../drag_select_grid_view/drag_select_grid_view.dart';
 
-/// This seems to be a good candidate to mid-mixin because it depends on
-/// [DragSelectGridViewState], but making a mixin out of this would result in
-/// [position] being passed around every time [isInsideUpperAutoScrollHotspot]
-/// and [isInsideLowerAutoScrollHotspot] were called.
 @immutable
 class AutoScrollHotspotPresenceInspector {
   AutoScrollHotspotPresenceInspector(this.dragSelectState, this.position)

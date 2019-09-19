@@ -52,8 +52,8 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   final elements = <SelectableElement>{};
   final selectedIndexes = <int>{};
 
-  int dragStartIndex = -1;
-  int dragEndIndex = -1;
+  var dragStartIndex = -1;
+  var dragEndIndex = -1;
 
   bool get isDragging => (dragStartIndex != -1) && (dragEndIndex != -1);
 

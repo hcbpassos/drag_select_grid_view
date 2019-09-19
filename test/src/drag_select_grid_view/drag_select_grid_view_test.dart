@@ -10,11 +10,17 @@ void main() {
   final emptySpaceFinder = find.byKey(const ValueKey('empty-space'));
 
   final firstItemFinder = find.byKey(const ValueKey('grid-item-0'));
+  final lastItemFinder = find.byKey(const ValueKey('grid-item-11'));
+  final sixthItemFinder = find.byKey(const ValueKey('grid-item-5'));
+
   final secondItemFinder = find.byKey(const ValueKey('grid-item-1'));
   final fifthItemFinder = find.byKey(const ValueKey('grid-item-4'));
 
   Widget widget;
   DragSelectGridViewState dragSelectState;
+
+  Offset horizontalDistanceBetweenItems;
+  Offset verticalDistanceBetweenItems;
 
   /// Creates a [DragSelectGridView] with 4 columns and 3 lines, based on
   /// [screenHeight] and [screenWidth].
@@ -52,6 +58,10 @@ void main() {
     widget = createWidget();
     await tester.pumpWidget(widget);
     dragSelectState = tester.state(gridFinder);
+    horizontalDistanceBetweenItems =
+        tester.getCenter(secondItemFinder) - tester.getCenter(firstItemFinder);
+    verticalDistanceBetweenItems =
+        tester.getCenter(fifthItemFinder) - tester.getCenter(firstItemFinder);
   }
 
   testWidgets(
@@ -70,327 +80,930 @@ void main() {
         throwsAssertionError,
       );
     },
+    skip: false,
   );
 
   group("Drag-select-grid-view integration tests.", () {
-    testWidgets(
-      "When an item of DragSelectGridView is long-pressed down and up, "
-      "then `isDragging` becomes true, and then false.",
-      (tester) async {
-        await setUp(tester);
+    group('Select by pressing.', () {
+      testWidgets(
+        "When an item of DragSelectGridView is long-pressed down, "
+        "then `isDragging` becomes true.",
+        (tester) async {
+          await setUp(tester);
 
-        // Initially, `isDragging` is false.
-        expect(dragSelectState.isDragging, isFalse);
+          // Initially, `isDragging` is false.
+          expect(dragSelectState.isDragging, isFalse);
 
-        // When an item of DragSelectGridView is long-pressed down.
-        final gesture = await longPressDown(tester: tester, finder: gridFinder);
-        await tester.pump();
+          // When an item of DragSelectGridView is long-pressed down,
+          await longPressDown(tester: tester, finder: gridFinder);
+          await tester.pump();
 
-        // Then `isDragging` becomes true.
-        expect(dragSelectState.isDragging, isTrue);
+          // then `isDragging` becomes true.
+          expect(dragSelectState.isDragging, isTrue);
+        },
+        skip: false,
+      );
 
-        // When an item of DragSelectGridView is long-pressed up.
-        await gesture.up();
-        await tester.pump();
+      testWidgets(
+        "Given that an item of DragSelectGridView was long-pressed down, "
+        "when the item is long-pressed up, "
+        "then `isDragging` becomes false.",
+        (tester) async {
+          await setUp(tester);
 
-        // `isDragging` becomes false.
-        expect(dragSelectState.isDragging, isFalse);
-      },
-    );
+          // Given that an item of DragSelectGridView was long-pressed down,
+          final gesture =
+              await longPressDown(tester: tester, finder: gridFinder);
+          await tester.pump();
 
-    testWidgets(
-      "When an empty space of DragSelectGridView is long-pressed, "
-      "then `isDragging` doesn't change.",
-      (tester) async {
-        await setUp(tester);
+          // when the item is long-pressed up,
+          await gesture.up();
+          await tester.pump();
 
-        // Initially, `isDragging` is false.
-        expect(dragSelectState.isDragging, isFalse);
+          // then `isDragging` becomes false.
+          expect(dragSelectState.isDragging, isFalse);
+        },
+        skip: false,
+      );
 
-        // When an empty space of DragSelectGridView is long-pressed.
-        await tester.longPress(emptySpaceFinder);
-        await tester.pump();
+      testWidgets(
+        "When an empty space of DragSelectGridView is long-pressed, "
+        "then `isDragging` doesn't change.",
+        (tester) async {
+          await setUp(tester);
 
-        // `isDragging` doesn't change.
-        expect(dragSelectState.isDragging, isFalse);
-      },
-    );
+          // Initially, `isDragging` is false.
+          expect(dragSelectState.isDragging, isFalse);
 
-    testWidgets(
-      "Given that the grid has 4 columns and 3 lines, "
-      "and that the first item of the grid is UNSELECTED, "
-      ""
-      "when the first item of the grid is long-pressed, "
-      ""
-      "then the item gets SELECTED.",
-      (tester) async {
-        // Given that the grid has 4 columns and 3 lines,
-        await setUp(tester);
+          // When an empty space of DragSelectGridView is long-pressed.
+          await tester.longPress(emptySpaceFinder);
+          await tester.pump();
 
-        // and that the first item of the grid is UNSELECTED,
-        expect(dragSelectState.selectedIndexes, <int>{});
+          // then `isDragging` doesn't change.
+          expect(dragSelectState.isDragging, isFalse);
+        },
+        skip: false,
+      );
 
-        // when the first item of the grid is long-pressed,
-        await tester.longPress(firstItemFinder);
-        await tester.pump();
+      testWidgets(
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the first item of the grid is UNSELECTED, "
+        ""
+        "when the first item of the grid is long-pressed, "
+        ""
+        "then the item gets SELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
 
-        // then the item gets SELECTED.
-        expect(dragSelectState.isSelecting, isTrue);
-        expect(dragSelectState.selectedIndexes, {0});
-      },
-    );
+          // and that the first item of the grid is UNSELECTED,
+          expect(dragSelectState.selectedIndexes, <int>{});
 
-    testWidgets(
-      "Given that the grid has 4 columns and 3 lines, "
-      "and that the first item of the grid is UNSELECTED, "
-      ""
-      "when the first item of the grid is tapped, "
-      ""
-      "then the item stills UNSELECTED.",
-      (tester) async {
-        // Given that the grid has 4 columns and 3 lines,
-        await setUp(tester);
+          // when the first item of the grid is long-pressed,
+          await tester.longPress(firstItemFinder);
+          await tester.pump();
 
-        // and that the first item of the grid is UNSELECTED,
-        expect(dragSelectState.selectedIndexes, <int>{});
+          // then the item gets SELECTED.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {0});
+        },
+        skip: false,
+      );
 
-        // when the first item of the grid is tapped,
-        await tester.tap(firstItemFinder);
-        await tester.pump();
+      testWidgets(
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the first item of the grid is UNSELECTED, "
+        ""
+        "when the first item of the grid is tapped, "
+        ""
+        "then the item stills UNSELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
 
-        // then the item stills UNSELECTED.
-        expect(dragSelectState.isSelecting, isFalse);
-        expect(dragSelectState.selectedIndexes, <int>{});
-      },
-    );
+          // and that the first item of the grid is UNSELECTED,
+          expect(dragSelectState.selectedIndexes, <int>{});
 
-    testWidgets(
-      "Given that the grid has 4 columns and 3 lines, "
-      "and that the first item of the grid is SELECTED, "
-      ""
-      "when the first item is long-pressed, "
-      ""
-      "then the item stills SELECTED.",
-      (tester) async {
-        // Given that the grid has 4 columns and 3 lines,
-        await setUp(tester);
+          // when the first item of the grid is tapped,
+          await tester.tap(firstItemFinder);
+          await tester.pump();
 
-        // and that the first item of the grid is SELECTED,
-        await tester.longPress(firstItemFinder);
-        await tester.pump();
+          // then the item stills UNSELECTED.
+          expect(dragSelectState.isSelecting, isFalse);
+          expect(dragSelectState.selectedIndexes, <int>{});
+        },
+        skip: false,
+      );
 
-        // when the first item is long-pressed,
-        await tester.longPress(firstItemFinder);
-        await tester.pump();
+      testWidgets(
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the first item of the grid is SELECTED, "
+        ""
+        "when the first item is long-pressed, "
+        ""
+        "then the item stills SELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
 
-        // then the item stills SELECTED.
-        expect(dragSelectState.isSelecting, isTrue);
-        expect(dragSelectState.selectedIndexes, {0});
-      },
-    );
+          // and that the first item of the grid is SELECTED,
+          await tester.longPress(firstItemFinder);
+          await tester.pump();
 
-    testWidgets(
-      "Given that the grid has 4 columns and 3 lines, "
-      "and that the first item of the grid is SELECTED, "
-      ""
-      "when the item is tapped, "
-      ""
-      "then the item gets UNSELECTED.",
-      (tester) async {
-        // Given that the grid has 4 columns and 3 lines,
-        await setUp(tester);
+          // when the first item is long-pressed,
+          await tester.longPress(firstItemFinder);
+          await tester.pump();
 
-        // and that the first item of the grid is SELECTED,
-        await tester.longPress(firstItemFinder);
-        await tester.pump();
+          // then the item stills SELECTED.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {0});
+        },
+        skip: false,
+      );
 
-        // when the item is tapped,
-        await tester.tap(firstItemFinder);
-        await tester.pump();
+      testWidgets(
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the first item of the grid is SELECTED, "
+        ""
+        "when the item is tapped, "
+        ""
+        "then the item gets UNSELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
 
-        // then the item stills SELECTED.
-        expect(dragSelectState.isSelecting, isFalse);
-        expect(dragSelectState.selectedIndexes, <int>{});
-      },
-    );
+          // and that the first item of the grid is SELECTED,
+          await tester.longPress(firstItemFinder);
+          await tester.pump();
 
-    testWidgets(
-      "Given that the grid has 4 columns and 3 lines, "
-      "and that the first item was long-pressed and SELECTED, "
-      ""
-      "when dragging to the second item (at the right), "
-      ""
-      "then the second item gets SELECTED, "
-      "and the first item stills SELECTED.",
-      (tester) async {
-        // Given that the grid has 4 columns and 3 lines,
-        await setUp(tester);
+          // when the item is tapped,
+          await tester.tap(firstItemFinder);
+          await tester.pump();
 
-        // and that the first item was long-pressed and SELECTED,
-        var gesture = await longPressDown(
-          tester: tester,
-          finder: firstItemFinder,
-        );
-        await tester.pump();
+          // then the item stills SELECTED.
+          expect(dragSelectState.isSelecting, isFalse);
+          expect(dragSelectState.selectedIndexes, <int>{});
+        },
+        skip: false,
+      );
+    });
 
-        // when dragging to the second item (at the right),
+    group('Select by dragging foward.', () {
+      testWidgets(
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the first item was long-pressed and SELECTED, "
+        ""
+        "when dragging to the second item (at the right), "
+        ""
+        "then the second item gets SELECTED, "
+        "and the first item stills SELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
 
-        final distanceFromFirstToSecondItem =
-            tester.getCenter(secondItemFinder) -
-                tester.getCenter(firstItemFinder);
+          // and that the first item was long-pressed and SELECTED,
+          var gesture = await longPressDown(
+            tester: tester,
+            finder: firstItemFinder,
+          );
+          await tester.pump();
 
-        gesture = await dragDown(
-          tester: tester,
-          previousGesture: gesture,
-          offset: distanceFromFirstToSecondItem,
-        );
-        await gesture.up();
-        await tester.pump();
+          // when dragging to the second item (at the right),
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: horizontalDistanceBetweenItems,
+          );
+          await gesture.up();
+          await tester.pump();
 
-        // then the second item gets SELECTED,
-        // and the first item stills SELECTED.
-        expect(dragSelectState.isSelecting, isTrue);
-        expect(dragSelectState.selectedIndexes, {0, 1});
-      },
-    );
+          // then the second item gets SELECTED,
+          // and the first item stills SELECTED.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {0, 1});
+        },
+        skip: false,
+      );
 
-    testWidgets(
-      "Given that the grid has 4 columns and 3 lines, "
-      "and that the first item was long-pressed and SELECTED, "
-      "and the second item was selected by dragging, "
-      ""
-      "when dragging back to the first item, "
-      ""
-      "then the second item gets UNSELECTED, "
-      "and the first item stills SELECTED.",
-      (tester) async {
-        // Given that the grid has 4 columns and 3 lines,
-        await setUp(tester);
+      testWidgets(
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the first item was long-pressed and SELECTED, "
+        "and that the second item was selected by dragging, "
+        ""
+        "when dragging back to the first item, "
+        ""
+        "then the second item gets UNSELECTED, "
+        "and the first item stills SELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
 
-        // and that the first item was long-pressed and SELECTED,
-        var gesture = await longPressDown(
-          tester: tester,
-          finder: firstItemFinder,
-        );
-        await tester.pump();
+          // and that the first item was long-pressed and SELECTED,
+          var gesture = await longPressDown(
+            tester: tester,
+            finder: firstItemFinder,
+          );
+          await tester.pump();
 
-        // and the second item was selected by dragging,
+          // and that the second item was selected by dragging,
+          gesture = await longPressDownAndDrag(
+            tester: tester,
+            finder: firstItemFinder,
+            offset: horizontalDistanceBetweenItems,
+          );
+          await tester.pump();
 
-        final distanceFromFirstToSecondItem =
-            tester.getCenter(secondItemFinder) -
-                tester.getCenter(firstItemFinder);
+          // when dragging back to the first item,
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: -horizontalDistanceBetweenItems,
+          );
+          await gesture.up();
+          await tester.pump();
 
-        gesture = await longPressDownAndDrag(
-          tester: tester,
-          finder: firstItemFinder,
-          offset: distanceFromFirstToSecondItem,
-        );
-        await tester.pump();
+          // then the second item gets UNSELECTED,
+          // and the first item stills SELECTED.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {0});
+        },
+        skip: false,
+      );
 
-        // when dragging back to the first item,
+      testWidgets(
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the first item was long-pressed and SELECTED, "
+        ""
+        "when dragging to the third item, passing through the second item, "
+        ""
+        "then the second and the third item get SELECTED, "
+        "and the first item stills SELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
 
-        await dragDown(
-          tester: tester,
-          previousGesture: gesture,
-          offset: -distanceFromFirstToSecondItem,
-        );
-        await gesture.up();
-        await tester.pump();
+          // and that the first item was long-pressed and SELECTED,
+          var gesture = await longPressDown(
+            tester: tester,
+            finder: firstItemFinder,
+          );
+          await tester.pump();
 
-        // then the second item gets UNSELECTED,
-        // and the first item stills SELECTED.
-        expect(dragSelectState.isSelecting, isTrue);
-        expect(dragSelectState.selectedIndexes, {0});
-      },
-    );
+          // when dragging to the third item, passing through the second item,
 
-    testWidgets(
-      "Given that the grid has 4 columns and 3 lines, "
-      "and that the first item was long-pressed and SELECTED, "
-      ""
-      "when dragging to the fifth item (at the bottom), "
-      ""
-      "then all items from the second to the fifth get SELECTED, "
-      "and the first item stills SELECTED.",
-      (tester) async {
-        // Given that the grid has 4 columns and 3 lines,
-        await setUp(tester);
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: horizontalDistanceBetweenItems,
+          );
+          await tester.pump();
 
-        // and that the first item was long-pressed and SELECTED,
-        var gesture = await longPressDown(
-          tester: tester,
-          finder: firstItemFinder,
-        );
-        await tester.pump();
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: horizontalDistanceBetweenItems,
+          );
+          await gesture.up();
+          await tester.pump();
 
-        // when dragging to the fifth item (at the bottom),
+          // then the second and the third item get SELECTED,
+          // and the first item stills SELECTED.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {0, 1, 2});
+        },
+        skip: false,
+      );
 
-        final distanceFromFirstToFifthItem = tester.getCenter(fifthItemFinder) -
-            tester.getCenter(firstItemFinder);
+      testWidgets(
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the first item was long-pressed and SELECTED, "
+        "and that the second and third items were SELECTED by dragging, "
+        ""
+        "when dragging back to the first item, passing through the second item, "
+        ""
+        "then the third and the second item get UNSELECTED, "
+        "and the first item stills SELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
 
-        gesture = await dragDown(
-          tester: tester,
-          previousGesture: gesture,
-          offset: distanceFromFirstToFifthItem,
-        );
-        await gesture.up();
-        await tester.pump();
+          // and that the first item was long-pressed and SELECTED,
+          var gesture = await longPressDown(
+            tester: tester,
+            finder: firstItemFinder,
+          );
+          await tester.pump();
 
-        // then all items from the second to the fifth get SELECTED,
-        // and the first item stills SELECTED.
-        expect(dragSelectState.isSelecting, isTrue);
-        expect(dragSelectState.selectedIndexes, {0, 1, 2, 3, 4});
-      },
-    );
+          // and that the second and third items were SELECTED by dragging,
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: horizontalDistanceBetweenItems * 2,
+          );
+          await tester.pump();
 
-    testWidgets(
-      "Given that the grid has 4 columns and 3 lines, "
-      "and that the first item was long-pressed and SELECTED, "
-      "and all items from the second to the fifth were SELECTED by dragging, "
-      ""
-      "when dragging back to the first item, "
-      ""
-      "then all items from the fifth to the second get UNSELECTED, "
-      "and the first item stills SELECTED.",
-      (tester) async {
-        // Given that the grid has 4 columns and 3 lines,
-        await setUp(tester);
+          // when dragging back to the first item, passing through the second item,
 
-        // and that the first item was long-pressed and SELECTED,
-        var gesture = await longPressDown(
-          tester: tester,
-          finder: firstItemFinder,
-        );
-        await tester.pump();
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: -horizontalDistanceBetweenItems,
+          );
+          await tester.pump();
 
-        // and all items from the second to the fifth were SELECTED by dragging,
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: -horizontalDistanceBetweenItems,
+          );
+          await gesture.up();
+          await tester.pump();
 
-        final distanceFromFirstToFifthItem = tester.getCenter(fifthItemFinder) -
-            tester.getCenter(firstItemFinder);
+          // then the third and the second item get UNSELECTED,
+          // and the first item stills SELECTED.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {0});
+        },
+        skip: false,
+      );
 
-        gesture = await dragDown(
-          tester: tester,
-          previousGesture: gesture,
-          offset: distanceFromFirstToFifthItem,
-        );
-        await tester.pump();
+      testWidgets(
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the first item was long-pressed and SELECTED, "
+        ""
+        "when dragging to the fifth item (at the bottom), "
+        ""
+        "then all items from the second to the fifth get SELECTED, "
+        "and the first item stills SELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
 
-        // when dragging back to the first item,
+          // and that the first item was long-pressed and SELECTED,
+          var gesture = await longPressDown(
+            tester: tester,
+            finder: firstItemFinder,
+          );
+          await tester.pump();
 
-        await dragDown(
-          tester: tester,
-          previousGesture: gesture,
-          offset: -distanceFromFirstToFifthItem,
-        );
-        await gesture.up();
-        await tester.pump();
+          // when dragging to the fifth item (at the bottom),
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: verticalDistanceBetweenItems,
+          );
+          await gesture.up();
+          await tester.pump();
 
-        // then all items from the fifth to the second get UNSELECTED,
-        // and the first item stills SELECTED.
-        expect(dragSelectState.isSelecting, isTrue);
-        expect(dragSelectState.selectedIndexes, {0});
-      },
-    );
+          // then all items from the second to the fifth get SELECTED,
+          // and the first item stills SELECTED.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {0, 1, 2, 3, 4});
+        },
+        skip: false,
+      );
+
+      testWidgets(
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the first item was long-pressed and SELECTED, "
+        "and that all items from the second to the fifth were SELECTED by dragging, "
+        ""
+        "when dragging back to the first item, "
+        ""
+        "then all items from the fifth to the second get UNSELECTED, "
+        "and the first item stills SELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
+
+          // and that the first item was long-pressed and SELECTED,
+          var gesture = await longPressDown(
+            tester: tester,
+            finder: firstItemFinder,
+          );
+          await tester.pump();
+
+          // and that all items from the second to the fifth were SELECTED by dragging,
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: verticalDistanceBetweenItems,
+          );
+          await tester.pump();
+
+          // when dragging back to the first item,
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: -verticalDistanceBetweenItems,
+          );
+          await gesture.up();
+          await tester.pump();
+
+          // then all items from the fifth to the second get UNSELECTED,
+          // and the first item stills SELECTED.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {0});
+        },
+        skip: false,
+      );
+
+      testWidgets(
+        "Scenario: Switching from forward drag to backward drag without passing "
+        "through the drag origin."
+        ""
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the sixth item was long-pressed and SELECTED, "
+        ""
+        "when dragging to the third item, passing through the seventh item, "
+        ""
+        "then all items from the fifth to the third get SELECTED, "
+        "and the sixth stills SELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
+
+          // and that the sixth item was long-pressed and SELECTED,
+          var gesture = await longPressDown(
+            tester: tester,
+            finder: sixthItemFinder,
+          );
+          await tester.pump();
+
+          // when dragging to the third item, passing through the seventh item,
+
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: horizontalDistanceBetweenItems,
+          );
+          await tester.pump();
+
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: -verticalDistanceBetweenItems,
+          );
+          await gesture.up();
+          await tester.pump();
+
+          // then all items from the fifth to the third get SELECTED,
+          // and the sixth stills SELECTED.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {2, 3, 4, 5});
+        },
+        skip: false,
+      );
+
+      testWidgets(
+        "Scenario: Switching from forward drag to backward drag without passing "
+        "through the drag origin."
+        ""
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the sixth item was long-pressed and SELECTED, "
+        "and that all items from the fifth to the third "
+        "were SELECTED by dragging, "
+        ""
+        "when dragging back to the sixth item, passing through the seventh item, "
+        ""
+        "then all items from the third to the fifth get UNSELECTED, "
+        "and the sixth item stills SELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
+
+          // and that the sixth item was long-pressed and SELECTED,
+          var gesture = await longPressDown(
+            tester: tester,
+            finder: sixthItemFinder,
+          );
+          await tester.pump();
+
+          // and that all items from the fifth to the third
+          // were SELECTED by dragging,
+
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: horizontalDistanceBetweenItems,
+          );
+          await tester.pump();
+
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: -verticalDistanceBetweenItems,
+          );
+          await tester.pump();
+
+          // when dragging back to the sixth item,
+          // passing through the seventh item,
+
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: verticalDistanceBetweenItems,
+          );
+          await tester.pump();
+
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: -horizontalDistanceBetweenItems,
+          );
+          await gesture.up();
+          await tester.pump();
+
+          // then all items from the third to the fifth get UNSELECTED,
+          // and the sixth item stills SELECTED.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {5});
+        },
+        skip: false,
+      );
+    });
+
+    group('Select by dragging backward.', () {
+      testWidgets(
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the last item was long-pressed and SELECTED, "
+        ""
+        "when dragging to the second to last item (at the left), "
+        ""
+        "then the second to last item gets SELECTED, "
+        "and the last item stills SELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
+
+          // and that the last item was long-pressed and SELECTED,
+          var gesture = await longPressDown(
+            tester: tester,
+            finder: lastItemFinder,
+          );
+          await tester.pump();
+
+          // when dragging to the second to last item (at the left),
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: -horizontalDistanceBetweenItems,
+          );
+          await gesture.up();
+          await tester.pump();
+
+          // then the second to last item gets SELECTED,
+          // and the last item stills SELECTED.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {10, 11});
+        },
+        skip: false,
+      );
+
+      testWidgets(
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the last item was long-pressed and SELECTED, "
+        "and that the second to last item was selected by dragging, "
+        ""
+        "when dragging back to the last item, "
+        ""
+        "then the second to last item gets UNSELECTED, "
+        "and the last item stills SELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
+
+          // and that the last item was long-pressed and SELECTED,
+          var gesture = await longPressDown(
+            tester: tester,
+            finder: lastItemFinder,
+          );
+          await tester.pump();
+
+          // and that the second to last item was selected by dragging,
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: -horizontalDistanceBetweenItems,
+          );
+          await tester.pump();
+
+          // when dragging back to the last item,
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: horizontalDistanceBetweenItems,
+          );
+          await gesture.up();
+          await tester.pump();
+
+          // then the second to last item gets UNSELECTED,
+          // and the last item stills SELECTED.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {11});
+        },
+        skip: false,
+      );
+
+      testWidgets(
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the last item was long-pressed and SELECTED, "
+        ""
+        "when dragging to the third to last item, "
+        "passing through the second to last item, "
+        ""
+        "then the second to last and the third to last item get SELECTED, "
+        "and the last item stills SELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
+
+          // and that the last item was long-pressed and SELECTED,
+          var gesture =
+              await longPressDown(tester: tester, finder: lastItemFinder);
+          await tester.pump();
+
+          // when dragging to the third to last item,
+          // passing through the second to last item,
+
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: -horizontalDistanceBetweenItems,
+          );
+          await tester.pump();
+
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: -horizontalDistanceBetweenItems,
+          );
+          await gesture.up();
+          await tester.pump();
+
+          // then the second to last and the third to last item get SELECTED,
+          // and the last item stills SELECTED.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {9, 10, 11});
+        },
+        skip: false,
+      );
+
+      testWidgets(
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the last item was long-pressed and SELECTED, "
+        "and that the second to last and third to last item "
+        "were SELECTED by dragging, "
+        ""
+        "when dragging back to the last item, "
+        "passing through the second to last item, "
+        ""
+        "then the third to last and the second to last item get UNSELECTED, "
+        "and the last item stills SELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
+
+          // and that the last item was long-pressed and SELECTED,
+          var gesture = await longPressDown(
+            tester: tester,
+            finder: lastItemFinder,
+          );
+          await tester.pump();
+
+          // and that the second to last and third to last item
+          // were SELECTED by dragging,
+
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: -horizontalDistanceBetweenItems * 2,
+          );
+          await tester.pump();
+
+          // when dragging back to the last item,
+          // passing through the second to last item,
+
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: horizontalDistanceBetweenItems,
+          );
+          await tester.pump();
+
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: horizontalDistanceBetweenItems,
+          );
+          await gesture.up();
+          await tester.pump();
+
+          // then the third to last and the second to last item get UNSELECTED,
+          // and the last item stills SELECTED.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {11});
+        },
+        skip: false,
+      );
+
+      testWidgets(
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the last item was long-pressed and SELECTED, "
+        ""
+        "when dragging to the fifth to last item (at the top), "
+        ""
+        "then all items from the second to last to the fifth to last get SELECTED, "
+        "and the last item stills SELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
+
+          // and that the last item was long-pressed and SELECTED,
+          var gesture = await longPressDown(
+            tester: tester,
+            finder: lastItemFinder,
+          );
+          await tester.pump();
+
+          // when dragging to the fifth to last item (at the top),
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: -verticalDistanceBetweenItems,
+          );
+          await gesture.up();
+          await tester.pump();
+
+          // then all items from the second to last to the fifth to last get SELECTED,
+          // and the last item stills SELECTED.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {7, 8, 9, 10, 11});
+        },
+        skip: false,
+      );
+
+      testWidgets(
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the last item was long-pressed and SELECTED, "
+        "and that all items from the second to last to the fifth to last "
+        "were SELECTED by dragging, "
+        ""
+        "when dragging back to the last item, "
+        ""
+        "then all items from the fifth to last to the second to last get UNSELECTED, "
+        "and the last item stills SELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
+
+          // and that the last item was long-pressed and SELECTED,
+          var gesture = await longPressDown(
+            tester: tester,
+            finder: lastItemFinder,
+          );
+          await tester.pump();
+
+          // and that all items from the second to last to the fifth to last
+          // were SELECTED by dragging,
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: -verticalDistanceBetweenItems,
+          );
+          await tester.pump();
+
+          // when dragging back to the last item,
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: verticalDistanceBetweenItems,
+          );
+          await gesture.up();
+          await tester.pump();
+
+          // then all items from the fifth to last to the second to last get UNSELECTED,
+          // and the last item stills SELECTED.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {11});
+        },
+        skip: false,
+      );
+
+      testWidgets(
+        "Scenario: Switching from backward drag to forward drag without passing "
+        "through the drag origin."
+        ""
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the sixth item was long-pressed and SELECTED, "
+        ""
+        "when dragging to the ninth item, passing through the fifth item, "
+        ""
+        "then all items from the seventh to the ninth get SELECTED, "
+        "and the sixth stills SELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
+
+          // and that the sixth item was long-pressed and SELECTED,
+          var gesture = await longPressDown(
+            tester: tester,
+            finder: sixthItemFinder,
+          );
+          await tester.pump();
+
+          // when dragging to the ninth item, passing through the fifth item,
+
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: -horizontalDistanceBetweenItems,
+          );
+          await tester.pump();
+
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: verticalDistanceBetweenItems,
+          );
+          await gesture.up();
+          await tester.pump();
+
+          // then all items from the seventh to the ninth get SELECTED,
+          // and the sixth stills SELECTED.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {5, 6, 7, 8});
+        },
+        skip: false,
+      );
+
+      testWidgets(
+        "Scenario: Switching from backward drag to forward drag without passing "
+        "through the drag origin."
+        ""
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the sixth item was long-pressed and SELECTED, "
+        "and that all items from the seventh to the ninth "
+        "were SELECTED by dragging, "
+        ""
+        "when dragging back to the sixth item, passing through the fifth item, "
+        ""
+        "then all items from the ninth to the seventh get UNSELECTED, "
+        "and the sixth item stills SELECTED.",
+        (tester) async {
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester);
+
+          // and that the sixth item was long-pressed and SELECTED,
+          var gesture = await longPressDown(
+            tester: tester,
+            finder: sixthItemFinder,
+          );
+          await tester.pump();
+
+          // and that all items from the seventh to the ninth
+          // were SELECTED by dragging,
+
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: -horizontalDistanceBetweenItems,
+          );
+          await tester.pump();
+
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: verticalDistanceBetweenItems,
+          );
+          await tester.pump();
+
+          // when dragging back to the sixth item,
+          // passing through the fifth item,
+
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: -verticalDistanceBetweenItems,
+          );
+          await tester.pump();
+
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: horizontalDistanceBetweenItems,
+          );
+          await gesture.up();
+          await tester.pump();
+
+          // then all items from the ninth to the seventh get UNSELECTED,
+          // and the sixth item stills SELECTED.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {5});
+        },
+        skip: false,
+      );
+    });
   });
 
   group("Auto-scrolling integration tests.", () {
@@ -403,7 +1016,7 @@ void main() {
         // Initially, autoScroll is stopped.
         expect(dragSelectState.autoScroll, AutoScroll.stopped());
 
-        // When the user long-presses and drags to the upper-hotspot.
+        // When there's a long-press and drag to the upper-hotspot,
         await longPressDownAndDrag(
           tester: tester,
           finder: gridFinder,
@@ -411,9 +1024,10 @@ void main() {
         );
         await tester.pump();
 
-        // Then auto-scroll is enabled.
+        // then auto-scroll is enabled.
         expect(dragSelectState.autoScroll.direction, AutoScrollDirection.up);
       },
+      skip: false,
     );
 
     testWidgets(
@@ -430,6 +1044,7 @@ void main() {
         await tester.pump();
         expect(dragSelectState.autoScroll.direction, AutoScrollDirection.down);
       },
+      skip: false,
     );
 
     testWidgets(
@@ -440,7 +1055,7 @@ void main() {
       (tester) async {
         await setUp(tester);
 
-        // Given that there were a long-press and drag to the upper-hotspot.
+        // Given that there were a long-press and drag to the upper-hotspot,
         final gesture = await longPressDownAndDrag(
           tester: tester,
           finder: gridFinder,
@@ -449,17 +1064,18 @@ void main() {
         await tester.pump();
         expect(dragSelectState.autoScroll.direction, AutoScrollDirection.up);
 
-        // When the long-press is released.
+        // when the long-press is released,
         await gesture.up();
         await tester.pump();
 
-        // Then the auto-scroll is disabled with `AutoScrollDirection.up`
+        // then the auto-scroll is disabled with `AutoScrollDirection.up`
         // and stop-event unconsumed.
         expect(
           dragSelectState.autoScroll,
           AutoScroll.stopped(direction: AutoScrollDirection.up),
         );
       },
+      skip: false,
     );
 
     testWidgets(
@@ -470,7 +1086,7 @@ void main() {
       (tester) async {
         await setUp(tester);
 
-        // Given that there were a long-press and drag to the lower-hotspot.
+        // Given that there were a long-press and drag to the lower-hotspot,
         final gesture = await longPressDownAndDrag(
           tester: tester,
           finder: gridFinder,
@@ -479,17 +1095,18 @@ void main() {
         await tester.pump();
         expect(dragSelectState.autoScroll.direction, AutoScrollDirection.down);
 
-        // When the long-press is released.
+        // when the long-press is released,
         await gesture.up();
         await tester.pump();
 
-        // Then the auto-scroll is disabled with `AutoScrollDirection.down`
+        // then the auto-scroll is disabled with `AutoScrollDirection.down`
         // and stop-event unconsumed.
         expect(
           dragSelectState.autoScroll,
           AutoScroll.stopped(direction: AutoScrollDirection.down),
         );
       },
+      skip: false,
     );
 
     testWidgets(
@@ -500,7 +1117,7 @@ void main() {
       (tester) async {
         await setUp(tester);
 
-        // Given that there were a long-press and drag to the lower-hotspot.
+        // Given that there were a long-press and drag to the lower-hotspot,
         final gesture = await longPressDownAndDrag(
           tester: tester,
           finder: gridFinder,
@@ -509,17 +1126,18 @@ void main() {
         await tester.pump();
         expect(dragSelectState.autoScroll.direction, AutoScrollDirection.down);
 
-        // When dragged out of the lower-hotspot.
+        // when dragged out of the lower-hotspot,
         await gesture.moveTo(tester.getCenter(gridFinder));
         await tester.pump();
 
-        // Then the auto-scroll is disabled with `AutoScrollDirection.down`
+        // then the auto-scroll is disabled with `AutoScrollDirection.down`
         // and stop-event unconsumed.
         expect(
           dragSelectState.autoScroll,
           AutoScroll.stopped(direction: AutoScrollDirection.down),
         );
       },
+      skip: false,
     );
   });
 }
