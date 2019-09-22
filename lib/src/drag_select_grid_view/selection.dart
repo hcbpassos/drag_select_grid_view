@@ -117,9 +117,9 @@ class Selection {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is Selection &&
-              runtimeType == other.runtimeType &&
-              SetEquality().equals(selectedIndexes, other.selectedIndexes);
+      other is Selection &&
+          runtimeType == other.runtimeType &&
+          SetEquality().equals(selectedIndexes, other.selectedIndexes);
 
   @override
   int get hashCode => SetEquality().hash(selectedIndexes);
