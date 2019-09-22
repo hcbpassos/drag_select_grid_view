@@ -6,21 +6,22 @@ import 'auto_scroller.dart';
 mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   @visibleForTesting
   AutoScroll autoScroll = AutoScroll.stopped();
-
-  @visibleForTesting
-  double widgetHeight;
+  double _widgetHeight;
+  double _widgetWidth;
 
   double get autoScrollHotspotHeight;
 
   ScrollController get controller;
 
   @override
+  @mustCallSuper
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
         final widgetSize = context.size;
-        widgetHeight = widgetSize.height;
+        _widgetHeight = widgetSize.height;
+        _widgetWidth = widgetSize.width;
       },
     );
   }
@@ -34,10 +35,12 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   }
 
   bool isInsideUpperAutoScrollHotspot(Offset localPosition) =>
+      _isInsideWidget(localPosition) &&
       localPosition.dy <= autoScrollHotspotHeight;
 
   bool isInsideLowerAutoScrollHotspot(Offset localPosition) =>
-      localPosition.dy > (widgetHeight - autoScrollHotspotHeight);
+      _isInsideWidget(localPosition) &&
+      localPosition.dy > (_widgetHeight - autoScrollHotspotHeight);
 
   void startAutoScrollingUp() {
     _updateAutoScrollIfDifferent(
@@ -64,6 +67,12 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
       );
     }
   }
+
+  bool _isInsideWidget(Offset localPosition) =>
+      (localPosition.dy >= 0) &&
+          (_widgetHeight - localPosition.dy >= 0) &&
+          (localPosition.dx >= 0) &&
+          (_widgetWidth - localPosition.dx >= 0);
 
   void _updateAutoScrollIfDifferent(AutoScroll newAutoScroll) {
     if (newAutoScroll != autoScroll) {
