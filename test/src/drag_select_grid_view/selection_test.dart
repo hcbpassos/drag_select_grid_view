@@ -5,48 +5,48 @@ import 'package:flutter_test/flutter_test.dart' show throwsAssertionError;
 
 void main() {
   group("`SelectionManager` tests", () {
-    group("Select by toggling.", () {
+    group("Select by tapping.", () {
       test(
-        "When toggling the index 0, "
+        "When tapping the index 0, "
         "then the index 0 gets selected.",
         () {
           final manager = SelectionManager();
           expect(manager.selectedIndexes, <int>{});
 
-          manager.toggle(0);
+          manager.tap(0);
           expect(manager.selectedIndexes, {0});
         },
       );
 
       test(
         "Given that the index 0 is selected, "
-        "when toggling the index 0, "
+        "when tapping the index 0, "
         "then the index 0 gets UNSELECTED.",
         () {
           final manager = SelectionManager();
 
-          manager.toggle(0);
+          manager.tap(0);
           expect(manager.selectedIndexes, {0});
 
-          manager.toggle(0);
+          manager.tap(0);
           expect(manager.selectedIndexes, <int>{});
         },
       );
 
       test(
         "Given that the index 0 was UNSELECTED, "
-        "when toggling the index 0, "
+        "when tapping the index 0, "
         "then the index 0 gets selected again.",
         () {
           final manager = SelectionManager();
 
-          manager.toggle(0);
+          manager.tap(0);
           expect(manager.selectedIndexes, {0});
 
-          manager.toggle(0);
+          manager.tap(0);
           expect(manager.selectedIndexes, <int>{});
 
-          manager.toggle(0);
+          manager.tap(0);
           expect(manager.selectedIndexes, {0});
         },
       );
@@ -359,6 +359,29 @@ void main() {
         },
       );
     });
+
+    test(
+      "When trying to drag by the index 0 without starting drag, "
+      "then index 0 stills unselected.",
+      () {
+        final manager = SelectionManager();
+
+        manager.updateDrag(0);
+        expect(manager.selectedIndexes, <int>{});
+      },
+    );
+
+    test(
+      "When trying to drag by a negative index, "
+      "then the negative index stills unselected.",
+      () {
+        final manager = SelectionManager();
+
+        manager.startDrag(0);
+        manager.updateDrag(-1);
+        expect(manager.selectedIndexes, {0});
+      },
+    );
   });
 
   group("`Selection` tests", () {
@@ -373,23 +396,19 @@ void main() {
       },
     );
 
-    test("`Selection.empty` has empty `selectedIndexes`.", () {
-      expect(Selection.empty.selectedIndexes, <int>{});
-    });
-
     test(
-      "When an `Selection` has empty `selectedIndexes`, "
+      "When an `Selection` has an empty `selectedIndexes`, "
       "then `isSelecting` is false.",
       () {
         expect(
-          Selection.empty.isSelecting,
+          Selection({}).isSelecting,
           isFalse,
         );
       },
     );
 
     test(
-      "When an `Selection` has filled `selectedIndexes`, "
+      "When an `Selection` has a non-empty `selectedIndexes`, "
       "then `isSelecting` is true.",
       () {
         expect(
@@ -401,7 +420,7 @@ void main() {
 
     test("toString().", () {
       expect(
-        Selection.empty.toString(),
+        Selection({}).toString(),
         isNot("Instance of 'Selection'"),
       );
     });
@@ -410,7 +429,7 @@ void main() {
       final selection = Selection({0, 1, 2});
       final equalSelection = Selection({0, 1, 2});
       final anotherEqualSelection = Selection({0, 1, 2});
-      final differentSelection = Selection.empty;
+      final differentSelection = Selection({});
 
       // Reflexivity
       expect(selection, selection);

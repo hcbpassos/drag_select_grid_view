@@ -45,15 +45,13 @@ class DragSelectGridView extends StatefulWidget {
 class DragSelectGridViewState extends State<DragSelectGridView>
     with AutoScrollerMixin<DragSelectGridView> {
   final elements = <SelectableElement>{};
-  final selection = SelectionManager();
+  final selectionManager = SelectionManager();
 
-  Set<int> get selectedIndexes => selection.selectedIndexes;
+  Set<int> get selectedIndexes => selectionManager.selectedIndexes;
 
-  int get dragStartIndex => selection.dragStartIndex;
-
-  int get dragEndIndex => selection.dragEndIndex;
-
-  bool get isDragging => (dragStartIndex != -1) && (dragEndIndex != -1);
+  bool get isDragging =>
+      (selectionManager.dragStartIndex != -1) &&
+      (selectionManager.dragEndIndex != -1);
 
   bool get isSelecting => selectedIndexes.isNotEmpty;
 
@@ -100,8 +98,8 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     final tapIndex = _findIndexOfSelectable(details.localPosition);
 
     if (tapIndex != -1) {
-      setState(() => selection.toggle(tapIndex));
-      notifySelectionChange();
+      setState(() => selectionManager.tap(tapIndex));
+      _notifySelectionChange();
     }
   }
 
@@ -109,8 +107,8 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     final pressIndex = _findIndexOfSelectable(details.localPosition);
 
     if (pressIndex != -1) {
-      setState(() => selection.startDrag(pressIndex));
-      notifySelectionChange();
+      setState(() => selectionManager.startDrag(pressIndex));
+      _notifySelectionChange();
     }
   }
 
@@ -119,9 +117,9 @@ class DragSelectGridViewState extends State<DragSelectGridView>
 
     final dragIndex = _findIndexOfSelectable(details.localPosition);
 
-    if ((dragIndex != -1) && (dragIndex != dragEndIndex)) {
-      setState(() => selection.updateDrag(dragIndex));
-      notifySelectionChange();
+    if ((dragIndex != -1) && (dragIndex != selectionManager.dragEndIndex)) {
+      setState(() => selectionManager.updateDrag(dragIndex));
+      _notifySelectionChange();
     }
 
     if (isInsideUpperAutoScrollHotspot(details.localPosition)) {
@@ -134,12 +132,9 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   }
 
   void _onLongPressEnd(LongPressEndDetails details) {
-    setState(() => selection.endDrag());
+    setState(() => selectionManager.endDrag());
     stopScrolling();
   }
-
-  void notifySelectionChange() =>
-      widget.onSelectionChanged?.call(Selection(selectedIndexes));
 
   int _findIndexOfSelectable(Offset offset) {
     final ancestor = context.findRenderObject();
@@ -151,5 +146,11 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     }
 
     return -1;
+  }
+
+  void _notifySelectionChange() {
+    widget.onSelectionChanged?.call(
+      Selection(selectionManager.selectedIndexes),
+    );
   }
 }
