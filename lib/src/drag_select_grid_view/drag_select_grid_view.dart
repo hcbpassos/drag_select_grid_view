@@ -43,13 +43,15 @@ class DragSelectGridView extends StatefulWidget {
 }
 
 class DragSelectGridViewState extends State<DragSelectGridView>
-    with
-        AutoScrollerMixin<DragSelectGridView> {
+    with AutoScrollerMixin<DragSelectGridView> {
   final elements = <SelectableElement>{};
-  final selectedIndexes = <int>{};
+  final selection = SelectionManager();
 
-  var dragStartIndex = -1;
-  var dragEndIndex = -1;
+  Set<int> get selectedIndexes => selection.selectedIndexes;
+
+  int get dragStartIndex => selection.dragStartIndex;
+
+  int get dragEndIndex => selection.dragEndIndex;
 
   bool get isDragging => (dragStartIndex != -1) && (dragEndIndex != -1);
 
@@ -95,26 +97,19 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   void _onTapUp(TapUpDetails details) {
     if (!isSelecting) return;
 
-    final pressedIndex = _findIndexOfSelectable(details.localPosition);
+    final tapIndex = _findIndexOfSelectable(details.localPosition);
 
-    if (pressedIndex != -1) {
-      if (selectedIndexes.contains(pressedIndex)) {
-        setState(() => selectedIndexes.remove(pressedIndex));
-      } else {
-        setState(() => selectedIndexes.add(pressedIndex));
-      }
-
+    if (tapIndex != -1) {
+      setState(() => selection.toggle(tapIndex));
       notifySelectionChange();
     }
   }
 
   void _onLongPressStart(LongPressStartDetails details) {
-    final pressedIndex = _findIndexOfSelectable(details.localPosition);
+    final pressIndex = _findIndexOfSelectable(details.localPosition);
 
-    if (pressedIndex != -1) {
-      dragStartIndex = pressedIndex;
-      dragEndIndex = pressedIndex;
-      setState(() => selectedIndexes.add(pressedIndex));
+    if (pressIndex != -1) {
+      setState(() => selection.startDrag(pressIndex));
       notifySelectionChange();
     }
   }
@@ -122,42 +117,10 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   void _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
     if (!isDragging) return;
 
-    final pressedIndex = _findIndexOfSelectable(details.localPosition);
+    final dragIndex = _findIndexOfSelectable(details.localPosition);
 
-    if ((pressedIndex != -1) && (pressedIndex != dragEndIndex)) {
-      final indexesDraggedBy = intListFromRange(dragEndIndex, pressedIndex);
-
-      void removeIndexesDraggedByExceptTheCurrent() {
-        indexesDraggedBy.remove(pressedIndex);
-        setState(() => selectedIndexes.removeAll(indexesDraggedBy));
-      }
-
-      void addIndexesDragged() {
-        setState(() => selectedIndexes.addAll(indexesDraggedBy));
-      }
-
-      final isSelectingForward = pressedIndex > dragStartIndex;
-      final isSelectingBackward = pressedIndex < dragStartIndex;
-
-      if (isSelectingForward) {
-        final isUnselecting = pressedIndex < dragEndIndex;
-        if (isUnselecting) {
-          removeIndexesDraggedByExceptTheCurrent();
-        } else {
-          addIndexesDragged();
-        }
-      } else if (isSelectingBackward) {
-        final isUnselecting = pressedIndex > dragEndIndex;
-        if (isUnselecting) {
-          removeIndexesDraggedByExceptTheCurrent();
-        } else {
-          addIndexesDragged();
-        }
-      } else {
-        removeIndexesDraggedByExceptTheCurrent();
-      }
-
-      dragEndIndex = pressedIndex;
+    if ((dragIndex != -1) && (dragIndex != dragEndIndex)) {
+      setState(() => selection.updateDrag(dragIndex));
       notifySelectionChange();
     }
 
@@ -171,9 +134,8 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   }
 
   void _onLongPressEnd(LongPressEndDetails details) {
+    setState(() => selection.endDrag());
     stopScrolling();
-    dragStartIndex = -1;
-    dragEndIndex = -1;
   }
 
   void notifySelectionChange() =>

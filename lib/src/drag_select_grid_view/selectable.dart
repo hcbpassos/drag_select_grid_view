@@ -1,7 +1,7 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../drag_select_grid_view.dart';
+import '../drag_select_grid_view/drag_select_grid_view.dart';
 
 class Selectable extends ProxyWidget {
   const Selectable({

@@ -70,9 +70,9 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
 
   bool _isInsideWidget(Offset localPosition) =>
       (localPosition.dy >= 0) &&
-          (_widgetHeight - localPosition.dy >= 0) &&
-          (localPosition.dx >= 0) &&
-          (_widgetWidth - localPosition.dx >= 0);
+      (_widgetHeight - localPosition.dy >= 0) &&
+      (localPosition.dx >= 0) &&
+      (_widgetWidth - localPosition.dx >= 0);
 
   void _updateAutoScrollIfDifferent(AutoScroll newAutoScroll) {
     if (newAutoScroll != autoScroll) {

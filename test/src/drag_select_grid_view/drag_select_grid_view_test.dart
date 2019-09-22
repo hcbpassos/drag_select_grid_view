@@ -1,7 +1,8 @@
-import 'package:drag_select_grid_view/src/auto_scroll/auto_scroll.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:drag_select_grid_view/drag_select_grid_view.dart';
+import 'package:drag_select_grid_view/src/auto_scroll/auto_scroll.dart';
+import 'package:drag_select_grid_view/src/drag_select_grid_view/drag_select_grid_view.dart';
 
 import '../test_utils.dart';
 
@@ -248,7 +249,7 @@ void main() {
       );
     });
 
-    group('Select by dragging foward.', () {
+    group('Select by dragging forward.', () {
       testWidgets(
         "Given that the grid has 4 columns and 3 lines, "
         "and that the first item was long-pressed and SELECTED, "
@@ -504,120 +505,6 @@ void main() {
           // and the first item stills SELECTED.
           expect(dragSelectState.isSelecting, isTrue);
           expect(dragSelectState.selectedIndexes, {0});
-        },
-        skip: false,
-      );
-
-      testWidgets(
-        "Scenario: Switching from forward drag to backward drag without passing "
-        "through the drag origin."
-        ""
-        "Given that the grid has 4 columns and 3 lines, "
-        "and that the sixth item was long-pressed and SELECTED, "
-        ""
-        "when dragging to the third item, passing through the seventh item, "
-        ""
-        "then all items from the fifth to the third get SELECTED, "
-        "and the sixth stills SELECTED.",
-        (tester) async {
-          // Given that the grid has 4 columns and 3 lines,
-          await setUp(tester);
-
-          // and that the sixth item was long-pressed and SELECTED,
-          var gesture = await longPressDown(
-            tester: tester,
-            finder: sixthItemFinder,
-          );
-          await tester.pump();
-
-          // when dragging to the third item, passing through the seventh item,
-
-          gesture = await dragDown(
-            tester: tester,
-            previousGesture: gesture,
-            offset: horizontalDistanceBetweenItems,
-          );
-          await tester.pump();
-
-          gesture = await dragDown(
-            tester: tester,
-            previousGesture: gesture,
-            offset: -verticalDistanceBetweenItems,
-          );
-          await gesture.up();
-          await tester.pump();
-
-          // then all items from the fifth to the third get SELECTED,
-          // and the sixth stills SELECTED.
-          expect(dragSelectState.isSelecting, isTrue);
-          expect(dragSelectState.selectedIndexes, {2, 3, 4, 5});
-        },
-        skip: false,
-      );
-
-      testWidgets(
-        "Scenario: Switching from forward drag to backward drag without passing "
-        "through the drag origin."
-        ""
-        "Given that the grid has 4 columns and 3 lines, "
-        "and that the sixth item was long-pressed and SELECTED, "
-        "and that all items from the fifth to the third "
-        "were SELECTED by dragging, "
-        ""
-        "when dragging back to the sixth item, passing through the seventh item, "
-        ""
-        "then all items from the third to the fifth get UNSELECTED, "
-        "and the sixth item stills SELECTED.",
-        (tester) async {
-          // Given that the grid has 4 columns and 3 lines,
-          await setUp(tester);
-
-          // and that the sixth item was long-pressed and SELECTED,
-          var gesture = await longPressDown(
-            tester: tester,
-            finder: sixthItemFinder,
-          );
-          await tester.pump();
-
-          // and that all items from the fifth to the third
-          // were SELECTED by dragging,
-
-          gesture = await dragDown(
-            tester: tester,
-            previousGesture: gesture,
-            offset: horizontalDistanceBetweenItems,
-          );
-          await tester.pump();
-
-          gesture = await dragDown(
-            tester: tester,
-            previousGesture: gesture,
-            offset: -verticalDistanceBetweenItems,
-          );
-          await tester.pump();
-
-          // when dragging back to the sixth item,
-          // passing through the seventh item,
-
-          gesture = await dragDown(
-            tester: tester,
-            previousGesture: gesture,
-            offset: verticalDistanceBetweenItems,
-          );
-          await tester.pump();
-
-          gesture = await dragDown(
-            tester: tester,
-            previousGesture: gesture,
-            offset: -horizontalDistanceBetweenItems,
-          );
-          await gesture.up();
-          await tester.pump();
-
-          // then all items from the third to the fifth get UNSELECTED,
-          // and the sixth item stills SELECTED.
-          expect(dragSelectState.isSelecting, isTrue);
-          expect(dragSelectState.selectedIndexes, {5});
         },
         skip: false,
       );
@@ -886,120 +773,6 @@ void main() {
           // and the last item stills SELECTED.
           expect(dragSelectState.isSelecting, isTrue);
           expect(dragSelectState.selectedIndexes, {11});
-        },
-        skip: false,
-      );
-
-      testWidgets(
-        "Scenario: Switching from backward drag to forward drag without passing "
-        "through the drag origin."
-        ""
-        "Given that the grid has 4 columns and 3 lines, "
-        "and that the sixth item was long-pressed and SELECTED, "
-        ""
-        "when dragging to the ninth item, passing through the fifth item, "
-        ""
-        "then all items from the seventh to the ninth get SELECTED, "
-        "and the sixth stills SELECTED.",
-        (tester) async {
-          // Given that the grid has 4 columns and 3 lines,
-          await setUp(tester);
-
-          // and that the sixth item was long-pressed and SELECTED,
-          var gesture = await longPressDown(
-            tester: tester,
-            finder: sixthItemFinder,
-          );
-          await tester.pump();
-
-          // when dragging to the ninth item, passing through the fifth item,
-
-          gesture = await dragDown(
-            tester: tester,
-            previousGesture: gesture,
-            offset: -horizontalDistanceBetweenItems,
-          );
-          await tester.pump();
-
-          gesture = await dragDown(
-            tester: tester,
-            previousGesture: gesture,
-            offset: verticalDistanceBetweenItems,
-          );
-          await gesture.up();
-          await tester.pump();
-
-          // then all items from the seventh to the ninth get SELECTED,
-          // and the sixth stills SELECTED.
-          expect(dragSelectState.isSelecting, isTrue);
-          expect(dragSelectState.selectedIndexes, {5, 6, 7, 8});
-        },
-        skip: false,
-      );
-
-      testWidgets(
-        "Scenario: Switching from backward drag to forward drag without passing "
-        "through the drag origin."
-        ""
-        "Given that the grid has 4 columns and 3 lines, "
-        "and that the sixth item was long-pressed and SELECTED, "
-        "and that all items from the seventh to the ninth "
-        "were SELECTED by dragging, "
-        ""
-        "when dragging back to the sixth item, passing through the fifth item, "
-        ""
-        "then all items from the ninth to the seventh get UNSELECTED, "
-        "and the sixth item stills SELECTED.",
-        (tester) async {
-          // Given that the grid has 4 columns and 3 lines,
-          await setUp(tester);
-
-          // and that the sixth item was long-pressed and SELECTED,
-          var gesture = await longPressDown(
-            tester: tester,
-            finder: sixthItemFinder,
-          );
-          await tester.pump();
-
-          // and that all items from the seventh to the ninth
-          // were SELECTED by dragging,
-
-          gesture = await dragDown(
-            tester: tester,
-            previousGesture: gesture,
-            offset: -horizontalDistanceBetweenItems,
-          );
-          await tester.pump();
-
-          gesture = await dragDown(
-            tester: tester,
-            previousGesture: gesture,
-            offset: verticalDistanceBetweenItems,
-          );
-          await tester.pump();
-
-          // when dragging back to the sixth item,
-          // passing through the fifth item,
-
-          gesture = await dragDown(
-            tester: tester,
-            previousGesture: gesture,
-            offset: -verticalDistanceBetweenItems,
-          );
-          await tester.pump();
-
-          gesture = await dragDown(
-            tester: tester,
-            previousGesture: gesture,
-            offset: horizontalDistanceBetweenItems,
-          );
-          await gesture.up();
-          await tester.pump();
-
-          // then all items from the ninth to the seventh get UNSELECTED,
-          // and the sixth item stills SELECTED.
-          expect(dragSelectState.isSelecting, isTrue);
-          expect(dragSelectState.selectedIndexes, {5});
         },
         skip: false,
       );
