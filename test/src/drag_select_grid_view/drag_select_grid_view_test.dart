@@ -823,7 +823,7 @@ void main() {
   group("Auto-scrolling integration tests.", () {
     testWidgets(
       "When there's a long-press and drag to the upper-hotspot, "
-      "then auto-scroll is enabled.",
+      "then backward auto-scroll is triggered.",
       (tester) async {
         await setUp(tester);
 
@@ -838,8 +838,11 @@ void main() {
         );
         await tester.pump();
 
-        // then auto-scroll is enabled.
-        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.backward);
+        // then backward auto-scroll is triggered.
+        expect(
+          dragSelectState.autoScroll.direction,
+          AutoScrollDirection.backward,
+        );
       },
       skip: false,
     );
@@ -847,14 +850,12 @@ void main() {
     testWidgets(
       "Given that the scroll is reversed, "
       "when there's a long-press and drag to the upper-hotspot, "
-      "then auto-scroll is enabled.",
+      "then forward auto-scroll is triggered.",
       (tester) async {
-        await setUp(tester);
+        // Given that the scroll is reversed,
+        await setUp(tester, reverse: true);
 
-        // Initially, autoScroll is stopped.
-        expect(dragSelectState.autoScroll, AutoScroll.stopped());
-
-        // When there's a long-press and drag to the upper-hotspot,
+        // when there's a long-press and drag to the upper-hotspot,
         await longPressDownAndDrag(
           tester: tester,
           finder: gridFinder,
@@ -862,25 +863,59 @@ void main() {
         );
         await tester.pump();
 
-        // then auto-scroll is enabled.
-        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.backward);
+        // then forward auto-scroll is triggered.
+        expect(
+          dragSelectState.autoScroll.direction,
+          AutoScrollDirection.forward,
+        );
       },
       skip: false,
     );
 
     testWidgets(
       "When there's a long-press and drag to the lower-hotspot, "
-      "then auto-scroll is enabled.",
+      "then forward auto-scroll is triggered.",
       (tester) async {
         await setUp(tester);
 
+        // When there's a long-press and drag to the lower-hotspot,
         await longPressDownAndDrag(
           tester: tester,
           finder: gridFinder,
           offset: Offset(0, (dragSelectState.context.size.height / 2)),
         );
         await tester.pump();
-        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.forward);
+
+        // then forward auto-scroll is triggered.
+        expect(
+          dragSelectState.autoScroll.direction,
+          AutoScrollDirection.forward,
+        );
+      },
+      skip: false,
+    );
+
+    testWidgets(
+      "Given that the scroll is reversed, "
+      "when there's a long-press and drag to the lower-hotspot, "
+      "then backward auto-scroll is triggered.",
+      (tester) async {
+        // Given that the scroll is reversed,
+        await setUp(tester, reverse: true);
+
+        // When there's a long-press and drag to the lower-hotspot,
+        await longPressDownAndDrag(
+          tester: tester,
+          finder: gridFinder,
+          offset: Offset(0, (dragSelectState.context.size.height / 2)),
+        );
+        await tester.pump();
+
+        // then backward auto-scroll is triggered.
+        expect(
+          dragSelectState.autoScroll.direction,
+          AutoScrollDirection.backward,
+        );
       },
       skip: false,
     );
@@ -900,7 +935,8 @@ void main() {
           offset: Offset(0, -(dragSelectState.context.size.height / 2) + 1),
         );
         await tester.pump();
-        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.backward);
+        expect(
+            dragSelectState.autoScroll.direction, AutoScrollDirection.backward);
 
         // when the long-press is released,
         await gesture.up();
@@ -931,7 +967,8 @@ void main() {
           offset: Offset(0, dragSelectState.context.size.height / 2),
         );
         await tester.pump();
-        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.forward);
+        expect(
+            dragSelectState.autoScroll.direction, AutoScrollDirection.forward);
 
         // when the long-press is released,
         await gesture.up();
@@ -962,7 +999,8 @@ void main() {
           offset: Offset(0, dragSelectState.context.size.height / 2),
         );
         await tester.pump();
-        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.forward);
+        expect(
+            dragSelectState.autoScroll.direction, AutoScrollDirection.forward);
 
         // when dragged out of the lower-hotspot,
         await gesture.moveTo(tester.getCenter(gridFinder));
