@@ -27,7 +27,7 @@ void main() {
         await tester.pumpWidget(widget);
 
         final autoScroller = AutoScroller(
-          AutoScroll.stopped(direction: AutoScrollDirection.up),
+          AutoScroll.stopped(direction: AutoScrollDirection.backward),
           controller,
         );
 
@@ -40,7 +40,7 @@ void main() {
       "then the auto-scroller isn't abble to scroll.",
       (tester) async {
         final autoScroller = AutoScroller(
-          AutoScroll.stopped(direction: AutoScrollDirection.up),
+          AutoScroll.stopped(direction: AutoScrollDirection.backward),
           ScrollController(),
         );
 
@@ -68,7 +68,7 @@ void main() {
   group("Has nothing left to scroll.", () {
     testWidgets(
       "Auto-scroller still has something to scroll "
-      "when it is trying to scroll down "
+      "when it is trying to scroll forward "
       "and it isn't at the end of the `ScrollView`.",
       (tester) async {
         final widget = createWidget();
@@ -77,7 +77,7 @@ void main() {
         controller.jumpTo(controller.position.maxScrollExtent - 1);
 
         final autoScroller = AutoScroller(
-          AutoScroll.stopped(direction: AutoScrollDirection.down),
+          AutoScroll.stopped(direction: AutoScrollDirection.forward),
           controller,
         );
 
@@ -87,7 +87,7 @@ void main() {
 
     testWidgets(
       "Auto-scroller still has something to scroll "
-      "when it is trying to scroll up "
+      "when it is trying to scroll backward "
       "and it isn't at the beginning of the `ScrollView`.",
       (tester) async {
         final widget = createWidget();
@@ -96,7 +96,7 @@ void main() {
         controller.jumpTo(1);
 
         final autoScroller = AutoScroller(
-          AutoScroll.stopped(direction: AutoScrollDirection.up),
+          AutoScroll.stopped(direction: AutoScrollDirection.backward),
           controller,
         );
 
@@ -106,7 +106,7 @@ void main() {
 
     testWidgets(
       "Auto-scroller nothing left to scroll "
-      "when it is trying to scroll down "
+      "when it is trying to scroll forward "
       "and it is at the end of the `ScrollView`.",
       (tester) async {
         final widget = createWidget();
@@ -115,7 +115,7 @@ void main() {
         controller.jumpTo(controller.position.maxScrollExtent);
 
         final autoScroller = AutoScroller(
-          AutoScroll.stopped(direction: AutoScrollDirection.down),
+          AutoScroll.stopped(direction: AutoScrollDirection.forward),
           controller,
         );
 
@@ -125,7 +125,7 @@ void main() {
 
     testWidgets(
       "Auto-scroller nothing left to scroll "
-      "when it is trying to scroll up "
+      "when it is trying to scroll backward "
       "and it is at the beginning of the `ScrollView`.",
       (tester) async {
         final widget = createWidget();
@@ -134,7 +134,7 @@ void main() {
         controller.jumpTo(0);
 
         final autoScroller = AutoScroller(
-          AutoScroll.stopped(direction: AutoScrollDirection.up),
+          AutoScroll.stopped(direction: AutoScrollDirection.backward),
           controller,
         );
 
@@ -153,7 +153,7 @@ void main() {
 
         final autoScroller = AutoScroller(
           AutoScroll(
-            direction: AutoScrollDirection.down,
+            direction: AutoScrollDirection.forward,
             duration: const Duration(seconds: 1),
           ),
           controller,
@@ -171,7 +171,7 @@ void main() {
         await tester.pumpWidget(widget);
 
         final autoScroller = AutoScroller(
-          AutoScroll.stopped(direction: AutoScrollDirection.down),
+          AutoScroll.stopped(direction: AutoScrollDirection.forward),
           controller,
         );
 
@@ -207,7 +207,7 @@ void main() {
 
         final mockAutoScroller = MockAutoScroller(
           AutoScroll(
-            direction: AutoScrollDirection.down,
+            direction: AutoScrollDirection.forward,
             duration: const Duration(seconds: 1),
           ),
           controller,
@@ -223,18 +223,18 @@ void main() {
     );
 
     testWidgets(
-      "Given that auto-scroll's direction is down, "
+      "Given that auto-scroll's direction is forward, "
       "and the stop-event wasn't consumed, "
       ""
       "when auto-scroll is performed, "
       ""
-      "a downward overscroll is performed.",
+      "a forward overscroll is performed.",
       (tester) async {
         final widget = createWidget();
         await tester.pumpWidget(widget);
 
         final mockAutoScroller = MockAutoScroller(
-          AutoScroll.stopped(direction: AutoScrollDirection.down),
+          AutoScroll.stopped(direction: AutoScrollDirection.forward),
           controller,
         );
 
@@ -252,12 +252,12 @@ void main() {
     );
 
     testWidgets(
-      "Given that auto-scroll's direction is up, "
+      "Given that auto-scroll's direction is backward, "
       "and the stop-event wasn't consumed, "
       ""
       "when auto-scroll is performed, "
       ""
-      "an upward overscroll is performed.",
+      "an backward overscroll is performed.",
       (tester) async {
         final widget = createWidget();
         await tester.pumpWidget(widget);
@@ -265,7 +265,7 @@ void main() {
         controller.jumpTo(controller.position.maxScrollExtent);
 
         final mockAutoScroller = MockAutoScroller(
-          AutoScroll.stopped(direction: AutoScrollDirection.up),
+          AutoScroll.stopped(direction: AutoScrollDirection.backward),
           controller,
         );
 

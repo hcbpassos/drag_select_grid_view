@@ -3,7 +3,14 @@ import 'package:flutter/foundation.dart';
 import 'auto_scroller.dart';
 
 /// Possible directions of auto-scroll.
-enum AutoScrollDirection { up, down }
+///
+/// The actual meaning of forward and backward will depend on the properties of
+/// the scroll view.
+///
+/// For instance, in the most usual scroll-view, in which the scroll-direction
+/// is vertical and not reversed, forward is the same as downward, and backward
+/// is the same as upward.
+enum AutoScrollDirection { forward, backward }
 
 /// Helper class that holds information created and used by [AutoScroller].
 @immutable

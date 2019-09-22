@@ -36,17 +36,17 @@ class AutoScroller {
   /// an overscroll.
   @visibleForTesting
   double get positionAfterOverscroll =>
-      autoScroll.direction == AutoScrollDirection.down
+      autoScroll.direction == AutoScrollDirection.forward
           ? currentPosition + amountOfOverscrollOnScrollStop
           : currentPosition - amountOfOverscrollOnScrollStop;
 
   /// Returns the target position of the auto-scroll.
   ///
-  /// If the auto-scroll direction is down, we want to get the last position.
-  /// If the auto-scroll direction is up, we want to get the first position.
+  /// If the auto-scroll direction is forward, we want to get the last position.
+  /// If the auto-scroll direction is backward, we want to get the first position.
   @visibleForTesting
   double get targetPositionOfTheAutoScroll =>
-      autoScroll.direction == AutoScrollDirection.down
+      autoScroll.direction == AutoScrollDirection.forward
           ? controller.position.maxScrollExtent
           : 0;
 
@@ -63,15 +63,15 @@ class AutoScroller {
 
   /// Returns whether there's anything to scroll.
   ///
-  /// In case of [AutoScrollDirection.down], we want to know whether we didn't
+  /// If the auto-scroll direction is forward we want to know whether we didn't
   /// reach the end of the [GridView].
-  /// In case of [AutoScrollDirection.up], we want to know whether we didn't
+  /// If the auto-scroll direction is backward we want to know whether we didn't
   /// reach the top of the [GridView].
   @visibleForTesting
   bool get hasAnythingLeftToScroll =>
-      ((autoScroll.direction == AutoScrollDirection.down) &&
+      ((autoScroll.direction == AutoScrollDirection.forward) &&
           (currentPosition < controller.position.maxScrollExtent)) ||
-      ((autoScroll.direction == AutoScrollDirection.up) &&
+      ((autoScroll.direction == AutoScrollDirection.backward) &&
           (currentPosition > 0));
 
   Future<void> scroll() async {

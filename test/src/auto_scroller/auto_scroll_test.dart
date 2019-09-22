@@ -20,7 +20,7 @@ void main() {
       "then an `AssertionError` is throw.",
       () {
         expect(
-          () => AutoScroll(direction: AutoScrollDirection.down),
+          () => AutoScroll(direction: AutoScrollDirection.forward),
           throwsAssertionError,
         );
       },
@@ -32,7 +32,7 @@ void main() {
       () {
         expect(
           () => AutoScroll(
-            direction: AutoScrollDirection.down,
+            direction: AutoScrollDirection.forward,
             duration: Duration.zero,
           ),
           throwsAssertionError,
@@ -43,7 +43,7 @@ void main() {
     test("`isScrolling` initializes as `true`.", () {
       expect(
         AutoScroll(
-          direction: AutoScrollDirection.down,
+          direction: AutoScrollDirection.forward,
           duration: const Duration(seconds: 1),
         ).isScrolling,
         isTrue,
@@ -53,7 +53,7 @@ void main() {
     test("`stopEvent` initializes consumed.", () {
       expect(
         AutoScroll(
-          direction: AutoScrollDirection.down,
+          direction: AutoScrollDirection.forward,
           duration: const Duration(seconds: 1),
         ).stopEvent,
         StopAutoScrollEvent.consumed(),
@@ -63,7 +63,7 @@ void main() {
     test("toString().", () {
       expect(
         AutoScroll(
-          direction: AutoScrollDirection.down,
+          direction: AutoScrollDirection.forward,
           duration: const Duration(seconds: 1),
         ).toString(),
         isNot("Instance of 'AutoScroll'"),
@@ -72,16 +72,16 @@ void main() {
 
     test("`operator ==` and `hashCode`.", () {
       final autoScroll =
-          AutoScroll.stopped(direction: AutoScrollDirection.down);
+          AutoScroll.stopped(direction: AutoScrollDirection.forward);
 
       final equalAutoScroll =
-          AutoScroll.stopped(direction: AutoScrollDirection.down);
+          AutoScroll.stopped(direction: AutoScrollDirection.forward);
 
       final anotherEqualAutoScroll =
-          AutoScroll.stopped(direction: AutoScrollDirection.down);
+          AutoScroll.stopped(direction: AutoScrollDirection.forward);
 
       final differentAutoScroll = AutoScroll(
-        direction: AutoScrollDirection.down,
+        direction: AutoScrollDirection.forward,
         duration: const Duration(seconds: 1),
       );
 

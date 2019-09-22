@@ -216,15 +216,15 @@ class DragSelectGridViewState extends State<DragSelectGridView>
 
     if (isInsideUpperAutoScrollHotspot(details.localPosition)) {
       if (widget.reverse) {
-        startAutoScrollingDown();
+        startAutoScrollingForward();
       } else {
-        startAutoScrollingUp();
+        startAutoScrollingBackward();
       }
     } else if (isInsideLowerAutoScrollHotspot(details.localPosition)) {
       if (widget.reverse) {
-        startAutoScrollingUp();
+        startAutoScrollingBackward();
       } else {
-        startAutoScrollingDown();
+        startAutoScrollingForward();
       }
     } else {
       stopScrolling();

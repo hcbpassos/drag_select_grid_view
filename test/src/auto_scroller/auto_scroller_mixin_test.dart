@@ -136,9 +136,9 @@ void main() {
   group('Auto-scroll tests', () {
     testWidgets(
       "Auto-scroll direction is updated "
-      "when `DragSelectGridView` starts to scroll up, "
+      "when `DragSelectGridView` starts to scroll backward, "
       "but auto-scroll doesn't change "
-      "when trying to scroll up again.",
+      "when trying to scroll backward again.",
       (tester) async {
         final widget = createWidget();
         await tester.pumpWidget(widget);
@@ -146,24 +146,24 @@ void main() {
         DragSelectGridViewState dragSelectGridViewState =
             tester.state(dragSelectGridViewFinder);
 
-        // First scroll up attempt.
+        // First scroll backward attempt.
 
         expect(dragSelectGridViewState.autoScroll.isScrolling, isFalse);
         expect(dragSelectGridViewState.autoScroll.direction, null);
 
-        dragSelectGridViewState.startAutoScrollingUp();
+        dragSelectGridViewState.startAutoScrollingBackward();
 
         expect(dragSelectGridViewState.autoScroll.isScrolling, isTrue);
         expect(
           dragSelectGridViewState.autoScroll.direction,
-          AutoScrollDirection.up,
+          AutoScrollDirection.backward,
         );
 
-        // Second scroll up attempt.
+        // Second scroll backward attempt.
 
         final oldAutoScroll = dragSelectGridViewState.autoScroll;
 
-        dragSelectGridViewState.startAutoScrollingUp();
+        dragSelectGridViewState.startAutoScrollingBackward();
 
         expect(
           identical(oldAutoScroll, dragSelectGridViewState.autoScroll),
@@ -174,9 +174,9 @@ void main() {
 
     testWidgets(
       "Auto-scroll direction is updated "
-      "when `DragSelectGridView` starts to scroll down, "
+      "when `DragSelectGridView` starts to scroll forward, "
       "but auto-scroll doesn't change "
-      "when trying to scroll down again.",
+      "when trying to scroll forward again.",
       (tester) async {
         final widget = createWidget();
         await tester.pumpWidget(widget);
@@ -184,24 +184,24 @@ void main() {
         DragSelectGridViewState dragSelectGridViewState =
             tester.state(dragSelectGridViewFinder);
 
-        // First scroll down attempt.
+        // First scroll forward attempt.
 
         expect(dragSelectGridViewState.autoScroll.isScrolling, isFalse);
         expect(dragSelectGridViewState.autoScroll.direction, null);
 
-        dragSelectGridViewState.startAutoScrollingDown();
+        dragSelectGridViewState.startAutoScrollingForward();
 
         expect(dragSelectGridViewState.autoScroll.isScrolling, isTrue);
         expect(
           dragSelectGridViewState.autoScroll.direction,
-          AutoScrollDirection.down,
+          AutoScrollDirection.forward,
         );
 
-        // Second scroll down attempt.
+        // Second scroll forward attempt.
 
         final oldAutoScroll = dragSelectGridViewState.autoScroll;
 
-        dragSelectGridViewState.startAutoScrollingDown();
+        dragSelectGridViewState.startAutoScrollingForward();
 
         expect(
           identical(oldAutoScroll, dragSelectGridViewState.autoScroll),
@@ -222,14 +222,14 @@ void main() {
         DragSelectGridViewState dragSelectGridViewState =
             tester.state(dragSelectGridViewFinder);
 
-        dragSelectGridViewState.startAutoScrollingDown();
+        dragSelectGridViewState.startAutoScrollingForward();
 
         // First stop attempt.
 
         expect(dragSelectGridViewState.autoScroll.isScrolling, isTrue);
         expect(
           dragSelectGridViewState.autoScroll.direction,
-          AutoScrollDirection.down,
+          AutoScrollDirection.forward,
         );
 
         dragSelectGridViewState.stopScrolling();
@@ -237,7 +237,7 @@ void main() {
         expect(dragSelectGridViewState.autoScroll.isScrolling, isFalse);
         expect(
           dragSelectGridViewState.autoScroll.direction,
-          AutoScrollDirection.down,
+          AutoScrollDirection.forward,
         );
 
         // Second stop attempt.

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide SelectionChangedCallback;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:drag_select_grid_view/drag_select_grid_view.dart';
 import 'package:drag_select_grid_view/src/auto_scroll/auto_scroll.dart';
@@ -12,7 +12,6 @@ void main() {
 
   final firstItemFinder = find.byKey(const ValueKey('grid-item-0'));
   final lastItemFinder = find.byKey(const ValueKey('grid-item-11'));
-  final sixthItemFinder = find.byKey(const ValueKey('grid-item-5'));
 
   final secondItemFinder = find.byKey(const ValueKey('grid-item-1'));
   final fifthItemFinder = find.byKey(const ValueKey('grid-item-4'));
@@ -25,7 +24,10 @@ void main() {
 
   /// Creates a [DragSelectGridView] with 4 columns and 3 lines, based on
   /// [screenHeight] and [screenWidth].
-  Widget createWidget() {
+  Widget createWidget([
+    bool reverse,
+    SelectionChangedCallback onSelectionChanged,
+  ]) {
     return MaterialApp(
       home: Row(
         children: [
@@ -36,6 +38,8 @@ void main() {
           ),
           Expanded(
             child: DragSelectGridView(
+              onSelectionChanged: onSelectionChanged,
+              reverse: reverse ?? false,
               itemCount: 12,
               itemBuilder: (_, index, __) => Container(
                 key: ValueKey('grid-item-$index'),
@@ -55,13 +59,17 @@ void main() {
   /// creating the widget at every single [testWidgets].
   /// I get access to [WidgetTester], but in counterpart I have to call [setUp]
   /// manually at the initialization of every [testWidgets].
-  Future<void> setUp(tester) async {
-    widget = createWidget();
+  Future<void> setUp(
+    tester, {
+    bool reverse,
+    SelectionChangedCallback onSelectionChanged,
+  }) async {
+    widget = createWidget(reverse, onSelectionChanged);
     await tester.pumpWidget(widget);
     dragSelectState = tester.state(gridFinder);
-    horizontalDistanceBetweenItems =
+    horizontalDistanceBetweenItems ??=
         tester.getCenter(secondItemFinder) - tester.getCenter(firstItemFinder);
-    verticalDistanceBetweenItems =
+    verticalDistanceBetweenItems ??=
         tester.getCenter(fifthItemFinder) - tester.getCenter(firstItemFinder);
   }
 
@@ -85,7 +93,7 @@ void main() {
   );
 
   group("Drag-select-grid-view integration tests.", () {
-    group('Select by pressing.', () {
+    group("Select by pressing.", () {
       testWidgets(
         "When an item of DragSelectGridView is long-pressed down, "
         "then `isDragging` becomes true.",
@@ -174,6 +182,10 @@ void main() {
           // then the item gets SELECTED.
           expect(dragSelectState.isSelecting, isTrue);
           expect(dragSelectState.selectedIndexes, {0});
+
+          // and we get notified about selection change.
+          expect(selectionChangedCount, 1);
+          expect(selection.selectedIndexes, {0});
         },
         skip: false,
       );
@@ -256,7 +268,7 @@ void main() {
       );
     });
 
-    group('Select by dragging forward.', () {
+    group("Select by dragging forward.", () {
       testWidgets(
         "Given that the grid has 4 columns and 3 lines, "
         "and that the first item was long-pressed and SELECTED, "
@@ -264,10 +276,17 @@ void main() {
         "when dragging to the second item (at the right), "
         ""
         "then the second item gets SELECTED, "
-        "and the first item stills SELECTED.",
+        "and the first item stills SELECTED, "
+        "and we get notified about selection changes.",
         (tester) async {
+          int selectionChangedCount = 0;
+          Selection selection;
+
           // Given that the grid has 4 columns and 3 lines,
-          await setUp(tester);
+          await setUp(tester, onSelectionChanged: (newSelection) {
+            selectionChangedCount++;
+            selection = newSelection;
+          });
 
           // and that the first item was long-pressed and SELECTED,
           var gesture = await longPressDown(
@@ -289,6 +308,10 @@ void main() {
           // and the first item stills SELECTED.
           expect(dragSelectState.isSelecting, isTrue);
           expect(dragSelectState.selectedIndexes, {0, 1});
+
+          // and we get notified about selection changes.
+          expect(selectionChangedCount, 2);
+          expect(selection.selectedIndexes, {0, 1});
         },
         skip: false,
       );
@@ -517,7 +540,7 @@ void main() {
       );
     });
 
-    group('Select by dragging backward.', () {
+    group("Select by dragging backward.", () {
       testWidgets(
         "Given that the grid has 4 columns and 3 lines, "
         "and that the last item was long-pressed and SELECTED, "
@@ -525,10 +548,17 @@ void main() {
         "when dragging to the second to last item (at the left), "
         ""
         "then the second to last item gets SELECTED, "
-        "and the last item stills SELECTED.",
+        "and the last item stills SELECTED, "
+        "and we get notified about selection changes.",
         (tester) async {
+          int selectionChangedCount = 0;
+          Selection selection;
+
           // Given that the grid has 4 columns and 3 lines,
-          await setUp(tester);
+          await setUp(tester, onSelectionChanged: (newSelection) {
+            selectionChangedCount++;
+            selection = newSelection;
+          });
 
           // and that the last item was long-pressed and SELECTED,
           var gesture = await longPressDown(
@@ -550,6 +580,10 @@ void main() {
           // and the last item stills SELECTED.
           expect(dragSelectState.isSelecting, isTrue);
           expect(dragSelectState.selectedIndexes, {10, 11});
+
+          // and we get notified about selection changes.
+          expect(selectionChangedCount, 2);
+          expect(selection.selectedIndexes, {10, 11});
         },
         skip: false,
       );
@@ -805,7 +839,31 @@ void main() {
         await tester.pump();
 
         // then auto-scroll is enabled.
-        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.up);
+        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.backward);
+      },
+      skip: false,
+    );
+
+    testWidgets(
+      "Given that the scroll is reversed, "
+      "when there's a long-press and drag to the upper-hotspot, "
+      "then auto-scroll is enabled.",
+      (tester) async {
+        await setUp(tester);
+
+        // Initially, autoScroll is stopped.
+        expect(dragSelectState.autoScroll, AutoScroll.stopped());
+
+        // When there's a long-press and drag to the upper-hotspot,
+        await longPressDownAndDrag(
+          tester: tester,
+          finder: gridFinder,
+          offset: Offset(0, -(dragSelectState.context.size.height / 2) + 1),
+        );
+        await tester.pump();
+
+        // then auto-scroll is enabled.
+        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.backward);
       },
       skip: false,
     );
@@ -822,7 +880,7 @@ void main() {
           offset: Offset(0, (dragSelectState.context.size.height / 2)),
         );
         await tester.pump();
-        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.down);
+        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.forward);
       },
       skip: false,
     );
@@ -830,7 +888,7 @@ void main() {
     testWidgets(
       "Given that there were a long-press and drag to the upper-hotspot, "
       "when the long-press is released, "
-      "then the auto-scroll is disabled with `AutoScrollDirection.up` "
+      "then the auto-scroll is disabled with `AutoScrollDirection.backward` "
       "and stop-event unconsumed.",
       (tester) async {
         await setUp(tester);
@@ -842,17 +900,17 @@ void main() {
           offset: Offset(0, -(dragSelectState.context.size.height / 2) + 1),
         );
         await tester.pump();
-        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.up);
+        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.backward);
 
         // when the long-press is released,
         await gesture.up();
         await tester.pump();
 
-        // then the auto-scroll is disabled with `AutoScrollDirection.up`
+        // then the auto-scroll is disabled with `AutoScrollDirection.backward`
         // and stop-event unconsumed.
         expect(
           dragSelectState.autoScroll,
-          AutoScroll.stopped(direction: AutoScrollDirection.up),
+          AutoScroll.stopped(direction: AutoScrollDirection.backward),
         );
       },
       skip: false,
@@ -861,7 +919,7 @@ void main() {
     testWidgets(
       "Given that there were a long-press and drag to the lower-hotspot, "
       "when the long-press is released, "
-      "then the auto-scroll is disabled with `AutoScrollDirection.down` "
+      "then the auto-scroll is disabled with `AutoScrollDirection.forward` "
       "and stop-event unconsumed.",
       (tester) async {
         await setUp(tester);
@@ -873,17 +931,17 @@ void main() {
           offset: Offset(0, dragSelectState.context.size.height / 2),
         );
         await tester.pump();
-        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.down);
+        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.forward);
 
         // when the long-press is released,
         await gesture.up();
         await tester.pump();
 
-        // then the auto-scroll is disabled with `AutoScrollDirection.down`
+        // then the auto-scroll is disabled with `AutoScrollDirection.forward`
         // and stop-event unconsumed.
         expect(
           dragSelectState.autoScroll,
-          AutoScroll.stopped(direction: AutoScrollDirection.down),
+          AutoScroll.stopped(direction: AutoScrollDirection.forward),
         );
       },
       skip: false,
@@ -892,7 +950,7 @@ void main() {
     testWidgets(
       "Given that there were a long-press and drag to the lower-hotspot, "
       "when dragged out of the lower-hotspot, "
-      "then the auto-scroll is disabled with `AutoScrollDirection.down` "
+      "then the auto-scroll is disabled with `AutoScrollDirection.forward` "
       "and stop-event unconsumed.",
       (tester) async {
         await setUp(tester);
@@ -904,17 +962,17 @@ void main() {
           offset: Offset(0, dragSelectState.context.size.height / 2),
         );
         await tester.pump();
-        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.down);
+        expect(dragSelectState.autoScroll.direction, AutoScrollDirection.forward);
 
         // when dragged out of the lower-hotspot,
         await gesture.moveTo(tester.getCenter(gridFinder));
         await tester.pump();
 
-        // then the auto-scroll is disabled with `AutoScrollDirection.down`
+        // then the auto-scroll is disabled with `AutoScrollDirection.forward`
         // and stop-event unconsumed.
         expect(
           dragSelectState.autoScroll,
-          AutoScroll.stopped(direction: AutoScrollDirection.down),
+          AutoScroll.stopped(direction: AutoScrollDirection.forward),
         );
       },
       skip: false,

@@ -42,19 +42,19 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
       _isInsideWidget(localPosition) &&
       localPosition.dy > (_widgetHeight - autoScrollHotspotHeight);
 
-  void startAutoScrollingUp() {
+  void startAutoScrollingForward() {
     _updateAutoScrollIfDifferent(
       AutoScroll(
-        direction: AutoScrollDirection.up,
+        direction: AutoScrollDirection.forward,
         duration: const Duration(seconds: 3),
       ),
     );
   }
 
-  void startAutoScrollingDown() {
+  void startAutoScrollingBackward() {
     _updateAutoScrollIfDifferent(
       AutoScroll(
-        direction: AutoScrollDirection.down,
+        direction: AutoScrollDirection.backward,
         duration: const Duration(seconds: 3),
       ),
     );
