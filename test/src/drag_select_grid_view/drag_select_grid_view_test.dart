@@ -1,4 +1,4 @@
-import 'package:drag_select_grid_view/src/auto_scroller/auto_scroll.dart';
+import 'package:drag_select_grid_view/src/auto_scroll/auto_scroll.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:drag_select_grid_view/drag_select_grid_view.dart';
@@ -1020,7 +1020,7 @@ void main() {
         await longPressDownAndDrag(
           tester: tester,
           finder: gridFinder,
-          offset: Offset(0, -(dragSelectState.height / 2) + 1),
+          offset: Offset(0, -(dragSelectState.context.size.height / 2) + 1),
         );
         await tester.pump();
 
@@ -1039,7 +1039,7 @@ void main() {
         await longPressDownAndDrag(
           tester: tester,
           finder: gridFinder,
-          offset: Offset(0, (dragSelectState.height / 2)),
+          offset: Offset(0, (dragSelectState.context.size.height / 2)),
         );
         await tester.pump();
         expect(dragSelectState.autoScroll.direction, AutoScrollDirection.down);
@@ -1059,7 +1059,7 @@ void main() {
         final gesture = await longPressDownAndDrag(
           tester: tester,
           finder: gridFinder,
-          offset: Offset(0, -(dragSelectState.height / 2) + 1),
+          offset: Offset(0, -(dragSelectState.context.size.height / 2) + 1),
         );
         await tester.pump();
         expect(dragSelectState.autoScroll.direction, AutoScrollDirection.up);
@@ -1090,7 +1090,7 @@ void main() {
         final gesture = await longPressDownAndDrag(
           tester: tester,
           finder: gridFinder,
-          offset: Offset(0, dragSelectState.height / 2),
+          offset: Offset(0, dragSelectState.context.size.height / 2),
         );
         await tester.pump();
         expect(dragSelectState.autoScroll.direction, AutoScrollDirection.down);
@@ -1121,7 +1121,7 @@ void main() {
         final gesture = await longPressDownAndDrag(
           tester: tester,
           finder: gridFinder,
-          offset: Offset(0, dragSelectState.height / 2),
+          offset: Offset(0, dragSelectState.context.size.height / 2),
         );
         await tester.pump();
         expect(dragSelectState.autoScroll.direction, AutoScrollDirection.down);

@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'auto_scroller.dart';
+
 /// Possible directions of auto-scroll.
 enum AutoScrollDirection { up, down }
 

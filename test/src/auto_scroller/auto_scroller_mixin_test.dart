@@ -1,145 +1,256 @@
-import 'package:drag_select_grid_view/src/auto_scroller/auto_scroll.dart';
+import 'package:drag_select_grid_view/src/auto_scroll/auto_scroll.dart';
 import 'package:drag_select_grid_view/src/drag_select_grid_view/drag_select_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../test_utils.dart';
+
 void main() {
+  const distanceFromTop = 80.0;
+  const distanceFromRight = 40.0;
+  const distanceFromBottom = 60.0;
+  const distanceFromLeft = 20.0;
+  const widgetHeight = screenHeight - (distanceFromTop + distanceFromBottom);
+  const widgetWidth = screenWidth - (distanceFromRight + distanceFromLeft);
+
   final dragSelectGridViewFinder = find.byType(DragSelectGridView);
 
   Widget createWidget() {
     return MaterialApp(
-      home: DragSelectGridView(
-        itemCount: 0,
-        itemBuilder: (_, __, ___) => SizedBox(),
-        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 1,
+      home: Column(children: [
+        Container(height: distanceFromTop),
+        Expanded(
+          child: Row(children: [
+            Container(width: distanceFromLeft),
+            Expanded(
+              child: DragSelectGridView(
+                itemCount: 0,
+                itemBuilder: (_, __, ___) => SizedBox(),
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 1,
+                ),
+              ),
+            ),
+            Container(width: distanceFromRight),
+          ]),
         ),
-      ),
+        Container(height: distanceFromBottom),
+      ]),
     );
   }
 
-  testWidgets(
-    "Auto-scroll direction is updated "
-    "when `DragSelectGridView` starts to scroll up, "
-    "but auto-scroll doesn't change "
-    "when trying to scroll up again.",
-    (tester) async {
-      final widget = createWidget();
-      await tester.pumpWidget(widget);
+  group('Hotspot presence tests', () {
+    testWidgets(
+      "When the pointer gets inside the UPPER hotspot, "
+      "then `AutoScroller` detects the pointer in the UPPER hotspot.",
+      (tester) async {
+        final widget = createWidget();
+        await tester.pumpWidget(widget);
 
-      expect(dragSelectGridViewFinder, findsOneWidget);
+        expect(dragSelectGridViewFinder, findsOneWidget);
+        DragSelectGridViewState state = tester.state(dragSelectGridViewFinder);
 
-      DragSelectGridViewState dragSelectGridViewState =
-          tester.state(dragSelectGridViewFinder);
+        final offset = Offset(0, 0);
 
-      // First scroll up attempt.
+        expect(state.isInsideUpperAutoScrollHotspot(offset), isTrue);
+        expect(state.isInsideLowerAutoScrollHotspot(offset), isFalse);
+      },
+    );
 
-      expect(dragSelectGridViewState.autoScroll.isScrolling, isFalse);
-      expect(dragSelectGridViewState.autoScroll.direction, null);
+    testWidgets(
+      "When the pointer gets inside the LOWER hotspot, "
+      "then `AutoScroller` detects the pointer in the LOWER hotspot.",
+      (tester) async {
+        final widget = createWidget();
+        await tester.pumpWidget(widget);
 
-      dragSelectGridViewState.startAutoScrollingUp();
+        DragSelectGridViewState state = tester.state(dragSelectGridViewFinder);
+        final offset = Offset(0, widgetHeight);
 
-      expect(dragSelectGridViewState.autoScroll.isScrolling, isTrue);
-      expect(
-        dragSelectGridViewState.autoScroll.direction,
-        AutoScrollDirection.up,
-      );
+        expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideLowerAutoScrollHotspot(offset), isTrue);
+      },
+    );
 
-      // Second scroll up attempt.
+    testWidgets(
+      "When the pointer gets ABOVE both hotspots, "
+      "then `AutoScroller` detects the pointer in none of the hotspots.",
+      (tester) async {
+        final widget = createWidget();
+        await tester.pumpWidget(widget);
 
-      final oldAutoScroll = dragSelectGridViewState.autoScroll;
+        DragSelectGridViewState state = tester.state(dragSelectGridViewFinder);
+        final offset = Offset(0, -1);
 
-      dragSelectGridViewState.startAutoScrollingUp();
+        expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideLowerAutoScrollHotspot(offset), isFalse);
+      },
+    );
 
-      expect(
-        identical(oldAutoScroll, dragSelectGridViewState.autoScroll),
-        isTrue,
-      );
-    },
-  );
+    testWidgets(
+      "When the pointer gets BELOW both hotspots, "
+      "then `AutoScroller` detects the pointer in none of the hotspots.",
+      (tester) async {
+        final widget = createWidget();
+        await tester.pumpWidget(widget);
 
-  testWidgets(
-    "Auto-scroll direction is updated "
-    "when `DragSelectGridView` starts to scroll down, "
-    "but auto-scroll doesn't change "
-    "when trying to scroll down again.",
-    (tester) async {
-      final widget = createWidget();
-      await tester.pumpWidget(widget);
+        DragSelectGridViewState state = tester.state(dragSelectGridViewFinder);
+        final offset = Offset(0, widgetHeight + 1);
 
-      expect(dragSelectGridViewFinder, findsOneWidget);
+        expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideLowerAutoScrollHotspot(offset), isFalse);
+      },
+    );
 
-      DragSelectGridViewState dragSelectGridViewState =
-          tester.state(dragSelectGridViewFinder);
+    testWidgets(
+      "When the pointer gets to the left side of both hotspots, "
+      "then `AutoScroller` detects the pointer in none of the hotspots.",
+      (tester) async {
+        final widget = createWidget();
+        await tester.pumpWidget(widget);
 
-      // First scroll down attempt.
+        DragSelectGridViewState state = tester.state(dragSelectGridViewFinder);
+        final offset = Offset(-1, 0);
 
-      expect(dragSelectGridViewState.autoScroll.isScrolling, isFalse);
-      expect(dragSelectGridViewState.autoScroll.direction, null);
+        expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideLowerAutoScrollHotspot(offset), isFalse);
+      },
+    );
 
-      dragSelectGridViewState.startAutoScrollingDown();
+    testWidgets(
+      "When the pointer gets to the right side of both hotspots, "
+      "then `AutoScroller` detects the pointer in none of the hotspots.",
+      (tester) async {
+        final widget = createWidget();
+        await tester.pumpWidget(widget);
 
-      expect(dragSelectGridViewState.autoScroll.isScrolling, isTrue);
-      expect(
-        dragSelectGridViewState.autoScroll.direction,
-        AutoScrollDirection.down,
-      );
+        DragSelectGridViewState state = tester.state(dragSelectGridViewFinder);
+        final offset = Offset(widgetWidth + 1, 0);
 
-      // Second scroll down attempt.
+        expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideLowerAutoScrollHotspot(offset), isFalse);
+      },
+    );
+  });
 
-      final oldAutoScroll = dragSelectGridViewState.autoScroll;
+  group('Auto-scroll tests', () {
+    testWidgets(
+      "Auto-scroll direction is updated "
+      "when `DragSelectGridView` starts to scroll up, "
+      "but auto-scroll doesn't change "
+      "when trying to scroll up again.",
+      (tester) async {
+        final widget = createWidget();
+        await tester.pumpWidget(widget);
 
-      dragSelectGridViewState.startAutoScrollingDown();
+        DragSelectGridViewState dragSelectGridViewState =
+            tester.state(dragSelectGridViewFinder);
 
-      expect(
-        identical(oldAutoScroll, dragSelectGridViewState.autoScroll),
-        isTrue,
-      );
-    },
-  );
+        // First scroll up attempt.
 
-  testWidgets(
-    "Auto-scroll is updated "
-    "when stop scrolling, "
-    "but auto-scroll doesn't change "
-    "when trying to stop scrolling again.",
-    (tester) async {
-      final widget = createWidget();
-      await tester.pumpWidget(widget);
+        expect(dragSelectGridViewState.autoScroll.isScrolling, isFalse);
+        expect(dragSelectGridViewState.autoScroll.direction, null);
 
-      expect(dragSelectGridViewFinder, findsOneWidget);
+        dragSelectGridViewState.startAutoScrollingUp();
 
-      DragSelectGridViewState dragSelectGridViewState =
-          tester.state(dragSelectGridViewFinder);
+        expect(dragSelectGridViewState.autoScroll.isScrolling, isTrue);
+        expect(
+          dragSelectGridViewState.autoScroll.direction,
+          AutoScrollDirection.up,
+        );
 
-      dragSelectGridViewState.startAutoScrollingDown();
+        // Second scroll up attempt.
 
-      // First stop attempt.
+        final oldAutoScroll = dragSelectGridViewState.autoScroll;
 
-      expect(dragSelectGridViewState.autoScroll.isScrolling, isTrue);
-      expect(
-        dragSelectGridViewState.autoScroll.direction,
-        AutoScrollDirection.down,
-      );
+        dragSelectGridViewState.startAutoScrollingUp();
 
-      dragSelectGridViewState.stopScrolling();
+        expect(
+          identical(oldAutoScroll, dragSelectGridViewState.autoScroll),
+          isTrue,
+        );
+      },
+    );
 
-      expect(dragSelectGridViewState.autoScroll.isScrolling, isFalse);
-      expect(
-        dragSelectGridViewState.autoScroll.direction,
-        AutoScrollDirection.down,
-      );
+    testWidgets(
+      "Auto-scroll direction is updated "
+      "when `DragSelectGridView` starts to scroll down, "
+      "but auto-scroll doesn't change "
+      "when trying to scroll down again.",
+      (tester) async {
+        final widget = createWidget();
+        await tester.pumpWidget(widget);
 
-      // Second stop attempt.
+        DragSelectGridViewState dragSelectGridViewState =
+            tester.state(dragSelectGridViewFinder);
 
-      final oldAutoScroll = dragSelectGridViewState.autoScroll;
+        // First scroll down attempt.
 
-      dragSelectGridViewState.stopScrolling();
+        expect(dragSelectGridViewState.autoScroll.isScrolling, isFalse);
+        expect(dragSelectGridViewState.autoScroll.direction, null);
 
-      expect(
-        identical(oldAutoScroll, dragSelectGridViewState.autoScroll),
-        isTrue,
-      );
-    },
-  );
+        dragSelectGridViewState.startAutoScrollingDown();
+
+        expect(dragSelectGridViewState.autoScroll.isScrolling, isTrue);
+        expect(
+          dragSelectGridViewState.autoScroll.direction,
+          AutoScrollDirection.down,
+        );
+
+        // Second scroll down attempt.
+
+        final oldAutoScroll = dragSelectGridViewState.autoScroll;
+
+        dragSelectGridViewState.startAutoScrollingDown();
+
+        expect(
+          identical(oldAutoScroll, dragSelectGridViewState.autoScroll),
+          isTrue,
+        );
+      },
+    );
+
+    testWidgets(
+      "Auto-scroll is updated "
+      "when stop scrolling, "
+      "but auto-scroll doesn't change "
+      "when trying to stop scrolling again.",
+      (tester) async {
+        final widget = createWidget();
+        await tester.pumpWidget(widget);
+
+        DragSelectGridViewState dragSelectGridViewState =
+            tester.state(dragSelectGridViewFinder);
+
+        dragSelectGridViewState.startAutoScrollingDown();
+
+        // First stop attempt.
+
+        expect(dragSelectGridViewState.autoScroll.isScrolling, isTrue);
+        expect(
+          dragSelectGridViewState.autoScroll.direction,
+          AutoScrollDirection.down,
+        );
+
+        dragSelectGridViewState.stopScrolling();
+
+        expect(dragSelectGridViewState.autoScroll.isScrolling, isFalse);
+        expect(
+          dragSelectGridViewState.autoScroll.direction,
+          AutoScrollDirection.down,
+        );
+
+        // Second stop attempt.
+
+        final oldAutoScroll = dragSelectGridViewState.autoScroll;
+
+        dragSelectGridViewState.stopScrolling();
+
+        expect(
+          identical(oldAutoScroll, dragSelectGridViewState.autoScroll),
+          isTrue,
+        );
+      },
+    );
+  });
 }

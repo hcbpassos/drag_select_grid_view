@@ -1,10 +1,7 @@
-import 'package:drag_select_grid_view/src/drag_select_grid_view/selectable.dart';
-import 'package:drag_select_grid_view/src/misc/utils.dart';
 import 'package:flutter/widgets.dart';
 
-import '../auto_scroll_hotspot_presence_inspector/auto_scroll_hotspot_presence_inspector.dart';
-import '../auto_scroller/auto_scroller_mixin.dart';
-import '../spacing_details/spacing_details_mixin.dart';
+import '../auto_scroll/auto_scroller_mixin.dart';
+import '../drag_select_grid_view/selectable.dart';
 import 'selection.dart';
 
 typedef SelectableWidgetBuilder = Widget Function(
@@ -47,7 +44,6 @@ class DragSelectGridView extends StatefulWidget {
 
 class DragSelectGridViewState extends State<DragSelectGridView>
     with
-        SpacingDetailsMixin<DragSelectGridView>,
         AutoScrollerMixin<DragSelectGridView> {
   final elements = <SelectableElement>{};
   final selectedIndexes = <int>{};
@@ -59,6 +55,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
 
   bool get isSelecting => selectedIndexes.isNotEmpty;
 
+  @override
   double get autoScrollHotspotHeight => widget.autoScrollHotspotHeight;
 
   @override
@@ -164,9 +161,9 @@ class DragSelectGridViewState extends State<DragSelectGridView>
       notifySelectionChange();
     }
 
-    if (_isInsideUpperAutoScrollHotspot(details.globalPosition)) {
+    if (isInsideUpperAutoScrollHotspot(details.localPosition)) {
       startAutoScrollingUp();
-    } else if (_isInsideLowerAutoScrollHotspot(details.globalPosition)) {
+    } else if (isInsideLowerAutoScrollHotspot(details.localPosition)) {
       startAutoScrollingDown();
     } else {
       stopScrolling();
@@ -181,14 +178,6 @@ class DragSelectGridViewState extends State<DragSelectGridView>
 
   void notifySelectionChange() =>
       widget.onSelectionChanged?.call(Selection(selectedIndexes));
-
-  bool _isInsideUpperAutoScrollHotspot(Offset position) =>
-      AutoScrollHotspotPresenceInspector(this, position)
-          .isInsideUpperAutoScrollHotspot;
-
-  bool _isInsideLowerAutoScrollHotspot(Offset position) =>
-      AutoScrollHotspotPresenceInspector(this, position)
-          .isInsideLowerAutoScrollHotspot;
 
   int _findIndexOfSelectable(Offset offset) {
     final ancestor = context.findRenderObject();

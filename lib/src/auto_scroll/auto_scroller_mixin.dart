@@ -7,7 +7,23 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   @visibleForTesting
   AutoScroll autoScroll = AutoScroll.stopped();
 
+  @visibleForTesting
+  double widgetHeight;
+
+  double get autoScrollHotspotHeight;
+
   ScrollController get controller;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        final widgetSize = context.size;
+        widgetHeight = widgetSize.height;
+      },
+    );
+  }
 
   @override
   @mustCallSuper
@@ -16,6 +32,12 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
     if (scroller.mustScroll) scroller.scroll();
     return null;
   }
+
+  bool isInsideUpperAutoScrollHotspot(Offset localPosition) =>
+      localPosition.dy <= autoScrollHotspotHeight;
+
+  bool isInsideLowerAutoScrollHotspot(Offset localPosition) =>
+      localPosition.dy > (widgetHeight - autoScrollHotspotHeight);
 
   void startAutoScrollingUp() {
     _updateAutoScrollIfDifferent(

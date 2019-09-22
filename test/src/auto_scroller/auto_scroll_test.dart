@@ -1,4 +1,4 @@
-import 'package:drag_select_grid_view/src/auto_scroller/auto_scroll.dart';
+import 'package:drag_select_grid_view/src/auto_scroll/auto_scroll.dart';
 import 'package:test/test.dart';
 import 'package:flutter_test/flutter_test.dart' show throwsAssertionError;
 
