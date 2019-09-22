@@ -39,6 +39,7 @@ class SelectableElement extends ProxyElement {
     super.unmount();
   }
 
+  /// Returns whether the [offset] is in the bounds of this element.
   bool containsOffset(RenderObject ancestor, Offset offset) {
     RenderBox box = renderObject;
     final rect = box.localToGlobal(Offset.zero, ancestor: ancestor) & box.size;

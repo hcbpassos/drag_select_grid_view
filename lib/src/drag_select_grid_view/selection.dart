@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import '../misc/utils.dart';
 
-/// Hold and calculate selected indexes based on gestures.
+/// Holds and calculates selected indexes based on gestures.
 ///
 /// This class is conceptually tied to UI gestures, so its methods have names
 /// that suggest interactions (specifically tap and drag), however it just data
@@ -27,7 +27,7 @@ class SelectionManager {
   /// [endDrag]), or by tapping (with [tap]).
   final selectedIndexes = <int>{};
 
-  /// Add the index to [selectedIndexes], or remove it if it's already there.
+  /// Adds the [index] to [selectedIndexes], or removes it if it's already there.
   void tap(int index) {
     if (selectedIndexes.contains(index)) {
       selectedIndexes.remove(index);
@@ -36,16 +36,17 @@ class SelectionManager {
     }
   }
 
-  /// Add the [index] to [selectedIndexes] and allow [updateDrag] calls.
+  /// Adds the [index] to [selectedIndexes] and allows [updateDrag] calls.
   void startDrag(int index) {
     _dragStartIndex = _dragEndIndex = index;
     selectedIndexes.add(index);
   }
 
-  /// Update the [selectedIndexes], adding/removing one or more indexes, based
+  /// Updates the [selectedIndexes], adding/removing one or more indexes, based
   /// on [index], [dragStartIndex] and [dragEndIndex].
   ///
   /// Does nothing if:
+  ///
   ///   * [index] is negative.
   ///   * Drag didn't start.
   void updateDrag(int index) {
@@ -64,13 +65,13 @@ class SelectionManager {
     _dragEndIndex = index;
   }
 
-  /// Finish the current drag.
+  /// Finishes the current drag.
   void endDrag() {
     _dragStartIndex = -1;
     _dragEndIndex = -1;
   }
 
-  /// Update the [selectedIndexes], adding/removing one or more indexes, based
+  /// Updates the [selectedIndexes], adding/removing one or more indexes, based
   /// on [index], [dragStartIndex] and [dragEndIndex].
   ///
   /// This cannot handle a drag that is both forward and backward (and vice
@@ -107,15 +108,19 @@ class SelectionManager {
   }
 }
 
+/// Information about the grid selection.
 @immutable
 class Selection {
   const Selection(this.selectedIndexes) : assert(selectedIndexes != null);
 
+  /// Indexes of grid which are selected.
   final Set<int> selectedIndexes;
 
+  /// Amount of selected indexes.
   int get amount => selectedIndexes.length;
 
-  bool get isSelecting => amount != 0;
+  /// Whether the grid is currently in select mode.
+  bool get isSelecting => amount > 0;
 
   @override
   String toString() => 'Selection{selectedIndexes: $selectedIndexes}';

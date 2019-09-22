@@ -4,39 +4,122 @@ import '../auto_scroll/auto_scroller_mixin.dart';
 import '../drag_select_grid_view/selectable.dart';
 import 'selection.dart';
 
+/// Function signature that creates a widget based on the index and whether
+/// it is selected or not.
+///
+/// Used by [DragSelectGridView] to generate children lazily.
 typedef SelectableWidgetBuilder = Widget Function(
   BuildContext context,
   int index,
   bool selected,
 );
 
+/// Function signature for notifying whenever the selection changes.
 typedef SelectionChangedCallback = void Function(Selection selection);
 
+/// Grid that supports both dragging and pressing to select its items.
+///
+/// A long-press enables selection. The user may select/unselect any item by
+/// tapping on it. Dragging allows cascade selecting/unselecting.
+///
+/// Through auto-scroll, this widget adds the ability to select items that go
+/// beyond screen bounds without having to stop the drag. To do so, this widget
+/// creates two imaginary zones that, if reached by the pointer while dragging,
+/// triggers the auto-scroll.
+///
+/// The first zone is at the top, and triggers backward auto-scrolling.
+/// The second is at the bottom, and triggers forward auto-scrolling.
 class DragSelectGridView extends StatefulWidget {
   static const defaultAutoScrollHotspotHeight = 64.0;
 
+  /// Creates a grid that supports both dragging and pressing to select its
+  /// items.
+  ///
+  /// For information about the clause of most parameters, refer to
+  /// [GridView.builder].
   DragSelectGridView({
     Key key,
     double autoScrollHotspotHeight,
     ScrollController controller,
     this.onSelectionChanged,
+    this.reverse = false,
+    this.primary,
+    this.physics,
+    this.shrinkWrap = false,
     this.padding,
-    this.itemCount,
-    @required this.itemBuilder,
     @required this.gridDelegate,
+    @required this.itemBuilder,
+    this.itemCount,
+    this.addAutomaticKeepAlives = true,
+    this.addRepaintBoundaries = true,
+    this.addSemanticIndexes = true,
+    this.cacheExtent,
+    this.semanticChildCount,
   })  : assert(itemBuilder != null),
-        controller = controller ?? ScrollController(),
         autoScrollHotspotHeight =
             autoScrollHotspotHeight ?? defaultAutoScrollHotspotHeight,
+        controller = controller ?? ScrollController(),
         super(key: key);
 
+  /// The height of the hotspot that enables auto-scroll.
+  ///
+  /// This value is used for both top and bottom hotspots. The width is going to
+  /// match the width of the widget.
+  ///
+  /// Defaults to [defaultAutoScrollHotspotHeight].
   final double autoScrollHotspotHeight;
+
+  /// Refer to [ScrollView.controller].
   final ScrollController controller;
+
+  /// Called whenever the selection changes.
   final SelectionChangedCallback onSelectionChanged;
+
+  /// Refer to [ScrollView.reverse].
+  final bool reverse;
+
+  /// Refer to [ScrollView.primary].
+  final bool primary;
+
+  /// Refer to [ScrollView.physics].
+  final ScrollPhysics physics;
+
+  /// Refer to [ScrollView.shrinkWrap].
+  final bool shrinkWrap;
+
+  /// Refer to [BoxScrollView.padding].
   final EdgeInsetsGeometry padding;
+
+  /// Refer to [GridView.gridDelegate].
   final SliverGridDelegate gridDelegate;
+
+  /// Called whenever a child needs to be built.
+  ///
+  /// The client should use this to build the children dynamically, based on
+  /// the index and whether it is selected or not.
+  ///
+  /// Cannot be null.
+  ///
+  /// Also refer to [SliverChildBuilderDelegate.builder].
   final SelectableWidgetBuilder itemBuilder;
+
+  /// Refer to [SliverChildBuilderDelegate.itemCount].
   final int itemCount;
+
+  /// Refer to [SliverChildBuilderDelegate.addAutomaticKeepAlives].
+  final bool addAutomaticKeepAlives;
+
+  /// Refer to [SliverChildBuilderDelegate.addRepaintBoundaries].
+  final bool addRepaintBoundaries;
+
+  /// Refer to [SliverChildBuilderDelegate.addSemanticIndexes].
+  final bool addSemanticIndexes;
+
+  /// Refer to [ScrollView.cacheExtent].
+  final double cacheExtent;
+
+  /// Refer to [ScrollView.semanticChildCount].
+  final int semanticChildCount;
 
   @override
   DragSelectGridViewState createState() => DragSelectGridViewState();
@@ -49,11 +132,11 @@ class DragSelectGridViewState extends State<DragSelectGridView>
 
   Set<int> get selectedIndexes => selectionManager.selectedIndexes;
 
+  bool get isSelecting => selectedIndexes.isNotEmpty;
+
   bool get isDragging =>
       (selectionManager.dragStartIndex != -1) &&
       (selectionManager.dragEndIndex != -1);
-
-  bool get isSelecting => selectedIndexes.isNotEmpty;
 
   @override
   double get autoScrollHotspotHeight => widget.autoScrollHotspotHeight;
@@ -74,9 +157,18 @@ class DragSelectGridViewState extends State<DragSelectGridView>
         ignoring: isDragging,
         child: GridView.builder(
           controller: widget.controller,
+          reverse: widget.reverse,
+          primary: widget.primary,
+          physics: widget.physics,
+          shrinkWrap: widget.shrinkWrap,
           padding: widget.padding,
           gridDelegate: widget.gridDelegate,
           itemCount: widget.itemCount,
+          addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
+          addRepaintBoundaries: widget.addRepaintBoundaries,
+          addSemanticIndexes: widget.addSemanticIndexes,
+          cacheExtent: widget.cacheExtent,
+          semanticChildCount: widget.semanticChildCount,
           itemBuilder: (BuildContext context, int index) {
             return Selectable(
               index: index,
@@ -123,16 +215,24 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     }
 
     if (isInsideUpperAutoScrollHotspot(details.localPosition)) {
-      startAutoScrollingUp();
+      if (widget.reverse) {
+        startAutoScrollingDown();
+      } else {
+        startAutoScrollingUp();
+      }
     } else if (isInsideLowerAutoScrollHotspot(details.localPosition)) {
-      startAutoScrollingDown();
+      if (widget.reverse) {
+        startAutoScrollingUp();
+      } else {
+        startAutoScrollingDown();
+      }
     } else {
       stopScrolling();
     }
   }
 
   void _onLongPressEnd(LongPressEndDetails details) {
-    setState(() => selectionManager.endDrag());
+    setState(selectionManager.endDrag);
     stopScrolling();
   }
 

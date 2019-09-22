@@ -152,10 +152,17 @@ void main() {
         ""
         "when the first item of the grid is long-pressed, "
         ""
-        "then the item gets SELECTED.",
+        "then the item gets SELECTED, "
+        "and we get notified about selection change.",
         (tester) async {
+          int selectionChangedCount = 0;
+          Selection selection;
+
           // Given that the grid has 4 columns and 3 lines,
-          await setUp(tester);
+          await setUp(tester, onSelectionChanged: (newSelection) {
+            selectionChangedCount++;
+            selection = newSelection;
+          });
 
           // and that the first item of the grid is UNSELECTED,
           expect(dragSelectState.selectedIndexes, <int>{});

@@ -44,6 +44,7 @@ class AutoScroll {
   /// The duration of the auto-scroll.
   ///
   /// The longer the duration, the slower the scrolling.
+  ///
   /// The shorter the duration, the faster the scrolling.
   final Duration duration;
 
