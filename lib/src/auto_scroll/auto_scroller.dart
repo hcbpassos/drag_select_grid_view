@@ -16,13 +16,14 @@ class AutoScroller {
       return true;
     } on AssertionError {
       return false;
+    } on StateError {
+      return false;
     }
   }
 
   AutoScroller(this.autoScroll, this.controller)
-      : currentPosition = _isScrollControllerAttached(controller)
-            ? controller.offset
-            : null;
+      : currentPosition =
+            _isScrollControllerAttached(controller) ? controller.offset : null;
 
   final AutoScroll autoScroll;
   final ScrollController controller;
