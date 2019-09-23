@@ -18,6 +18,7 @@
 # Flutter/Dart/Pub related
 **/doc/api/
 .dart_tool/
+pubspec.lock
 .flutter-plugins
 .packages
 .pub-cache/

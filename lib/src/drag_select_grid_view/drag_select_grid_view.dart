@@ -17,7 +17,7 @@ typedef SelectableWidgetBuilder = Widget Function(
 /// Function signature for notifying whenever the selection changes.
 typedef SelectionChangedCallback = void Function(Selection selection);
 
-/// Grid that supports both dragging and pressing to select its items.
+/// Grid that supports both dragging and tapping to select its items.
 ///
 /// A long-press enables selection. The user may select/unselect any item by
 /// tapping on it. Dragging allows cascade selecting/unselecting.
@@ -32,7 +32,7 @@ typedef SelectionChangedCallback = void Function(Selection selection);
 class DragSelectGridView extends StatefulWidget {
   static const defaultAutoScrollHotspotHeight = 64.0;
 
-  /// Creates a grid that supports both dragging and pressing to select its
+  /// Creates a grid that supports both dragging and tapping to select its
   /// items.
   ///
   /// For information about the clause of most parameters, refer to

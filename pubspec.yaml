@@ -1,6 +1,6 @@
 name: drag_select_grid_view
-description: A new Flutter package.
-version: 0.0.1
+description: Grid that supports both dragging and tapping to select its items.
+version: 0.1.0
 author: Hugo Passos
 homepage:
 
@@ -17,5 +17,3 @@ dev_dependencies:
   test: any
   flutter_test:
     sdk: flutter
-
-flutter:
