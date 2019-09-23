@@ -25,6 +25,8 @@ class SelectionManager {
   ///
   /// Indexes can be selected by dragging (with [startDrag], [updateDrag] and
   /// [endDrag]), or by tapping (with [tap]).
+  ///
+  /// Clients may not call any methods with side-effects, such as [Set.add].
   final selectedIndexes = <int>{};
 
   /// Adds the [index] to [selectedIndexes], or removes it if it's already there.
@@ -70,6 +72,9 @@ class SelectionManager {
     _dragStartIndex = -1;
     _dragEndIndex = -1;
   }
+
+  /// Remove all indexes from [selectedIndexes].
+  void clear() => selectedIndexes.clear();
 
   /// Updates the [selectedIndexes], adding/removing one or more indexes, based
   /// on [index], [dragStartIndex] and [dragEndIndex].

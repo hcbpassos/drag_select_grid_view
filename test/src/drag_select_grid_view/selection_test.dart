@@ -358,6 +358,22 @@ void main() {
           expect(manager.selectedIndexes, {2});
         },
       );
+
+      test(
+        "Given that the indexes 0, 1 and 2 were selected, "
+        "when clearing the selection, "
+        "then all indexes get UNSELECTED.",
+        () {
+          final manager = SelectionManager();
+
+          manager.tap(0);
+          manager.tap(1);
+          manager.tap(2);
+          manager.clear();
+
+          expect(manager.selectedIndexes, <int>{});
+        },
+      );
     });
 
     test(

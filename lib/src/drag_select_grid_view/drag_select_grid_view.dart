@@ -147,41 +147,54 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return GestureDetector(
-      onTapUp: _onTapUp,
-      onLongPressStart: _onLongPressStart,
-      onLongPressMoveUpdate: _onLongPressMoveUpdate,
-      onLongPressEnd: _onLongPressEnd,
-      behavior: HitTestBehavior.translucent,
-      child: IgnorePointer(
-        ignoring: isDragging,
-        child: GridView.builder(
-          controller: widget.controller,
-          reverse: widget.reverse,
-          primary: widget.primary,
-          physics: widget.physics,
-          shrinkWrap: widget.shrinkWrap,
-          padding: widget.padding,
-          gridDelegate: widget.gridDelegate,
-          itemCount: widget.itemCount,
-          addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
-          addRepaintBoundaries: widget.addRepaintBoundaries,
-          addSemanticIndexes: widget.addSemanticIndexes,
-          cacheExtent: widget.cacheExtent,
-          semanticChildCount: widget.semanticChildCount,
-          itemBuilder: (BuildContext context, int index) {
-            return Selectable(
-              index: index,
-              child: widget.itemBuilder(
-                context,
-                index,
-                selectedIndexes.contains(index),
-              ),
-            );
-          },
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: GestureDetector(
+        onTapUp: _onTapUp,
+        onLongPressStart: _onLongPressStart,
+        onLongPressMoveUpdate: _onLongPressMoveUpdate,
+        onLongPressEnd: _onLongPressEnd,
+        behavior: HitTestBehavior.translucent,
+        child: IgnorePointer(
+          ignoring: isDragging,
+          child: GridView.builder(
+            controller: widget.controller,
+            reverse: widget.reverse,
+            primary: widget.primary,
+            physics: widget.physics,
+            shrinkWrap: widget.shrinkWrap,
+            padding: widget.padding,
+            gridDelegate: widget.gridDelegate,
+            itemCount: widget.itemCount,
+            addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
+            addRepaintBoundaries: widget.addRepaintBoundaries,
+            addSemanticIndexes: widget.addSemanticIndexes,
+            cacheExtent: widget.cacheExtent,
+            semanticChildCount: widget.semanticChildCount,
+            itemBuilder: (BuildContext context, int index) {
+              return Selectable(
+                index: index,
+                child: widget.itemBuilder(
+                  context,
+                  index,
+                  selectedIndexes.contains(index),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
+  }
+
+  Future<bool> _onWillPop() async {
+    if (isSelecting) {
+      setState(selectionManager.clear);
+      _notifySelectionChange();
+      return false;
+    } else {
+      return true;
+    }
   }
 
   void _onTapUp(TapUpDetails details) {
