@@ -1,5 +1,5 @@
 name: drag_select_grid_view_example
-description: Demonstrates how to use the drag_select_grid_view plugin.
+description: Demonstrates how to use the drag_select_grid_view package.
 publish_to: 'none'
 
 environment:
@@ -15,3 +15,4 @@ dev_dependencies:
 
   drag_select_grid_view:
     path: ../
+
