@@ -4,10 +4,8 @@ import '../auto_scroll/auto_scroller_mixin.dart';
 import '../drag_select_grid_view/selectable.dart';
 import 'selection.dart';
 
-/// Function signature that creates a widget based on the index and whether
+/// Function signature for creating widgets based on the index and whether
 /// it is selected or not.
-///
-/// Used by [DragSelectGridView] to generate children lazily.
 typedef SelectableWidgetBuilder = Widget Function(
   BuildContext context,
   int index,
@@ -42,6 +40,7 @@ class DragSelectGridView extends StatefulWidget {
     double autoScrollHotspotHeight,
     ScrollController controller,
     this.onSelectionChanged,
+    this.unselectOnWillPop = true,
     this.reverse = false,
     this.primary,
     this.physics,
@@ -74,6 +73,15 @@ class DragSelectGridView extends StatefulWidget {
 
   /// Called whenever the selection changes.
   final SelectionChangedCallback onSelectionChanged;
+
+  /// Whether the items should be unselected when trying to pop the route.
+  ///
+  /// Normally, this is used to unselect the items when Android users tap the
+  /// back-button in the navigation bar.
+  ///
+  /// By leaving this false, you may implement your own on-pop unselecting logic
+  /// with [gridController]'s help.
+  final bool unselectOnWillPop;
 
   /// Refer to [ScrollView.reverse].
   final bool reverse;
@@ -190,7 +198,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   }
 
   Future<bool> _onWillPop() async {
-    if (isSelecting) {
+    if (isSelecting && widget.unselectOnWillPop) {
       setState(selectionManager.clear);
       _notifySelectionChange();
       return false;
