@@ -21,7 +21,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   /// The controller of the grid's scroll-view.
   ///
   /// Used to perform the auto-scroll.
-  ScrollController get controller;
+  ScrollController get scrollController;
 
   /// Stores the size of the widget.
   ///
@@ -51,7 +51,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   @override
   @mustCallSuper
   Widget build(BuildContext context) {
-    final scroller = AutoScroller(autoScroll, controller);
+    final scroller = AutoScroller(autoScroll, scrollController);
     if (scroller.mustScroll) scroller.scroll();
     return null;
   }
