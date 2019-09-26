@@ -4,11 +4,18 @@ import 'package:flutter/widgets.dart';
 
 import 'auto_scroll.dart';
 
+/// Allows automatic scrolling by joining [autoScroll]'s and [controller]'s
+/// information and features.
 @immutable
 class AutoScroller {
-  static const overscrollDuration = const Duration(milliseconds: 300);
+  /// The duration of the overscroll.
+  static const overscrollDuration = Duration(milliseconds: 300);
+
+  /// The distance traveled by the overscroll.
   static const amountOfOverscrollOnScrollStop = 100;
-  static const minimumScrollDurationPerPixelInMs = 2;
+
+  /// The duration, in milliseconds, that it'll take to scroll by each pixel.
+  static const scrollDurationPerPixelInMs = 2;
 
   static bool _isScrollControllerAttached(ScrollController controller) {
     try {
@@ -21,6 +28,13 @@ class AutoScroller {
     }
   }
 
+  /// Creates a new [AutoScroller].
+  ///
+  /// The [autoScroll] provides the necessary information to perform the scroll,
+  /// such as the direction.
+  ///
+  /// The [controller] allows the actual scrolling, but also provides some
+  /// information, like the current position of the scroll-view.
   AutoScroller(this.autoScroll, this.controller)
       : currentPosition =
             _isScrollControllerAttached(controller) ? controller.offset : null;
@@ -133,7 +147,7 @@ class AutoScroller {
     final amountToBeScrolled = (targetPosition - currentPosition).abs();
 
     final scrollDurationInMs =
-        (amountToBeScrolled * minimumScrollDurationPerPixelInMs).toInt();
+        (amountToBeScrolled * scrollDurationPerPixelInMs).toInt();
 
     return Duration(milliseconds: scrollDurationInMs);
   }

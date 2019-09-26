@@ -6,8 +6,8 @@ import '../misc/utils.dart';
 /// Holds and calculates selected indexes based on gestures.
 ///
 /// This class is conceptually tied to UI gestures, so its methods have names
-/// that suggest interactions (specifically tap and drag), however it just data
-/// and makes calculations.
+/// that suggest interactions (specifically tap and drag), however it just holds
+/// data and makes some calculations.
 ///
 /// This behavior is unusual, but in this situation it helps to keep everything
 /// more didactic, since you can easily link the UI action to it's consequence
@@ -116,9 +116,10 @@ class SelectionManager {
 /// Information about the grid selection.
 @immutable
 class Selection {
+  /// Creates a new [Selection].
   const Selection(this.selectedIndexes) : assert(selectedIndexes != null);
 
-  /// Indexes of grid which are selected.
+  /// Grid indexes that are selected.
   final Set<int> selectedIndexes;
 
   /// Amount of selected indexes.

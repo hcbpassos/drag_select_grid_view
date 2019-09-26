@@ -15,6 +15,7 @@ enum AutoScrollDirection { forward, backward }
 /// Helper class that holds information created and used by [AutoScroller].
 @immutable
 class AutoScroll {
+  /// Creates a new [AutoScroll].
   AutoScroll({@required this.direction, @required this.duration})
       : assert(direction != null),
         assert(duration != null),
@@ -86,13 +87,19 @@ class AutoScroll {
 /// This works as an extension of [AutoScroll.isScrolling], helping
 /// [AutoScroller] to decide whether it IS stopped or it SHOULD stop.
 class StopAutoScrollEvent {
+  /// Creates a [StopAutoScrollEvent] that can be consumed.
   StopAutoScrollEvent() : _isConsumed = false;
 
+  /// Creates a [StopAutoScrollEvent] that is already consumed.
   StopAutoScrollEvent.consumed() : _isConsumed = true;
 
+  /// Whether the stop-event is consumed.
   bool get isConsumed => _isConsumed;
   bool _isConsumed;
 
+  /// Consumes the stop-event.
+  ///
+  /// Returns false if it is already consumed, otherwise return true.
   bool consume() {
     if (_isConsumed) {
       return false;
