@@ -174,6 +174,8 @@ class DragSelectGridViewState extends State<DragSelectGridView>
             itemBuilder: (BuildContext context, int index) {
               return Selectable(
                 index: index,
+                onMountElement: elements.add,
+                onUnmountElement: elements.remove,
                 child: widget.itemBuilder(
                   context,
                   index,

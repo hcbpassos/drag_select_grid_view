@@ -1,16 +1,28 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-import '../drag_select_grid_view/drag_select_grid_view.dart';
+/// Function signature for notifying whenever the element is mounted or
+/// unmounted.
+typedef ElementUpdateCallback = void Function(SelectableElement);
 
+/// Helps to track the elements of the grid items.
+///
+/// This provides callbacks that allow storing the elements, so the method
+/// [SelectableElement.containsOffset] can be used to determine which grid item
+/// is at a given offset.
 class Selectable extends ProxyWidget {
+  /// Creates a [Selectable].
   const Selectable({
     Key key,
     @required this.index,
+    @required this.onMountElement,
+    @required this.onUnmountElement,
     @required Widget child,
   }) : super(key: key, child: child);
 
   final int index;
+  final ElementUpdateCallback onMountElement;
+  final ElementUpdateCallback onUnmountElement;
 
   @override
   SelectableElement createElement() => SelectableElement(this);
@@ -22,20 +34,15 @@ class SelectableElement extends ProxyElement {
   @override
   Selectable get widget => super.widget;
 
-  DragSelectGridViewState _ancestorState;
-
   @override
   void mount(Element parent, newSlot) {
     super.mount(parent, newSlot);
-    _ancestorState =
-        ancestorStateOfType(TypeMatcher<DragSelectGridViewState>());
-    _ancestorState?.elements?.add(this);
+    widget.onMountElement?.call(this);
   }
 
   @override
   void unmount() {
-    _ancestorState?.elements?.remove(this);
-    _ancestorState = null;
+    widget.onUnmountElement?.call(this);
     super.unmount();
   }
 
