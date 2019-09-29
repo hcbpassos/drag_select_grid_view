@@ -47,15 +47,19 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
         final widgetSize = context.size;
         _widgetHeight = widgetSize.height;
         _widgetWidth = widgetSize.width;
-        scrollController.position.addListener(onScroll);
+        if (scrollController.hasClients) {
+          scrollController.position.addListener(onScroll);
+        }
       },
     );
   }
 
   @override
   void dispose() {
+    if (scrollController.hasClients) {
+      scrollController.position.removeListener(onScroll);
+    }
     super.dispose();
-    scrollController.position.removeListener(onScroll);
   }
 
   /// Triggers the auto-scroll.

@@ -17,17 +17,6 @@ class AutoScroller {
   /// The duration, in milliseconds, that it'll take to scroll by each pixel.
   static const scrollDurationPerPixelInMs = 2;
 
-  static bool _isScrollControllerAttached(ScrollController controller) {
-    try {
-      controller.position;
-      return true;
-    } on AssertionError {
-      return false;
-    } on StateError {
-      return false;
-    }
-  }
-
   /// Creates a new [AutoScroller].
   ///
   /// The [autoScroll] provides the necessary information to perform the scroll,
@@ -36,8 +25,7 @@ class AutoScroller {
   /// The [controller] allows the actual scrolling, but also provides some
   /// information, like the current position of the scroll-view.
   AutoScroller(this.autoScroll, this.controller)
-      : currentPosition =
-            _isScrollControllerAttached(controller) ? controller.offset : null;
+      : currentPosition = controller.hasClients ? controller.offset : null;
 
   final AutoScroll autoScroll;
   final ScrollController controller;
