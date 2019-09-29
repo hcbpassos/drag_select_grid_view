@@ -13,28 +13,21 @@ typedef SelectionChangedCallback = void Function(Selection selection);
 /// whether there are selected items and how many are selected.
 ///
 /// It also allows to directly update the selected items.
-class DragSelectGridViewController {
-  final _selectionChangeController = StreamController<Selection>.broadcast();
-
-  /// Stream of selection change events.
+class DragSelectGridViewController extends ChangeNotifier {
+  /// Gets the current grid selection.
   ///
-  /// May be used to update the UI to indicate whether there are selected items
-  /// and how many are selected.
-  Stream<Selection> get selectionChangeStream =>
-      _selectionChangeController.stream;
+  /// Use [addListener] to be notified whenever this field changes. This can be
+  /// used to update the UI to indicate whether there are selected items and how
+  /// many are selected.
+  Selection get selection => _selection;
 
   /// Sets the grid selection.
   ///
-  /// Throws [StateError] if called after [dispose].
-  void setSelection(Selection selection) =>
-      _selectionChangeController.add(selection);
+  /// The listeners are going to be notified about this change.
+  set selection(Selection selection) {
+    _selection = selection;
+    notifyListeners();
+  }
 
-  /// Closes the streams of this controller.
-  ///
-  /// You must call this on [State.dispose], otherwise the streams will keep
-  /// alive without being referenced anywhere.
-  ///
-  /// Usually, you should not await the returned Future, since [State.dispose]
-  /// is not asynchronous.
-  Future<void> dispose() => _selectionChangeController.close();
+  var _selection = Selection.empty;
 }

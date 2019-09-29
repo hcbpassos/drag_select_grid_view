@@ -171,10 +171,10 @@ void main() {
         "then the item gets selected, "
         "and we get notified about selection change.",
         (tester) async {
-          final gridController = DragSelectGridViewController();
-          final selections = <Selection>{};
+          var selectionChangeCount = 0;
 
-          gridController.selectionChangeStream.listen(selections.add);
+          final gridController = DragSelectGridViewController()
+            ..addListener(() => selectionChangeCount++);
 
           // Given that the grid has 4 columns and 3 lines,
           await setUp(tester, gridController: gridController);
@@ -191,9 +191,7 @@ void main() {
           expect(dragSelectState.selectedIndexes, {0});
 
           // and we get notified about selection change.
-          expect(selections, {
-            Selection({0})
-          });
+          expect(selectionChangeCount, 1);
         },
         skip: false,
       );
@@ -287,10 +285,10 @@ void main() {
         "and the first item stills selected, "
         "and we get notified about selection changes.",
         (tester) async {
-          final gridController = DragSelectGridViewController();
-          final selections = <Selection>{};
+          var selectionChangeCount = 0;
 
-          gridController.selectionChangeStream.listen(selections.add);
+          final gridController = DragSelectGridViewController()
+            ..addListener(() => selectionChangeCount++);
 
           // Given that the grid has 4 columns and 3 lines,
           await setUp(tester, gridController: gridController);
@@ -317,10 +315,7 @@ void main() {
           expect(dragSelectState.selectedIndexes, {0, 1});
 
           // and we get notified about selection changes.
-          expect(selections, {
-            Selection({0}),
-            Selection({0, 1}),
-          });
+          expect(selectionChangeCount, 2);
         },
         skip: false,
       );
@@ -549,32 +544,17 @@ void main() {
       );
 
       testWidgets(
-        "Given that an item of DragSelectGridView was selected, "
-        "and that we received a Selection object with a set of selected indexes, "
-        "when modifying the set, "
-        "then the set of selected indexes of the grid is not modified.",
+        "When directly modifying the set of selected indexes of the grid-state, "
+        "then the modifications are not materialized.",
         (tester) async {
-          final gridController = DragSelectGridViewController();
-          final selections = <Selection>{};
+          await setUp(tester);
 
-          gridController.selectionChangeStream.listen(selections.add);
+          // When directly modifying the set of selected indexes of the grid-state,
+          final newSelectedIndexes = dragSelectState.selectedIndexes..add(5);
+          expect(newSelectedIndexes, {5});
 
-          await setUp(tester, gridController: gridController);
-
-          // Given that an item of DragSelectGridView was selected,
-          await tester.longPress(firstItemFinder);
-          await tester.pump();
-
-          // and that we received a Selection object with a set of selected indexes,
-          expect(selections, {
-            Selection({0}),
-          });
-
-          // when modifying the set,
-          selections.single.selectedIndexes.clear();
-
-          // then the set of selected indexes of the grid is not modified.
-          expect(dragSelectState.selectedIndexes, {0});
+          // then the modifications are not materialized.
+          expect(dragSelectState.selectedIndexes, <int>{});
         },
         skip: false,
       );
@@ -591,10 +571,10 @@ void main() {
         "and the last item stills selected, "
         "and we get notified about selection changes.",
         (tester) async {
-          final gridController = DragSelectGridViewController();
-          final selections = <Selection>{};
+          var selectionChangeCount = 0;
 
-          gridController.selectionChangeStream.listen(selections.add);
+          final gridController = DragSelectGridViewController()
+            ..addListener(() => selectionChangeCount++);
 
           // Given that the grid has 4 columns and 3 lines,
           await setUp(tester, gridController: gridController);
@@ -621,10 +601,7 @@ void main() {
           expect(dragSelectState.selectedIndexes, {10, 11});
 
           // and we get notified about selection changes.
-          expect(selections, {
-            Selection({11}),
-            Selection({10, 11}),
-          });
+          expect(selectionChangeCount, 2);
         },
         skip: false,
       );

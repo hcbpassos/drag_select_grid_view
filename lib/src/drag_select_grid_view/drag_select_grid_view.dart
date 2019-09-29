@@ -182,6 +182,12 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   }
 
   @override
+  void dispose() {
+    widget.gridController?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return WillPopScope(
@@ -302,8 +308,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   }
 
   void _notifySelectionChange() {
-    widget.gridController?.setSelection(
-      Selection(_selectionManager.selectedIndexes),
-    );
+    widget.gridController?.selection =
+        Selection(_selectionManager.selectedIndexes);
   }
 }

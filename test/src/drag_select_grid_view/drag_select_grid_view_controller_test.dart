@@ -6,29 +6,15 @@ import 'package:flutter_test/flutter_test.dart' show throwsAssertionError;
 void main() {
   test(
     "When setting a new selection, "
-    "then those who are listening the stream get notified about the new selection.",
+    "then those who are listening get notified about the new selection.",
     () {
-      final controller = DragSelectGridViewController();
+      var selectionChangeCount = 0;
 
-      expect(
-        controller.selectionChangeStream,
-        emits(Selection({0})),
-      );
+      final controller = DragSelectGridViewController()
+        ..addListener(() => selectionChangeCount++);
 
-      controller.setSelection(Selection({0}));
-    },
-  );
-
-  test(
-    "When disposing the controller, "
-    "then new selections cannot be set",
-    () {
-      final controller = DragSelectGridViewController()..dispose();
-
-      expect(
-        ()  => controller.setSelection(Selection({0})),
-        throwsStateError,
-      );
+      controller.selection = Selection({0});
+      expect(selectionChangeCount, 1);
     },
   );
 }
