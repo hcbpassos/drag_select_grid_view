@@ -25,26 +25,25 @@ class SelectionManager {
   ///
   /// Indexes can be selected by dragging (with [startDrag], [updateDrag] and
   /// [endDrag]), or by tapping (with [tap]).
-  ///
-  /// Clients may not call any methods with side-effects, such as [Set.add].
-  final selectedIndexes = <int>{};
+  Set<int> get selectedIndexes => Set.of(_selectedIndexes);
+  final _selectedIndexes = <int>{};
 
-  /// Adds the [index] to [selectedIndexes], or removes it if it's already there.
+  /// Adds the [index] to [_selectedIndexes], or removes it if it's already there.
   void tap(int index) {
-    if (selectedIndexes.contains(index)) {
-      selectedIndexes.remove(index);
+    if (_selectedIndexes.contains(index)) {
+      _selectedIndexes.remove(index);
     } else {
-      selectedIndexes.add(index);
+      _selectedIndexes.add(index);
     }
   }
 
-  /// Adds the [index] to [selectedIndexes] and allows [updateDrag] calls.
+  /// Adds the [index] to [_selectedIndexes] and allows [updateDrag] calls.
   void startDrag(int index) {
     _dragStartIndex = _dragEndIndex = index;
-    selectedIndexes.add(index);
+    _selectedIndexes.add(index);
   }
 
-  /// Updates the [selectedIndexes], adding/removing one or more indexes, based
+  /// Updates the [_selectedIndexes], adding/removing one or more indexes, based
   /// on [index], [dragStartIndex] and [dragEndIndex].
   ///
   /// Does nothing if:
@@ -73,10 +72,10 @@ class SelectionManager {
     _dragEndIndex = -1;
   }
 
-  /// Remove all indexes from [selectedIndexes].
-  void clear() => selectedIndexes.clear();
+  /// Remove all indexes from [_selectedIndexes].
+  void clear() => _selectedIndexes.clear();
 
-  /// Updates the [selectedIndexes], adding/removing one or more indexes, based
+  /// Updates the [_selectedIndexes], adding/removing one or more indexes, based
   /// on [index], [dragStartIndex] and [dragEndIndex].
   ///
   /// This cannot handle a drag that is both forward and backward (and vice
@@ -87,7 +86,7 @@ class SelectionManager {
 
     void removeIndexesDraggedByExceptTheCurrent() {
       indexesDraggedBy.remove(index);
-      selectedIndexes.removeAll(indexesDraggedBy);
+      _selectedIndexes.removeAll(indexesDraggedBy);
     }
 
     final isSelectingForward = index > _dragStartIndex;
@@ -98,14 +97,14 @@ class SelectionManager {
       if (isUnselecting) {
         removeIndexesDraggedByExceptTheCurrent();
       } else {
-        selectedIndexes.addAll(indexesDraggedBy);
+        _selectedIndexes.addAll(indexesDraggedBy);
       }
     } else if (isSelectingBackward) {
       final isUnselecting = index > _dragEndIndex;
       if (isUnselecting) {
         removeIndexesDraggedByExceptTheCurrent();
       } else {
-        selectedIndexes.addAll(indexesDraggedBy);
+        _selectedIndexes.addAll(indexesDraggedBy);
       }
     } else {
       removeIndexesDraggedByExceptTheCurrent();
@@ -129,7 +128,7 @@ class Selection {
   bool get isSelecting => amount > 0;
 
   @override
-  String toString() => 'Selection{selectedIndexes: $selectedIndexes}';
+  String toString() => 'Selection{_selectedIndexes: $selectedIndexes}';
 
   @override
   bool operator ==(Object other) =>

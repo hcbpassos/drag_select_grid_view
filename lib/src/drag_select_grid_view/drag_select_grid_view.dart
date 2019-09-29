@@ -288,7 +288,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   int _findIndexOfSelectable(Offset offset) {
     final ancestor = context.findRenderObject();
 
-    for (final element in List.of(_elements)) {
+    for (final element in Set.of(_elements)) {
       if (element.containsOffset(ancestor, offset)) {
         return element.widget.index;
       }

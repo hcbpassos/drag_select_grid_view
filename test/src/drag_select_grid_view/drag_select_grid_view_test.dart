@@ -62,7 +62,7 @@ void main() {
   /// I get access to [WidgetTester], but in counterpart I have to call [setUp]
   /// manually at the initialization of every [testWidgets].
   Future<void> setUp(
-    tester, {
+    WidgetTester tester, {
     bool reverse,
     bool unselectOnWillPop,
     SelectionChangedCallback onSelectionChanged,
@@ -77,8 +77,8 @@ void main() {
   }
 
   testWidgets(
-    "An AssertionError is throw "
-    "when creating a DragSelectGridView with null `itemBuilder`.",
+    "When creating a DragSelectGridView with null `itemBuilder`, "
+    "then an AssertionError is thrown.",
     (tester) async {
       expect(
         () => MaterialApp(
@@ -91,6 +91,35 @@ void main() {
         ),
         throwsAssertionError,
       );
+    },
+    skip: false,
+  );
+
+  testWidgets(
+    "Given that an item of DragSelectGridView was selected, "
+    "and that we received a Selection object with a set of selected indexes, "
+    "when modifying the set, "
+    "then the set of selected indexes of the grid is not modified.",
+    (tester) async {
+      Selection selection;
+
+      await setUp(
+        tester,
+        onSelectionChanged: (newSelection) => selection = newSelection,
+      );
+
+      // Given that an item of DragSelectGridView was selected,
+      await tester.longPress(firstItemFinder);
+      await tester.pump();
+
+      // and that we received a Selection object with a set of selected indexes,
+      expect(selection.selectedIndexes, {0});
+
+      // when modifying the set,
+      selection.selectedIndexes.clear();
+
+      // then the set of selected indexes of the grid is not modified.
+      expect(dragSelectState.selectedIndexes, {0});
     },
     skip: false,
   );

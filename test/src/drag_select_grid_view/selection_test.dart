@@ -403,7 +403,7 @@ void main() {
   group("`Selection` tests", () {
     test(
       "When an `Selection` is created with null `selectedIndexes`, "
-      "then an `AssertionError` is throw.",
+      "then an `AssertionError` is thrown.",
       () {
         expect(
           () => Selection(null),

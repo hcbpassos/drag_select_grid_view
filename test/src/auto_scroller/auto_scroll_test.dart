@@ -6,7 +6,7 @@ void main() {
   group("AutoScroll", () {
     test(
       "When an `AutoScroll` is created with null `direction`, "
-      "then an `AssertionError` is throw.",
+      "then an `AssertionError` is thrown.",
       () {
         expect(
           () => AutoScroll(duration: const Duration(seconds: 1)),
@@ -17,7 +17,7 @@ void main() {
 
     test(
       "When an `AutoScroll` is created with null `duration`, "
-      "then an `AssertionError` is throw.",
+      "then an `AssertionError` is thrown.",
       () {
         expect(
           () => AutoScroll(direction: AutoScrollDirection.forward),
@@ -28,7 +28,7 @@ void main() {
 
     test(
       "When an `AutoScroll` is created with `duration` zero, "
-      "then an `AssertionError` is throw.",
+      "then an `AssertionError` is thrown.",
       () {
         expect(
           () => AutoScroll(
