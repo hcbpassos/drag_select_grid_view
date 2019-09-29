@@ -33,7 +33,19 @@ class DragSelectGridView extends StatefulWidget {
   /// Creates a grid that supports both dragging and tapping to select its
   /// items.
   ///
-  /// For information about the clause of most parameters, refer to
+  /// It is possible to customize the height of the hotspot that enables
+  /// auto-scroll by specifying [autoScrollHotspotHeight].
+  ///
+  /// Providing [onSelectionChanged] allows updating the UI to indicate the user
+  /// whether there are items selected and how many are selected.
+  ///
+  /// By leaving [unselectOnWillPop] false, the items won't get unselected when
+  /// the user tries to pop the route.
+  ///
+  /// The [itemBuilder] must be used to create widgets based on the index and
+  /// whether they are selected or not. This parameter cannot be null.
+  ///
+  /// For information about the clause of the other parameters, refer to
   /// [GridView.builder].
   DragSelectGridView({
     Key key,

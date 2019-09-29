@@ -983,7 +983,9 @@ void main() {
         );
         await tester.pump();
         expect(
-            dragSelectState.autoScroll.direction, AutoScrollDirection.backward);
+          dragSelectState.autoScroll.direction,
+          AutoScrollDirection.backward,
+        );
 
         // when the long-press is released,
         await gesture.up();
@@ -1015,7 +1017,9 @@ void main() {
         );
         await tester.pump();
         expect(
-            dragSelectState.autoScroll.direction, AutoScrollDirection.forward);
+          dragSelectState.autoScroll.direction,
+          AutoScrollDirection.forward,
+        );
 
         // when the long-press is released,
         await gesture.up();
@@ -1047,7 +1051,9 @@ void main() {
         );
         await tester.pump();
         expect(
-            dragSelectState.autoScroll.direction, AutoScrollDirection.forward);
+          dragSelectState.autoScroll.direction,
+          AutoScrollDirection.forward,
+        );
 
         // when dragged out of the lower-hotspot,
         await gesture.moveTo(tester.getCenter(gridFinder));
