@@ -149,6 +149,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     with AutoScrollerMixin<DragSelectGridView> {
   final _elements = <SelectableElement>{};
   final _selectionManager = SelectionManager();
+  LongPressMoveUpdateDetails _lastMoveUpdateDetails;
 
   @visibleForTesting
   Set<int> get selectedIndexes => _selectionManager.selectedIndexes;
@@ -166,6 +167,15 @@ class DragSelectGridViewState extends State<DragSelectGridView>
 
   @override
   ScrollController get scrollController => widget.scrollController;
+
+  @override
+  VoidCallback get onScroll {
+    return () {
+      if (_lastMoveUpdateDetails != null) {
+        _onLongPressMoveUpdate(_lastMoveUpdateDetails);
+      }
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -245,6 +255,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   void _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
     if (!isDragging) return;
 
+    _lastMoveUpdateDetails = details;
     final dragIndex = _findIndexOfSelectable(details.localPosition);
 
     if ((dragIndex != -1) && (dragIndex != _selectionManager.dragEndIndex)) {

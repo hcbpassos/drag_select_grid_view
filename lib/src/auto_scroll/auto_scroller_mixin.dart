@@ -20,8 +20,16 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
 
   /// The controller of the grid's scroll-view.
   ///
-  /// Used to perform the auto-scroll.
+  /// Used to perform the auto-scroll and notify about scrolling.
   ScrollController get scrollController;
+
+  /// Callback for notifying whenever the scroll-position changes.
+  ///
+  /// Used in the grid to update the selected items when auto-scrolling.
+  ///
+  /// Introduced in:
+  /// https://github.com/hugocbpassos/drag_select_grid_view/issues/2
+  VoidCallback get onScroll;
 
   /// Stores the size of the widget.
   ///
@@ -38,6 +46,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
         final widgetSize = context.size;
         _widgetHeight = widgetSize.height;
         _widgetWidth = widgetSize.width;
+        scrollController.position.addListener(onScroll);
       },
     );
   }
