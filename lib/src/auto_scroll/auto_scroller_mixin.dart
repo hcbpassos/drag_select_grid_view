@@ -27,6 +27,8 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   ///
   /// Used in the grid to update the selected items when auto-scrolling.
   ///
+  /// Cannot return null.
+  ///
   /// Introduced in:
   /// https://github.com/hugocbpassos/drag_select_grid_view/issues/2
   VoidCallback get onScroll;
@@ -38,7 +40,6 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   /// By doing this once, we are assuming the widget will never change it's size
   /// without calling this method again.
   @override
-  @mustCallSuper
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
@@ -49,6 +50,12 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
         scrollController.position.addListener(onScroll);
       },
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.position.removeListener(onScroll);
   }
 
   /// Triggers the auto-scroll.

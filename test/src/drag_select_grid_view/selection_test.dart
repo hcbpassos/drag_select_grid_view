@@ -412,12 +412,16 @@ void main() {
       },
     );
 
+    test("`Selection.empty` has empty `selectedIndexes`.", () {
+      expect(Selection.empty.selectedIndexes, <int>{});
+    });
+
     test(
       "When an `Selection` has an empty `selectedIndexes`, "
       "then `isSelecting` is false.",
       () {
         expect(
-          Selection({}).isSelecting,
+          Selection.empty.isSelecting,
           isFalse,
         );
       },
@@ -436,7 +440,7 @@ void main() {
 
     test("toString().", () {
       expect(
-        Selection({}).toString(),
+        Selection.empty.toString(),
         isNot("Instance of 'Selection'"),
       );
     });
@@ -445,7 +449,7 @@ void main() {
       final selection = Selection({0, 1, 2});
       final equalSelection = Selection({0, 1, 2});
       final anotherEqualSelection = Selection({0, 1, 2});
-      final differentSelection = Selection({});
+      final differentSelection = Selection.empty;
 
       // Reflexivity
       expect(selection, selection);

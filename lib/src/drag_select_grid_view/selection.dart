@@ -115,6 +115,8 @@ class SelectionManager {
 /// Information about the grid selection.
 @immutable
 class Selection {
+  static const empty = Selection({});
+
   /// Creates a new [Selection].
   const Selection(this.selectedIndexes) : assert(selectedIndexes != null);
 

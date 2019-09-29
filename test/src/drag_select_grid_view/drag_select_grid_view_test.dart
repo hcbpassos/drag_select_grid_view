@@ -13,14 +13,11 @@ void main() {
   final firstItemFinder = find.byKey(const ValueKey('grid-item-0'));
   final lastItemFinder = find.byKey(const ValueKey('grid-item-11'));
 
-  final secondItemFinder = find.byKey(const ValueKey('grid-item-1'));
-  final fifthItemFinder = find.byKey(const ValueKey('grid-item-4'));
-
   Widget widget;
   DragSelectGridViewState dragSelectState;
 
-  Offset horizontalDistanceBetweenItems;
-  Offset verticalDistanceBetweenItems;
+  Offset mainAxisItemsDistance;
+  Offset crossAxisItemsDistance;
 
   /// Creates a [DragSelectGridView] with 4 columns and 3 lines, based on
   /// [screenHeight] and [screenWidth].
@@ -70,10 +67,18 @@ void main() {
     widget = createWidget(reverse, unselectOnWillPop, onSelectionChanged);
     await tester.pumpWidget(widget);
     dragSelectState = tester.state(gridFinder);
-    horizontalDistanceBetweenItems ??=
-        tester.getCenter(secondItemFinder) - tester.getCenter(firstItemFinder);
-    verticalDistanceBetweenItems ??=
-        tester.getCenter(fifthItemFinder) - tester.getCenter(firstItemFinder);
+
+    if (mainAxisItemsDistance == null) {
+      final secondItemFinder = find.byKey(const ValueKey('grid-item-1'));
+      mainAxisItemsDistance ??= tester.getCenter(secondItemFinder) -
+          tester.getCenter(firstItemFinder);
+    }
+
+    if (crossAxisItemsDistance == null) {
+      final fifthItemFinder = find.byKey(const ValueKey('grid-item-4'));
+      crossAxisItemsDistance ??=
+          tester.getCenter(fifthItemFinder) - tester.getCenter(firstItemFinder);
+    }
   }
 
   testWidgets(
@@ -91,35 +96,6 @@ void main() {
         ),
         throwsAssertionError,
       );
-    },
-    skip: false,
-  );
-
-  testWidgets(
-    "Given that an item of DragSelectGridView was selected, "
-    "and that we received a Selection object with a set of selected indexes, "
-    "when modifying the set, "
-    "then the set of selected indexes of the grid is not modified.",
-    (tester) async {
-      Selection selection;
-
-      await setUp(
-        tester,
-        onSelectionChanged: (newSelection) => selection = newSelection,
-      );
-
-      // Given that an item of DragSelectGridView was selected,
-      await tester.longPress(firstItemFinder);
-      await tester.pump();
-
-      // and that we received a Selection object with a set of selected indexes,
-      expect(selection.selectedIndexes, {0});
-
-      // when modifying the set,
-      selection.selectedIndexes.clear();
-
-      // then the set of selected indexes of the grid is not modified.
-      expect(dragSelectState.selectedIndexes, {0});
     },
     skip: false,
   );
@@ -331,7 +307,7 @@ void main() {
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: horizontalDistanceBetweenItems,
+            offset: mainAxisItemsDistance,
           );
           await gesture.up();
           await tester.pump();
@@ -372,7 +348,7 @@ void main() {
           gesture = await longPressDownAndDrag(
             tester: tester,
             finder: firstItemFinder,
-            offset: horizontalDistanceBetweenItems,
+            offset: mainAxisItemsDistance,
           );
           await tester.pump();
 
@@ -380,7 +356,7 @@ void main() {
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: -horizontalDistanceBetweenItems,
+            offset: -mainAxisItemsDistance,
           );
           await gesture.up();
           await tester.pump();
@@ -417,14 +393,14 @@ void main() {
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: horizontalDistanceBetweenItems,
+            offset: mainAxisItemsDistance,
           );
           await tester.pump();
 
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: horizontalDistanceBetweenItems,
+            offset: mainAxisItemsDistance,
           );
           await gesture.up();
           await tester.pump();
@@ -461,7 +437,7 @@ void main() {
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: horizontalDistanceBetweenItems * 2,
+            offset: mainAxisItemsDistance * 2,
           );
           await tester.pump();
 
@@ -470,14 +446,14 @@ void main() {
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: -horizontalDistanceBetweenItems,
+            offset: -mainAxisItemsDistance,
           );
           await tester.pump();
 
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: -horizontalDistanceBetweenItems,
+            offset: -mainAxisItemsDistance,
           );
           await gesture.up();
           await tester.pump();
@@ -513,7 +489,7 @@ void main() {
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: verticalDistanceBetweenItems,
+            offset: crossAxisItemsDistance,
           );
           await gesture.up();
           await tester.pump();
@@ -550,7 +526,7 @@ void main() {
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: verticalDistanceBetweenItems,
+            offset: crossAxisItemsDistance,
           );
           await tester.pump();
 
@@ -558,7 +534,7 @@ void main() {
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: -verticalDistanceBetweenItems,
+            offset: -crossAxisItemsDistance,
           );
           await gesture.up();
           await tester.pump();
@@ -566,6 +542,35 @@ void main() {
           // then all items from the fifth to the second get UNSELECTED,
           // and the first item stills selected.
           expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {0});
+        },
+        skip: false,
+      );
+
+      testWidgets(
+        "Given that an item of DragSelectGridView was selected, "
+        "and that we received a Selection object with a set of selected indexes, "
+        "when modifying the set, "
+        "then the set of selected indexes of the grid is not modified.",
+        (tester) async {
+          Selection selection;
+
+          await setUp(
+            tester,
+            onSelectionChanged: (newSelection) => selection = newSelection,
+          );
+
+          // Given that an item of DragSelectGridView was selected,
+          await tester.longPress(firstItemFinder);
+          await tester.pump();
+
+          // and that we received a Selection object with a set of selected indexes,
+          expect(selection.selectedIndexes, {0});
+
+          // when modifying the set,
+          selection.selectedIndexes.clear();
+
+          // then the set of selected indexes of the grid is not modified.
           expect(dragSelectState.selectedIndexes, {0});
         },
         skip: false,
@@ -603,7 +608,7 @@ void main() {
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: -horizontalDistanceBetweenItems,
+            offset: -mainAxisItemsDistance,
           );
           await gesture.up();
           await tester.pump();
@@ -644,7 +649,7 @@ void main() {
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: -horizontalDistanceBetweenItems,
+            offset: -mainAxisItemsDistance,
           );
           await tester.pump();
 
@@ -652,7 +657,7 @@ void main() {
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: horizontalDistanceBetweenItems,
+            offset: mainAxisItemsDistance,
           );
           await gesture.up();
           await tester.pump();
@@ -689,14 +694,14 @@ void main() {
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: -horizontalDistanceBetweenItems,
+            offset: -mainAxisItemsDistance,
           );
           await tester.pump();
 
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: -horizontalDistanceBetweenItems,
+            offset: -mainAxisItemsDistance,
           );
           await gesture.up();
           await tester.pump();
@@ -737,7 +742,7 @@ void main() {
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: -horizontalDistanceBetweenItems * 2,
+            offset: -mainAxisItemsDistance * 2,
           );
           await tester.pump();
 
@@ -747,14 +752,14 @@ void main() {
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: horizontalDistanceBetweenItems,
+            offset: mainAxisItemsDistance,
           );
           await tester.pump();
 
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: horizontalDistanceBetweenItems,
+            offset: mainAxisItemsDistance,
           );
           await gesture.up();
           await tester.pump();
@@ -790,7 +795,7 @@ void main() {
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: -verticalDistanceBetweenItems,
+            offset: -crossAxisItemsDistance,
           );
           await gesture.up();
           await tester.pump();
@@ -829,7 +834,7 @@ void main() {
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: -verticalDistanceBetweenItems,
+            offset: -crossAxisItemsDistance,
           );
           await tester.pump();
 
@@ -837,7 +842,7 @@ void main() {
           gesture = await dragDown(
             tester: tester,
             previousGesture: gesture,
-            offset: verticalDistanceBetweenItems,
+            offset: crossAxisItemsDistance,
           );
           await gesture.up();
           await tester.pump();
