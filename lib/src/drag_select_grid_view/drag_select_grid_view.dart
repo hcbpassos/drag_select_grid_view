@@ -1,7 +1,8 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart' hide SelectionChangedCallback;
 
 import '../auto_scroll/auto_scroller_mixin.dart';
 import '../drag_select_grid_view/selectable.dart';
+import 'drag_select_grid_view_controller.dart';
 import 'selection.dart';
 
 /// Function signature for creating widgets based on the index and whether
@@ -11,9 +12,6 @@ typedef SelectableWidgetBuilder = Widget Function(
   int index,
   bool selected,
 );
-
-/// Function signature for notifying whenever the selection changes.
-typedef SelectionChangedCallback = void Function(Selection selection);
 
 /// Grid that supports both dragging and tapping to select its items.
 ///
@@ -36,8 +34,9 @@ class DragSelectGridView extends StatefulWidget {
   /// It is possible to customize the height of the hotspot that enables
   /// auto-scroll by specifying [autoScrollHotspotHeight].
   ///
-  /// Providing [onSelectionChanged] allows updating the UI to indicate the user
-  /// whether there are items selected and how many are selected.
+  /// The [gridController] provides information that can be used to update the
+  /// UI to indicate whether there are selected items and how many are selected,
+  /// besides allowing to directly update the selected items.
   ///
   /// By leaving [unselectOnWillPop] false, the items won't get unselected when
   /// the user tries to pop the route.
@@ -51,7 +50,7 @@ class DragSelectGridView extends StatefulWidget {
     Key key,
     double autoScrollHotspotHeight,
     ScrollController scrollController,
-    this.onSelectionChanged,
+    this.gridController,
     this.unselectOnWillPop = true,
     this.reverse = false,
     this.primary,
@@ -83,8 +82,13 @@ class DragSelectGridView extends StatefulWidget {
   /// Refer to [ScrollView.controller].
   final ScrollController scrollController;
 
-  /// Called whenever the selection changes.
-  final SelectionChangedCallback onSelectionChanged;
+  /// Controller of the grid.
+  ///
+  /// Provides information that can be used to update the UI to indicate whether
+  /// there are selected items and how many are selected.
+  ///
+  /// Also allows to directly update the selected items.
+  final DragSelectGridViewController gridController;
 
   /// Whether the items should be unselected when trying to pop the route.
   ///
@@ -298,7 +302,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   }
 
   void _notifySelectionChange() {
-    widget.onSelectionChanged?.call(
+    widget.gridController?.setSelection(
       Selection(_selectionManager.selectedIndexes),
     );
   }

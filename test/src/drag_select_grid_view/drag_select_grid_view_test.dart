@@ -24,7 +24,7 @@ void main() {
   Widget createWidget([
     bool reverse,
     bool unselectOnWillPop,
-    SelectionChangedCallback onSelectionChanged,
+    DragSelectGridViewController gridController,
   ]) {
     return MaterialApp(
       home: Row(
@@ -36,7 +36,7 @@ void main() {
           ),
           Expanded(
             child: DragSelectGridView(
-              onSelectionChanged: onSelectionChanged,
+              gridController: gridController,
               unselectOnWillPop: unselectOnWillPop ?? true,
               reverse: reverse ?? false,
               itemCount: 12,
@@ -62,9 +62,9 @@ void main() {
     WidgetTester tester, {
     bool reverse,
     bool unselectOnWillPop,
-    SelectionChangedCallback onSelectionChanged,
+    DragSelectGridViewController gridController,
   }) async {
-    widget = createWidget(reverse, unselectOnWillPop, onSelectionChanged);
+    widget = createWidget(reverse, unselectOnWillPop, gridController);
     await tester.pumpWidget(widget);
     dragSelectState = tester.state(gridFinder);
 
@@ -171,14 +171,13 @@ void main() {
         "then the item gets selected, "
         "and we get notified about selection change.",
         (tester) async {
-          int selectionChangedCount = 0;
-          Selection selection;
+          final gridController = DragSelectGridViewController();
+          final selections = <Selection>{};
+
+          gridController.selectionChangeStream.listen(selections.add);
 
           // Given that the grid has 4 columns and 3 lines,
-          await setUp(tester, onSelectionChanged: (newSelection) {
-            selectionChangedCount++;
-            selection = newSelection;
-          });
+          await setUp(tester, gridController: gridController);
 
           // and that the first item of the grid is UNSELECTED,
           expect(dragSelectState.selectedIndexes, <int>{});
@@ -192,8 +191,9 @@ void main() {
           expect(dragSelectState.selectedIndexes, {0});
 
           // and we get notified about selection change.
-          expect(selectionChangedCount, 1);
-          expect(selection.selectedIndexes, {0});
+          expect(selections, {
+            Selection({0})
+          });
         },
         skip: false,
       );
@@ -287,14 +287,13 @@ void main() {
         "and the first item stills selected, "
         "and we get notified about selection changes.",
         (tester) async {
-          int selectionChangedCount = 0;
-          Selection selection;
+          final gridController = DragSelectGridViewController();
+          final selections = <Selection>{};
+
+          gridController.selectionChangeStream.listen(selections.add);
 
           // Given that the grid has 4 columns and 3 lines,
-          await setUp(tester, onSelectionChanged: (newSelection) {
-            selectionChangedCount++;
-            selection = newSelection;
-          });
+          await setUp(tester, gridController: gridController);
 
           // and that the first item was long-pressed and selected,
           var gesture = await longPressDown(
@@ -318,8 +317,10 @@ void main() {
           expect(dragSelectState.selectedIndexes, {0, 1});
 
           // and we get notified about selection changes.
-          expect(selectionChangedCount, 2);
-          expect(selection.selectedIndexes, {0, 1});
+          expect(selections, {
+            Selection({0}),
+            Selection({0, 1}),
+          });
         },
         skip: false,
       );
@@ -553,22 +554,24 @@ void main() {
         "when modifying the set, "
         "then the set of selected indexes of the grid is not modified.",
         (tester) async {
-          Selection selection;
+          final gridController = DragSelectGridViewController();
+          final selections = <Selection>{};
 
-          await setUp(
-            tester,
-            onSelectionChanged: (newSelection) => selection = newSelection,
-          );
+          gridController.selectionChangeStream.listen(selections.add);
+
+          await setUp(tester, gridController: gridController);
 
           // Given that an item of DragSelectGridView was selected,
           await tester.longPress(firstItemFinder);
           await tester.pump();
 
           // and that we received a Selection object with a set of selected indexes,
-          expect(selection.selectedIndexes, {0});
+          expect(selections, {
+            Selection({0}),
+          });
 
           // when modifying the set,
-          selection.selectedIndexes.clear();
+          selections.single.selectedIndexes.clear();
 
           // then the set of selected indexes of the grid is not modified.
           expect(dragSelectState.selectedIndexes, {0});
@@ -588,14 +591,13 @@ void main() {
         "and the last item stills selected, "
         "and we get notified about selection changes.",
         (tester) async {
-          int selectionChangedCount = 0;
-          Selection selection;
+          final gridController = DragSelectGridViewController();
+          final selections = <Selection>{};
+
+          gridController.selectionChangeStream.listen(selections.add);
 
           // Given that the grid has 4 columns and 3 lines,
-          await setUp(tester, onSelectionChanged: (newSelection) {
-            selectionChangedCount++;
-            selection = newSelection;
-          });
+          await setUp(tester, gridController: gridController);
 
           // and that the last item was long-pressed and selected,
           var gesture = await longPressDown(
@@ -619,8 +621,10 @@ void main() {
           expect(dragSelectState.selectedIndexes, {10, 11});
 
           // and we get notified about selection changes.
-          expect(selectionChangedCount, 2);
-          expect(selection.selectedIndexes, {10, 11});
+          expect(selections, {
+            Selection({11}),
+            Selection({10, 11}),
+          });
         },
         skip: false,
       );
