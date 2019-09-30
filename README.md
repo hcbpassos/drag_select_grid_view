@@ -65,7 +65,7 @@ As you may have noticed in the code above, `DragSelectGridView` must be used alo
 
   * `SelectableItem`: A selectable widget, which is going to visually indicate whether the item is selected or not.
     
-  * `SelectionAppBar`: A custom `AppBar`, which is able able to show the amount of selected items and an option to unselect them.
+  * `SelectionAppBar`: A custom `AppBar`, which shows the amount of selected items and an option to unselect them.
       
 The [example project](https://github.com/hugocbpassos/drag_select_grid_view/tree/master/example/lib) provides some samples of those widgets. I won't add them to the library, since they are unrelated to the grid itself, but feel free to copy them into your project. 
 
