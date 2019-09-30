@@ -21,12 +21,29 @@ class SelectionManager {
   int get dragEndIndex => _dragEndIndex;
   var _dragEndIndex = -1;
 
-  /// Indexes that are currently selected.
+  /// Gets the indexes that are currently selected.
   ///
-  /// Indexes can be selected by dragging (with [startDrag], [updateDrag] and
-  /// [endDrag]), or by tapping (with [tap]).
+  /// Indexes can be directly selected, with [_selectedIndexes] setter, and
+  /// selected by gestures, with [startDrag], [updateDrag], [endDrag] and [tap].
   Set<int> get selectedIndexes => Set.of(_selectedIndexes);
-  final _selectedIndexes = <int>{};
+
+  /// Sets the indexes that are currently selected.
+  ///
+  /// Any drag that is currently active will be interrupted.
+  set selectedIndexes(Set<int> selectedIndexes) {
+    endDrag();
+    _selectedIndexes = Set.of(selectedIndexes);
+  }
+
+  var _selectedIndexes = <int>{};
+
+  /// Removes all indexes from [_selectedIndexes].
+  ///
+  /// Any drag that is currently active will be interrupted.
+  void clear() {
+    endDrag();
+    _selectedIndexes.clear();
+  }
 
   /// Adds the [index] to [_selectedIndexes], or removes it if it's already there.
   void tap(int index) {
@@ -71,9 +88,6 @@ class SelectionManager {
     _dragStartIndex = -1;
     _dragEndIndex = -1;
   }
-
-  /// Remove all indexes from [_selectedIndexes].
-  void clear() => _selectedIndexes.clear();
 
   /// Updates the [_selectedIndexes], adding/removing one or more indexes, based
   /// on [index], [dragStartIndex] and [dragEndIndex].

@@ -307,8 +307,6 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     return -1;
   }
 
-  void _notifySelectionChange() {
-    widget.gridController?.selection =
-        Selection(_selectionManager.selectedIndexes);
-  }
+  void _notifySelectionChange() =>
+      gridController?.selection = Selection(_selectionManager.selectedIndexes);
 }

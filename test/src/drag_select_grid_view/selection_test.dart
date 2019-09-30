@@ -360,18 +360,39 @@ void main() {
       );
 
       test(
-        "Given that the indexes 0, 1 and 2 were selected, "
+        "Given that the indexes 0 and 1 were selected by dragging, which stills activated, "
         "when clearing the selection, "
-        "then all indexes get UNSELECTED.",
+        "then all indexes get UNSELECTED, "
+        "and the drag is interrupted.",
         () {
           final manager = SelectionManager();
 
-          manager.tap(0);
-          manager.tap(1);
-          manager.tap(2);
+          manager.startDrag(0);
+          manager.updateDrag(1);
           manager.clear();
 
           expect(manager.selectedIndexes, <int>{});
+          expect(manager.dragStartIndex, -1);
+          expect(manager.dragEndIndex, -1);
+        },
+      );
+
+      test(
+        "Given that the indexes 0 and 1 were selected by dragging, which stills activated, "
+        "when directly selecting indexes 2 and 3, "
+        "then all indexes get UNSELECTED, "
+        "then the indexes 2 and 3 get selected, "
+        "and the drag is interrupted.",
+        () {
+          final manager = SelectionManager();
+
+          manager.startDrag(0);
+          manager.updateDrag(1);
+          manager.selectedIndexes = {2, 3};
+
+          expect(manager.selectedIndexes, {2, 3});
+          expect(manager.dragStartIndex, -1);
+          expect(manager.dragEndIndex, -1);
         },
       );
     });

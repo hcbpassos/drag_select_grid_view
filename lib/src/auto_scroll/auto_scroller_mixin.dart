@@ -31,7 +31,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   ///
   /// Introduced in:
   /// https://github.com/hugocbpassos/drag_select_grid_view/issues/2
-  VoidCallback get onScroll;
+  VoidCallback get scrollCallback;
 
   /// Stores the size of the widget.
   ///
@@ -48,7 +48,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
         _widgetHeight = widgetSize.height;
         _widgetWidth = widgetSize.width;
         if (scrollController.hasClients) {
-          scrollController.position.addListener(onScroll);
+          scrollController.position.addListener(scrollCallback);
         }
       },
     );
@@ -57,7 +57,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   @override
   void dispose() {
     if (scrollController.hasClients) {
-      scrollController.position.removeListener(onScroll);
+      scrollController.position.removeListener(scrollCallback);
     }
     super.dispose();
   }
