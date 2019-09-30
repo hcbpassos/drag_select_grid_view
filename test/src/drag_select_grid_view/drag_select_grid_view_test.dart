@@ -341,9 +341,9 @@ void main() {
           await tester.pump();
 
           // and that the second item was selected by dragging,
-          gesture = await longPressDownAndDrag(
+          gesture = await dragDown(
             tester: tester,
-            finder: firstItemFinder,
+            previousGesture: gesture,
             offset: mainAxisItemsDistance,
           );
           await tester.pump();
@@ -877,6 +877,70 @@ void main() {
         // then the item doesn't get UNSELECTED.
         expect(dragSelectState.isSelecting, isTrue);
         expect(dragSelectState.selectedIndexes, {0});
+      },
+      skip: false,
+    );
+
+    testWidgets(
+      "When selecting the items 0 and 1 through the grid-controller, "
+      "then the items 0 and 1 get selected in the grid-state.",
+      (tester) async {
+        final gridController = DragSelectGridViewController();
+        await setUp(tester, gridController: gridController);
+
+        // When selecting the items 0 and 1 through the grid-controller,
+        gridController.selection = const Selection({0, 1});
+        await tester.pump();
+
+        // then the items 0 and 1 get selected in the grid-state.
+        expect(dragSelectState.isDragging, isFalse);
+        expect(dragSelectState.isSelecting, isTrue);
+        expect(dragSelectState.selectedIndexes, {0, 1});
+      },
+      skip: false,
+    );
+
+    testWidgets(
+      "Given that the grid has 4 columns and 3 lines, "
+      "and that the first item was long-pressed and selected, "
+      "and that the second item was selected by dragging, "
+      ""
+      "when selecting the items 2 and 3 through the grid-controller, "
+      ""
+      "then the drag gets interrupted, "
+      "then the items 0 and 1 get UNSELECTED in the grid-state, "
+      "and the items 2 and 3 get selected in the grid-state.",
+      (tester) async {
+        final gridController = DragSelectGridViewController();
+
+        // Given that the grid has 4 columns and 3 lines,
+        await setUp(tester, gridController: gridController);
+
+        // and that the first item was long-pressed and selected,
+        var gesture = await longPressDown(
+          tester: tester,
+          finder: firstItemFinder,
+        );
+        await tester.pump();
+
+        // and that the second item was selected by dragging,
+        gesture = await dragDown(
+          tester: tester,
+          previousGesture: gesture,
+          offset: mainAxisItemsDistance,
+        );
+        await tester.pump();
+
+        // when selecting the items 2 and 3 through the grid-controller,
+        expect(dragSelectState.isDragging, isTrue);
+        gridController.selection = const Selection({2, 3});
+        await tester.pump();
+
+        // then all items from the fifth to last to the second to last get UNSELECTED,
+        // and the last item stills selected.
+        expect(dragSelectState.isDragging, isFalse);
+        expect(dragSelectState.isSelecting, isTrue);
+        expect(dragSelectState.selectedIndexes, {2, 3});
       },
       skip: false,
     );

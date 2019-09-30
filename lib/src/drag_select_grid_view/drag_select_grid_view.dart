@@ -1,3 +1,4 @@
+import 'package:collection/equality.dart';
 import 'package:flutter/widgets.dart' hide SelectionChangedCallback;
 
 import '../auto_scroll/auto_scroller_mixin.dart';
@@ -88,6 +89,10 @@ class DragSelectGridView extends StatefulWidget {
   /// there are selected items and how many are selected.
   ///
   /// Also allows to directly update the selected items.
+  ///
+  /// This controller may not be used after [DragSelectGridViewState] disposes,
+  /// since [DragSelectGridViewController.dispose] will get called and the
+  /// listeners are going to be cleaned up.
   final DragSelectGridViewController gridController;
 
   /// Whether the items should be unselected when trying to pop the route.
@@ -155,6 +160,8 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   final _selectionManager = SelectionManager();
   LongPressMoveUpdateDetails _lastMoveUpdateDetails;
 
+  DragSelectGridViewController get gridController => widget.gridController;
+
   @visibleForTesting
   Set<int> get selectedIndexes => _selectionManager.selectedIndexes;
 
@@ -173,7 +180,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   ScrollController get scrollController => widget.scrollController;
 
   @override
-  VoidCallback get onScroll {
+  VoidCallback get scrollCallback {
     return () {
       if (_lastMoveUpdateDetails != null) {
         _onLongPressMoveUpdate(_lastMoveUpdateDetails);
@@ -182,8 +189,14 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   }
 
   @override
+  void initState() {
+    super.initState();
+    gridController?.addListener(_onSelectionChanged);
+  }
+
+  @override
   void dispose() {
-    widget.gridController?.dispose();
+    gridController?.dispose();
     super.dispose();
   }
 
@@ -230,6 +243,13 @@ class DragSelectGridViewState extends State<DragSelectGridView>
         ),
       ),
     );
+  }
+
+  void _onSelectionChanged() {
+    final controllerSelectedIndexes = gridController.selection.selectedIndexes;
+    if (!SetEquality().equals(controllerSelectedIndexes, selectedIndexes)) {
+      _selectionManager.selectedIndexes = controllerSelectedIndexes;
+    }
   }
 
   Future<bool> _onWillPop() async {
