@@ -17,4 +17,18 @@ void main() {
       expect(selectionChangeCount, 1);
     },
   );
+
+  test(
+    "When clearing the selection, "
+    "then those who are listening get notified about the new selection.",
+    () {
+      var selectionChangeCount = 0;
+
+      final controller = DragSelectGridViewController()
+        ..addListener(() => selectionChangeCount++);
+
+      controller.clear();
+      expect(selectionChangeCount, 1);
+    },
+  );
 }
