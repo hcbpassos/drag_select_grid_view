@@ -78,7 +78,7 @@ class _SelectableItemState extends State<SelectableItem>
         child: Text(
           'Item\n#${widget.index}',
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 22, color: Colors.white),
+          style: TextStyle(fontSize: 18, color: Colors.white),
         ),
       ),
     );
