@@ -1,4 +1,4 @@
-import 'package:collection/equality.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart' hide SelectionChangedCallback;
 
 import '../auto_scroll/auto_scroller_mixin.dart';
@@ -102,6 +102,8 @@ class DragSelectGridView extends StatefulWidget {
   ///
   /// By leaving this false, you may implement your own on-pop unselecting logic
   /// with [gridController]'s help.
+  ///
+  /// Defaults to true.
   final bool unselectOnWillPop;
 
   /// Refer to [ScrollView.reverse].
