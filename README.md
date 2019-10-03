@@ -67,7 +67,7 @@ As you may have noticed in the code above, `DragSelectGridView` must be used alo
     
   * `SelectionAppBar`: A custom `AppBar`, which shows the amount of selected items and an option to unselect them.
       
-The [example project](https://github.com/hugocbpassos/drag_select_grid_view/tree/master/example/lib) provides some samples of those widgets. I won't add them to the library, since they are unrelated to the grid itself, but feel free to copy them into your project. 
+The [example project](https://github.com/hugocbpassos/drag_select_grid_view/tree/master/example/lib) provides some samples of those widgets. I won't add them to the library, since they are unrelated to the grid itself, but feel free to copy them into your project, as long as you respect the license terms. 
 
 ## Advanced usage
  
