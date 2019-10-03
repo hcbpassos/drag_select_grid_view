@@ -1,7 +1,6 @@
 import 'package:drag_select_grid_view/drag_select_grid_view.dart';
 import 'package:drag_select_grid_view/src/drag_select_grid_view/selection.dart';
-import 'package:test/test.dart';
-import 'package:flutter_test/flutter_test.dart' show throwsAssertionError;
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test(

@@ -21,7 +21,7 @@ class SelectionAppBar extends StatelessWidget implements PreferredSizeWidget {
               key: Key('selecting'),
               titleSpacing: 0,
               leading: const CloseButton(),
-              title: Text('${selection.amount} item(s) selected…',),
+              title: Text('${selection.amount} item(s) selected…'),
             )
           : AppBar(
               key: Key('not-selecting'),

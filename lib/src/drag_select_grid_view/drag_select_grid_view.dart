@@ -17,7 +17,7 @@ typedef SelectableWidgetBuilder = Widget Function(
 /// Grid that supports both dragging and tapping to select its items.
 ///
 /// A long-press enables selection. The user may select/unselect any item by
-/// tapping on it. Dragging allows cascade selecting/unselecting.
+/// tapping on it. Dragging allows cascade select/unselect.
 ///
 /// Through auto-scroll, this widget adds the ability to select items that go
 /// beyond screen bounds without having to stop the drag. To do so, this widget

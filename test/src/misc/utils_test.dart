@@ -1,5 +1,5 @@
 import 'package:drag_select_grid_view/src/misc/utils.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group("intListFromRange().", () {

@@ -1,8 +1,9 @@
 name: drag_select_grid_view
 description: Grid that supports both dragging and tapping to select its items.
 version: 0.1.0
-author: Hugo Passos
-homepage:
+author: Hugo Passos <hugocbpassos@gmail.com>
+homepage: https://github.com/hugocbpassos/drag_select_grid_view/
+issue_tracker: https://github.com/hugocbpassos/drag_select_grid_view/issues
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -14,6 +15,5 @@ dependencies:
   collection: ^1.14.11
 
 dev_dependencies:
-  test: any
   flutter_test:
     sdk: flutter
