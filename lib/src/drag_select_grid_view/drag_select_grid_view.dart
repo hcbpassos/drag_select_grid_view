@@ -154,7 +154,7 @@ class DragSelectGridView extends StatefulWidget {
   /// Also refer to [SliverChildBuilderDelegate.builder].
   final SelectableWidgetBuilder itemBuilder;
 
-  /// Refer to [SliverChildBuilderDelegate.itemCount].
+  /// Refer to [SliverChildBuilderDelegate.childCount].
   final int itemCount;
 
   /// Refer to [SliverChildBuilderDelegate.addAutomaticKeepAlives].
