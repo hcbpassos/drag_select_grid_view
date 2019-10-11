@@ -1,0 +1,14 @@
+name: CI
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: subosito/flutter-action@v1.1.1
+      with:
+        flutter-version: '1.7.8+hotfix.4'
+    - name: Get dependencies
+      run: flutter pub get
+    - name: Run tests
+      run: flutter test
