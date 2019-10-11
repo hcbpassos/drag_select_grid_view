@@ -1,6 +1,7 @@
 # drag_select_grid_view  
   
-[![pub package](https://img.shields.io/pub/v/drag_select_grid_view.svg)](https://pub.dartlang.org/packages/drag_select_grid_view)  
+[![Pub package](https://img.shields.io/pub/v/drag_select_grid_view.svg)](https://pub.dartlang.org/packages/drag_select_grid_view)
+[![CI workflow](https://github.com/hugocbpassos/drag_select_grid_view/workflows/CI/badge.svg)](https://github.com/hugocbpassos/drag_select_grid_view/actions?workflow=CI)  
   
 A grid that supports both dragging and tapping to select its items.  
 
