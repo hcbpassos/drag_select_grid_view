@@ -52,7 +52,7 @@ class _MyAppState extends State<MyApp> {
       ),
       body: DragSelectGridView(
         gridController: controller,
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         itemCount: 90,
         itemBuilder: (context, index, selected) {
           return SelectableItem(
@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
             selected: selected,
           );
         },
-        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent: 150,
           crossAxisSpacing: 8,
           mainAxisSpacing: 8,

@@ -176,6 +176,7 @@ class DragSelectGridView extends StatefulWidget {
   DragSelectGridViewState createState() => DragSelectGridViewState();
 }
 
+@visibleForTesting
 class DragSelectGridViewState extends State<DragSelectGridView>
     with AutoScrollerMixin<DragSelectGridView> {
   final _elements = <SelectableElement>{};
@@ -184,13 +185,10 @@ class DragSelectGridViewState extends State<DragSelectGridView>
 
   DragSelectGridViewController get gridController => widget.gridController;
 
-  @visibleForTesting
   Set<int> get selectedIndexes => _selectionManager.selectedIndexes;
 
-  @visibleForTesting
   bool get isSelecting => selectedIndexes.isNotEmpty;
 
-  @visibleForTesting
   bool get isDragging =>
       (_selectionManager.dragStartIndex != -1) &&
       (_selectionManager.dragEndIndex != -1);
@@ -269,7 +267,8 @@ class DragSelectGridViewState extends State<DragSelectGridView>
 
   void _onSelectionChanged() {
     final controllerSelectedIndexes = gridController.selection.selectedIndexes;
-    if (!SetEquality().equals(controllerSelectedIndexes, selectedIndexes)) {
+    if (!const SetEquality()
+        .equals(controllerSelectedIndexes, selectedIndexes)) {
       _selectionManager.selectedIndexes = controllerSelectedIndexes;
     }
   }

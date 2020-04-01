@@ -33,23 +33,23 @@ class SelectionAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Selection selection;
 
   @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+
+  @override
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
       duration: kThemeAnimationDuration,
       child: selection.isSelecting
           ? AppBar(
-              key: Key('selecting'),
+              key: const Key('selecting'),
               titleSpacing: 0,
               leading: const CloseButton(),
               title: Text('${selection.amount} item(s) selected…'),
             )
           : AppBar(
-              key: Key('not-selecting'),
+              key: const Key('not-selecting'),
               title: title,
             ),
     );
   }
-
-  @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }

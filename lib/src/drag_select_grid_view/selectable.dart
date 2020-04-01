@@ -55,7 +55,7 @@ class SelectableElement extends ProxyElement {
   Selectable get widget => super.widget;
 
   @override
-  void mount(Element parent, newSlot) {
+  void mount(Element parent, dynamic newSlot) {
     super.mount(parent, newSlot);
     widget.onMountElement?.call(this);
   }

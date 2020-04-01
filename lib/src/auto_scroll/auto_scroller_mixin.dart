@@ -8,7 +8,7 @@ import 'auto_scroller.dart';
 mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   /// Information about the direction and duration of the scroll.
   @visibleForTesting
-  AutoScroll autoScroll = AutoScroll.stopped();
+  var autoScroll = AutoScroll.stopped();
 
   double _widgetHeight;
   double _widgetWidth;
