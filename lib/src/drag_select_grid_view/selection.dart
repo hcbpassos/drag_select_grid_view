@@ -25,7 +25,7 @@ class SelectionManager {
   ///
   /// Indexes can be directly selected, with [_selectedIndexes] setter, and
   /// selected by gestures, with [startDrag], [updateDrag], [endDrag] and [tap].
-  Set<int> get selectedIndexes => Set.of(_selectedIndexes);
+  Set<int> get selectedIndexes => UnmodifiableSetView(_selectedIndexes);
 
   /// Sets the indexes that are currently selected.
   ///

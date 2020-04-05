@@ -545,15 +545,19 @@ void main() {
 
       testWidgets(
         "When directly modifying the set of selected indexes of the grid-state, "
-        "then the modifications are not materialized.",
+        "then and UnsupportedError is thrown, "
+        "and the modifications are not materialized.",
         (tester) async {
           await setUp(tester);
 
           // When directly modifying the set of selected indexes of the grid-state,
-          final newSelectedIndexes = dragSelectState.selectedIndexes..add(5);
-          expect(newSelectedIndexes, {5});
+          // then and UnsupportedError is thrown,
+          expect(
+            () => dragSelectState.selectedIndexes.add(5),
+            throwsUnsupportedError,
+          );
 
-          // then the modifications are not materialized.
+          // and the modifications are not materialized.
           expect(dragSelectState.selectedIndexes, <int>{});
         },
         skip: false,
