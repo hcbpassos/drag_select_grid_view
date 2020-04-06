@@ -18,7 +18,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart' hide SelectionChangedCallback;
 
@@ -274,8 +273,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
 
   void _onSelectionChanged() {
     final controllerSelectedIndexes = _gridController.selection.selectedIndexes;
-    if (!const SetEquality()
-        .equals(controllerSelectedIndexes, selectedIndexes)) {
+    if (!setEquals(controllerSelectedIndexes, selectedIndexes)) {
       _selectionManager.selectedIndexes = controllerSelectedIndexes;
     }
   }

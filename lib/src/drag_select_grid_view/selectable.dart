@@ -60,7 +60,7 @@ class SelectableElement extends ProxyElement {
   SelectableElement(Selectable widget) : super(widget);
 
   @override
-  Selectable get widget => super.widget;
+  Selectable get widget => super.widget as Selectable;
 
   @override
   void mount(Element parent, dynamic newSlot) {
@@ -76,7 +76,7 @@ class SelectableElement extends ProxyElement {
 
   /// Whether the [offset] is in the bounds of this element.
   bool containsOffset(RenderObject ancestor, Offset offset) {
-    RenderBox box = renderObject;
+    final box = renderObject as RenderBox;
     final rect = box.localToGlobal(Offset.zero, ancestor: ancestor) & box.size;
     return rect.contains(offset);
   }

@@ -153,8 +153,8 @@ class Selection {
       identical(this, other) ||
       other is Selection &&
           runtimeType == other.runtimeType &&
-          const SetEquality().equals(selectedIndexes, other.selectedIndexes);
+          setEquals(selectedIndexes, other.selectedIndexes);
 
   @override
-  int get hashCode => const SetEquality().hash(selectedIndexes);
+  int get hashCode => const SetEquality<int>().hash(selectedIndexes);
 }

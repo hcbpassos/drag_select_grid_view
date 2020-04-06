@@ -20,5 +20,5 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  meta: ^1.1.6
+  meta: ^1.1.8
   effective_dart: ^1.2.1
