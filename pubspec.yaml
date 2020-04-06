@@ -21,3 +21,4 @@ dev_dependencies:
     sdk: flutter
 
   meta: ^1.1.6
+  effective_dart: ^1.2.1

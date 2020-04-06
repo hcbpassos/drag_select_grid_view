@@ -8,7 +8,10 @@ void main() {
       "then an `AssertionError` is thrown.",
       () {
         expect(
-          () => AutoScroll(duration: const Duration(seconds: 1)),
+          () => AutoScroll(
+            duration: const Duration(seconds: 1),
+            direction: null,
+          ),
           throwsAssertionError,
         );
       },
@@ -19,7 +22,10 @@ void main() {
       "then an `AssertionError` is thrown.",
       () {
         expect(
-          () => AutoScroll(direction: AutoScrollDirection.forward),
+          () => AutoScroll(
+            direction: AutoScrollDirection.forward,
+            duration: null,
+          ),
           throwsAssertionError,
         );
       },
@@ -59,7 +65,7 @@ void main() {
       );
     });
 
-    test("toString().", () {
+    test("`toString()`.", () {
       expect(
         AutoScroll(
           direction: AutoScrollDirection.forward,
@@ -117,7 +123,21 @@ void main() {
       },
     );
 
-    test("toString().", () {
+    test("`isConsumed`.", () {
+      final stopEvent = StopAutoScrollEvent();
+      expect(stopEvent.isConsumed, isFalse);
+      stopEvent.consume();
+      expect(stopEvent.isConsumed, isTrue);
+    });
+
+    test("`isNotConsumed`.", () {
+      final stopEvent = StopAutoScrollEvent();
+      expect(stopEvent.isNotConsumed, isTrue);
+      stopEvent.consume();
+      expect(stopEvent.isNotConsumed, isFalse);
+    });
+
+    test("`toString()`.", () {
       expect(
         StopAutoScrollEvent().toString(),
         isNot("Instance of 'StopAutoScrollEvent'"),

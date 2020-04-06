@@ -45,7 +45,8 @@ class SelectionManager {
     _selectedIndexes.clear();
   }
 
-  /// Adds the [index] to [_selectedIndexes], or removes it if it's already there.
+  /// Adds the [index] to [_selectedIndexes], or removes it if it's already
+  /// there.
   void tap(int index) {
     if (_selectedIndexes.contains(index)) {
       _selectedIndexes.remove(index);
@@ -129,6 +130,7 @@ class SelectionManager {
 /// Information about the grid selection.
 @immutable
 class Selection {
+  /// Information about a grid with no items selected.
   static const empty = Selection({});
 
   /// Creates a new [Selection].

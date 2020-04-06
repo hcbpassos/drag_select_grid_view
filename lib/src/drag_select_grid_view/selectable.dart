@@ -7,8 +7,8 @@
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -40,15 +40,23 @@ class Selectable extends ProxyWidget {
     @required Widget child,
   }) : super(key: key, child: child);
 
+  /// Widget index inside the grid.
   final int index;
+
+  /// Callback that notifies whenever the element is mounted.
   final ElementUpdateCallback onMountElement;
+
+  /// Callback that notifies whenever the element is unmounted.
   final ElementUpdateCallback onUnmountElement;
 
   @override
   SelectableElement createElement() => SelectableElement(this);
 }
 
+/// The element for a widget that helps to track the elements of the grid items.
 class SelectableElement extends ProxyElement {
+  /// Creates the element for a widget that helps to track the elements of the
+  /// grid items.
   SelectableElement(Selectable widget) : super(widget);
 
   @override
@@ -66,7 +74,7 @@ class SelectableElement extends ProxyElement {
     super.unmount();
   }
 
-  /// Returns whether the [offset] is in the bounds of this element.
+  /// Whether the [offset] is in the bounds of this element.
   bool containsOffset(RenderObject ancestor, Offset offset) {
     RenderBox box = renderObject;
     final rect = box.localToGlobal(Offset.zero, ancestor: ancestor) & box.size;

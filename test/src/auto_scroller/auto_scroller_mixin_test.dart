@@ -48,7 +48,8 @@ void main() {
         await tester.pumpWidget(widget);
 
         expect(dragSelectGridViewFinder, findsOneWidget);
-        DragSelectGridViewState state = tester.state(dragSelectGridViewFinder);
+        final state =
+            tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
 
         final offset = Offset(0, 0);
 
@@ -64,7 +65,8 @@ void main() {
         final widget = createWidget();
         await tester.pumpWidget(widget);
 
-        DragSelectGridViewState state = tester.state(dragSelectGridViewFinder);
+        final state =
+            tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
         final offset = Offset(0, widgetHeight);
 
         expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
@@ -79,7 +81,8 @@ void main() {
         final widget = createWidget();
         await tester.pumpWidget(widget);
 
-        DragSelectGridViewState state = tester.state(dragSelectGridViewFinder);
+        final state =
+            tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
         final offset = Offset(0, -1);
 
         expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
@@ -94,7 +97,8 @@ void main() {
         final widget = createWidget();
         await tester.pumpWidget(widget);
 
-        DragSelectGridViewState state = tester.state(dragSelectGridViewFinder);
+        final state =
+            tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
         final offset = Offset(0, widgetHeight + 1);
 
         expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
@@ -109,7 +113,8 @@ void main() {
         final widget = createWidget();
         await tester.pumpWidget(widget);
 
-        DragSelectGridViewState state = tester.state(dragSelectGridViewFinder);
+        final state =
+            tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
         final offset = Offset(-1, 0);
 
         expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
@@ -124,7 +129,8 @@ void main() {
         final widget = createWidget();
         await tester.pumpWidget(widget);
 
-        DragSelectGridViewState state = tester.state(dragSelectGridViewFinder);
+        final state =
+            tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
         final offset = Offset(widgetWidth + 1, 0);
 
         expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
@@ -143,32 +149,22 @@ void main() {
         final widget = createWidget();
         await tester.pumpWidget(widget);
 
-        DragSelectGridViewState dragSelectGridViewState =
-            tester.state(dragSelectGridViewFinder);
+        final state =
+            tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
 
         // First scroll backward attempt.
 
-        expect(dragSelectGridViewState.autoScroll.isScrolling, isFalse);
-        expect(dragSelectGridViewState.autoScroll.direction, null);
-
-        dragSelectGridViewState.startAutoScrollingBackward();
-
-        expect(dragSelectGridViewState.autoScroll.isScrolling, isTrue);
-        expect(
-          dragSelectGridViewState.autoScroll.direction,
-          AutoScrollDirection.backward,
-        );
+        expect(state.autoScroll.isScrolling, isFalse);
+        expect(state.autoScroll.direction, null);
+        state.startAutoScrollingBackward();
+        expect(state.autoScroll.isScrolling, isTrue);
+        expect(state.autoScroll.direction, AutoScrollDirection.backward);
 
         // Second scroll backward attempt.
 
-        final oldAutoScroll = dragSelectGridViewState.autoScroll;
-
-        dragSelectGridViewState.startAutoScrollingBackward();
-
-        expect(
-          identical(oldAutoScroll, dragSelectGridViewState.autoScroll),
-          isTrue,
-        );
+        final oldAutoScroll = state.autoScroll;
+        state.startAutoScrollingBackward();
+        expect(identical(oldAutoScroll, state.autoScroll), isTrue);
       },
     );
 
@@ -181,32 +177,22 @@ void main() {
         final widget = createWidget();
         await tester.pumpWidget(widget);
 
-        DragSelectGridViewState dragSelectGridViewState =
-            tester.state(dragSelectGridViewFinder);
+        final state =
+            tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
 
         // First scroll forward attempt.
 
-        expect(dragSelectGridViewState.autoScroll.isScrolling, isFalse);
-        expect(dragSelectGridViewState.autoScroll.direction, null);
-
-        dragSelectGridViewState.startAutoScrollingForward();
-
-        expect(dragSelectGridViewState.autoScroll.isScrolling, isTrue);
-        expect(
-          dragSelectGridViewState.autoScroll.direction,
-          AutoScrollDirection.forward,
-        );
+        expect(state.autoScroll.isScrolling, isFalse);
+        expect(state.autoScroll.direction, null);
+        state.startAutoScrollingForward();
+        expect(state.autoScroll.isScrolling, isTrue);
+        expect(state.autoScroll.direction, AutoScrollDirection.forward);
 
         // Second scroll forward attempt.
 
-        final oldAutoScroll = dragSelectGridViewState.autoScroll;
-
-        dragSelectGridViewState.startAutoScrollingForward();
-
-        expect(
-          identical(oldAutoScroll, dragSelectGridViewState.autoScroll),
-          isTrue,
-        );
+        final oldAutoScroll = state.autoScroll;
+        state.startAutoScrollingForward();
+        expect(identical(oldAutoScroll, state.autoScroll), isTrue);
       },
     );
 
@@ -219,37 +205,24 @@ void main() {
         final widget = createWidget();
         await tester.pumpWidget(widget);
 
-        DragSelectGridViewState dragSelectGridViewState =
-            tester.state(dragSelectGridViewFinder);
+        final state =
+            tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
 
-        dragSelectGridViewState.startAutoScrollingForward();
+        state.startAutoScrollingForward();
 
         // First stop attempt.
 
-        expect(dragSelectGridViewState.autoScroll.isScrolling, isTrue);
-        expect(
-          dragSelectGridViewState.autoScroll.direction,
-          AutoScrollDirection.forward,
-        );
-
-        dragSelectGridViewState.stopScrolling();
-
-        expect(dragSelectGridViewState.autoScroll.isScrolling, isFalse);
-        expect(
-          dragSelectGridViewState.autoScroll.direction,
-          AutoScrollDirection.forward,
-        );
+        expect(state.autoScroll.isScrolling, isTrue);
+        expect(state.autoScroll.direction, AutoScrollDirection.forward);
+        state.stopScrolling();
+        expect(state.autoScroll.isScrolling, isFalse);
+        expect(state.autoScroll.direction, AutoScrollDirection.forward);
 
         // Second stop attempt.
 
-        final oldAutoScroll = dragSelectGridViewState.autoScroll;
-
-        dragSelectGridViewState.stopScrolling();
-
-        expect(
-          identical(oldAutoScroll, dragSelectGridViewState.autoScroll),
-          isTrue,
-        );
+        final oldAutoScroll = state.autoScroll;
+        state.stopScrolling();
+        expect(identical(oldAutoScroll, state.autoScroll), isTrue);
       },
     );
   });

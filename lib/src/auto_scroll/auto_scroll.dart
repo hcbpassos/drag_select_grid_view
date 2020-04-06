@@ -10,9 +10,19 @@ import 'auto_scroller.dart';
 /// For instance, in the most usual scroll-view, in which the scroll-direction
 /// is vertical and not reversed, forward is the same as downward, and backward
 /// is the same as upward.
-enum AutoScrollDirection { forward, backward }
+enum AutoScrollDirection {
+  /// Forward auto-scroll.
+  forward,
+
+  /// Backward auto-scroll.
+  backward,
+}
 
 /// Helper class that holds information created and used by [AutoScroller].
+///
+/// Since this class has the mutable field [stopEvent], which also overrides
+/// operator [==] and [hashCode], you should not use it inside collections. See:
+/// https://dart.dev/guides/language/effective-dart/design#avoid-defining-custom-equality-for-mutable-classes
 @immutable
 class AutoScroll {
   /// Creates a new [AutoScroll].
@@ -86,6 +96,10 @@ class AutoScroll {
 ///
 /// This works as an extension of [AutoScroll.isScrolling], helping
 /// [AutoScroller] to decide whether it IS stopped or it SHOULD stop.
+///
+/// Since this class is mutable and overrides operator [==] and [hashCode],
+/// you should not use it inside collections. See:
+/// https://dart.dev/guides/language/effective-dart/design#avoid-defining-custom-equality-for-mutable-classes
 class StopAutoScrollEvent {
   /// Creates a [StopAutoScrollEvent] that can be consumed.
   StopAutoScrollEvent() : _isConsumed = false;
@@ -93,9 +107,13 @@ class StopAutoScrollEvent {
   /// Creates a [StopAutoScrollEvent] that is already consumed.
   StopAutoScrollEvent.consumed() : _isConsumed = true;
 
+  bool _isConsumed;
+
   /// Whether the stop-event is consumed.
   bool get isConsumed => _isConsumed;
-  bool _isConsumed;
+
+  /// Whether the stop-event is not consumed.
+  bool get isNotConsumed => !_isConsumed;
 
   /// Consumes the stop-event.
   ///
@@ -113,6 +131,7 @@ class StopAutoScrollEvent {
   String toString() => 'StopAutoScrollEvent{_isConsumed: $_isConsumed}';
 
   @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is StopAutoScrollEvent &&
@@ -120,5 +139,6 @@ class StopAutoScrollEvent {
           _isConsumed == other._isConsumed;
 
   @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _isConsumed.hashCode;
 }

@@ -8,7 +8,7 @@ import 'auto_scroller.dart';
 mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   /// Information about the direction and duration of the scroll.
   @visibleForTesting
-  var autoScroll = AutoScroll.stopped();
+  AutoScroll autoScroll = AutoScroll.stopped();
 
   double _widgetHeight;
   double _widgetWidth;
@@ -35,7 +35,8 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
 
   /// Stores the size of the widget.
   ///
-  /// Such information is used to check whether an offset is in hotspot's bounds.
+  /// Such information is used to check whether an offset is in hotspot's
+  /// bounds.
   ///
   /// By doing this once, we are assuming the widget will never change it's size
   /// without calling this method again.
@@ -43,7 +44,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) {
+      (callback) {
         final widgetSize = context.size;
         _widgetHeight = widgetSize.height;
         _widgetWidth = widgetSize.width;

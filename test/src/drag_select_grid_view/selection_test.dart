@@ -359,7 +359,8 @@ void main() {
       );
 
       test(
-        "Given that the indexes 0 and 1 were selected by dragging, which stills activated, "
+        "Given that the indexes 0 and 1 were selected by dragging, "
+        "which stills activated, "
         "when clearing the selection, "
         "then all indexes get UNSELECTED, "
         "and the drag is interrupted.",
@@ -377,7 +378,8 @@ void main() {
       );
 
       test(
-        "Given that the indexes 0 and 1 were selected by dragging, which stills activated, "
+        "Given that the indexes 0 and 1 were selected by dragging, "
+        "which stills activated, "
         "when directly selecting indexes 2 and 3, "
         "then all indexes get UNSELECTED, "
         "then the indexes 2 and 3 get selected, "
@@ -458,7 +460,7 @@ void main() {
       },
     );
 
-    test("toString().", () {
+    test("`toString()`.", () {
       expect(
         Selection.empty.toString(),
         isNot("Instance of 'Selection'"),

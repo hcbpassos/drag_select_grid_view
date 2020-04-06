@@ -22,18 +22,26 @@ class AutoScroller {
   /// The [autoScroll] provides the necessary information to perform the scroll,
   /// such as the direction.
   ///
-  /// The [controller] allows the actual scrolling, but also provides some
+  /// The [controller] allows the actual scroll, but also provides some
   /// information, like the current position of the scroll-view.
   AutoScroller(this.autoScroll, this.controller)
       : currentPosition = controller.hasClients ? controller.offset : null;
 
+  /// Information about the scroll that is possibly going to be performed.
   final AutoScroll autoScroll;
+
+  /// Controller attached to a scrollable widget, which allows the scroll.
   final ScrollController controller;
+
+  /// Current scroll position of the scrollable widget.
+  ///
+  /// May be null if [controller] has no [ScrollPosition] attached to
+  /// [controller].
   final double currentPosition;
 
   /// Returns whether auto-scroll must be performed.
   bool get mustScroll =>
-      !autoScroll.stopEvent.isConsumed || autoScroll.isScrolling;
+      autoScroll.stopEvent.isNotConsumed || autoScroll.isScrolling;
 
   /// Returns the position in which the [controller] would be after performing
   /// an overscroll.
@@ -46,7 +54,8 @@ class AutoScroller {
   /// Returns the target position of the auto-scroll.
   ///
   /// If the auto-scroll direction is forward, we want to get the last position.
-  /// If the auto-scroll direction is backward, we want to get the first position.
+  /// If the auto-scroll direction is backward, we want to get the first
+  /// position.
   @visibleForTesting
   double get targetPositionOfTheAutoScroll =>
       autoScroll.direction == AutoScrollDirection.forward
@@ -77,6 +86,10 @@ class AutoScroller {
       ((autoScroll.direction == AutoScrollDirection.backward) &&
           (currentPosition > 0));
 
+  /// Performs a scroll or, if the user stopped dragging, an elegant overscroll.
+  ///
+  /// Does nothing if either [mustScroll], [isAbleToScroll] or
+  /// [hasAnythingLeftToScroll] is false.
   Future<void> scroll() async {
     if (!isAbleToScroll) return;
     if (!hasAnythingLeftToScroll) return;
@@ -104,6 +117,7 @@ class AutoScroller {
     );
   }
 
+  /// Performs the actual scroll.
   @visibleForTesting
   Future<void> performScroll() {
     return controller.animateTo(

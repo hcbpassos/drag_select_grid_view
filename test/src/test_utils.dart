@@ -64,46 +64,49 @@ Future<TestGesture> dragDown({
     final touchSlopX = kDragSlopDefault;
     final touchSlopY = kDragSlopDefault;
 
-    final TestGesture gesture =
+    final gesture =
         previousGesture ?? await tester.startGesture(tester.getCenter(finder));
     assert(gesture != null);
     await tester.pump(kLongPressTimeout + kPressTimeout);
 
-    final double xSign = offset.dx.sign;
-    final double ySign = offset.dy.sign;
+    final xSign = offset.dx.sign;
+    final ySign = offset.dy.sign;
 
-    final double offsetX = offset.dx;
-    final double offsetY = offset.dy;
+    final offsetX = offset.dx;
+    final offsetY = offset.dy;
 
-    final bool separateX = offset.dx.abs() > touchSlopX && touchSlopX > 0;
-    final bool separateY = offset.dy.abs() > touchSlopY && touchSlopY > 0;
+    final separateX = offset.dx.abs() > touchSlopX && touchSlopX > 0;
+    final separateY = offset.dy.abs() > touchSlopY && touchSlopY > 0;
 
     if (separateY || separateX) {
-      final double offsetSlope = offsetY / offsetX;
-      final double inverseOffsetSlope = offsetX / offsetY;
-      final double slopSlope = touchSlopY / touchSlopX;
-      final double absoluteOffsetSlope = offsetSlope.abs();
-      final double signedSlopX = touchSlopX * xSign;
-      final double signedSlopY = touchSlopY * ySign;
+      final offsetSlope = offsetY / offsetX;
+      final inverseOffsetSlope = offsetX / offsetY;
+      final slopSlope = touchSlopY / touchSlopX;
+      final absoluteOffsetSlope = offsetSlope.abs();
+      final signedSlopX = touchSlopX * xSign;
+      final signedSlopY = touchSlopY * ySign;
       if (absoluteOffsetSlope != slopSlope) {
-        // The drag goes through one or both of the extents of the edges of the box.
+        // The drag goes through one or both of the extents of the edges of the
+        // box.
         if (absoluteOffsetSlope < slopSlope) {
           assert(offsetX.abs() > touchSlopX);
           // The drag goes through the vertical edge of the box.
           // It is guaranteed that the |offsetX| > touchSlopX.
-          final double diffY = offsetSlope.abs() * touchSlopX * ySign;
+          final diffY = offsetSlope.abs() * touchSlopX * ySign;
 
           // The vector from the origin to the vertical edge.
           await gesture.moveBy(Offset(signedSlopX, diffY));
           if (offsetY.abs() <= touchSlopY) {
-            // The drag ends on or before getting to the horizontal extension of the horizontal edge.
+            // The drag ends on or before getting to the horizontal extension
+            // of the horizontal edge.
             await gesture
                 .moveBy(Offset(offsetX - signedSlopX, offsetY - diffY));
           } else {
-            final double diffY2 = signedSlopY - diffY;
-            final double diffX2 = inverseOffsetSlope * diffY2;
+            final diffY2 = signedSlopY - diffY;
+            final diffX2 = inverseOffsetSlope * diffY2;
 
-            // The vector from the edge of the box to the horizontal extension of the horizontal edge.
+            // The vector from the edge of the box to the horizontal extension
+            // of the horizontal edge.
             await gesture.moveBy(Offset(diffX2, diffY2));
             await gesture.moveBy(
                 Offset(offsetX - diffX2 - signedSlopX, offsetY - signedSlopY));
@@ -112,19 +115,21 @@ Future<TestGesture> dragDown({
           assert(offsetY.abs() > touchSlopY);
           // The drag goes through the horizontal edge of the box.
           // It is guaranteed that the |offsetY| > touchSlopY.
-          final double diffX = inverseOffsetSlope.abs() * touchSlopY * xSign;
+          final diffX = inverseOffsetSlope.abs() * touchSlopY * xSign;
 
           // The vector from the origin to the vertical edge.
           await gesture.moveBy(Offset(diffX, signedSlopY));
           if (offsetX.abs() <= touchSlopX) {
-            // The drag ends on or before getting to the vertical extension of the vertical edge.
+            // The drag ends on or before getting to the vertical extension of
+            // the vertical edge.
             await gesture
                 .moveBy(Offset(offsetX - diffX, offsetY - signedSlopY));
           } else {
-            final double diffX2 = signedSlopX - diffX;
-            final double diffY2 = offsetSlope * diffX2;
+            final diffX2 = signedSlopX - diffX;
+            final diffY2 = offsetSlope * diffX2;
 
-            // The vector from the edge of the box to the vertical extension of the vertical edge.
+            // The vector from the edge of the box to the vertical extension of
+            // the vertical edge.
             await gesture.moveBy(Offset(diffX2, diffY2));
             await gesture.moveBy(
                 Offset(offsetX - signedSlopX, offsetY - diffY2 - signedSlopY));

@@ -1,0 +1,6 @@
+include: package:effective_dart/analysis_options.yaml
+
+linter:
+  rules:
+    - prefer_typing_uninitialized_variables
+    - use_function_type_syntax_for_parameters
