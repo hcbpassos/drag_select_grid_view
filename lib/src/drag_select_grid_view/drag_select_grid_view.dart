@@ -343,14 +343,21 @@ class DragSelectGridViewState extends State<DragSelectGridView>
 
   int _findIndexOfSelectable(Offset offset) {
     final ancestor = context.findRenderObject();
+    var elementFinder = Set.of(_elements).firstWhere;
 
-    for (final element in Set.of(_elements)) {
-      if (element.containsOffset(ancestor, offset)) {
-        return element.widget.index;
-      }
-    }
+    // Conceptually, `Set.singleWhere()` is the safer option, however we're
+    // avoiding to iterate over the whole `Set` to improve the performance.
+    assert(() {
+      elementFinder = Set.of(_elements).singleWhere;
+      return true;
+    }());
 
-    return -1;
+    final element = elementFinder(
+      (element) => element.containsOffset(ancestor, offset),
+      orElse: () => null,
+    );
+
+    return (element == null) ? -1 : element.widget.index;
   }
 
   void _notifySelectionChange() =>

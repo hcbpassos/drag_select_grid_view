@@ -110,6 +110,10 @@ class AutoScroller {
   /// The amount of overscroll is defined by [amountOfOverscrollOnScrollStop].
   @visibleForTesting
   Future<void> performOverscrollOfScrollStop() {
+    assert(isAbleToScroll);
+    assert(hasAnythingLeftToScroll);
+    assert(autoScroll.stopEvent.isConsumed);
+
     return controller.animateTo(
       positionAfterOverscroll,
       duration: overscrollDuration,
@@ -120,6 +124,10 @@ class AutoScroller {
   /// Performs the actual scroll.
   @visibleForTesting
   Future<void> performScroll() {
+    assert(isAbleToScroll);
+    assert(hasAnythingLeftToScroll);
+    assert(autoScroll.stopEvent.isConsumed);
+
     return controller.animateTo(
       targetPositionOfTheAutoScroll,
       curve: Curves.linear,
