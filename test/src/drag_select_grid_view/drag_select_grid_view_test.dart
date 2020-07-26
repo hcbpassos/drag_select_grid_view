@@ -106,6 +106,43 @@ void main() {
     skip: false,
   );
 
+  testWidgets(
+    "When DragSelectGridView is initiated, "
+    "then it starts listening to the controller.",
+    (tester) async {
+      final controller = DragSelectGridViewController();
+
+      // Initially, the controller is not listened to.
+      expect(controller.hasListeners, isFalse);
+
+      // When DragSelectGridView is initiated,
+      await setUp(tester, gridController: controller);
+
+      // then it starts listening to the controller.
+      expect(controller.hasListeners, isTrue);
+    },
+    skip: false,
+  );
+
+  testWidgets(
+    "When DragSelectGridView is disposed, "
+    "then it stops listening to the controller.",
+    (tester) async {
+      final controller = DragSelectGridViewController();
+      await setUp(tester, gridController: controller);
+
+      // Initially, the controller is listened to.
+      expect(controller.hasListeners, isTrue);
+
+      // When DragSelectGridView is disposed,
+      await tester.pumpWidget(Container());
+
+      // then it stops listening to the controller.
+      expect(controller.hasListeners, isFalse);
+    },
+    skip: false,
+  );
+
   group("Drag-select-grid-view integration tests.", () {
     group("Select by pressing.", () {
       testWidgets(

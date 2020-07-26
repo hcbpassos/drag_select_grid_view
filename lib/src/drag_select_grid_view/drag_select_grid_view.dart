@@ -222,7 +222,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
 
   @override
   void dispose() {
-    _gridController?.dispose();
+    _gridController?.removeListener(_onSelectionChanged);
     super.dispose();
   }
 
