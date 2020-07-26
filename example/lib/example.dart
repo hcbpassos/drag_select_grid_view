@@ -46,33 +46,22 @@ class _MyAppState extends State<MyApp> {
         selection: controller.selection,
         title: const Text('Grid Example'),
       ),
-      body: PageView(
-        children: [
-          Column(
-            children: [
-              Center(
-                child: Text('first page'),
-              )
-            ],
-          ),
-          DragSelectGridView(
-            gridController: controller,
-            padding: const EdgeInsets.all(8),
-            itemCount: 90,
-            itemBuilder: (context, index, selected) {
-              return SelectableItem(
-                index: index,
-                color: Colors.blue,
-                selected: selected,
-              );
-            },
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 150,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
-            ),
-          ),
-        ],
+      body: DragSelectGridView(
+        gridController: controller,
+        padding: const EdgeInsets.all(8),
+        itemCount: 90,
+        itemBuilder: (context, index, selected) {
+          return SelectableItem(
+            index: index,
+            color: Colors.blue,
+            selected: selected,
+          );
+        },
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 150,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+        ),
       ),
     );
   }
