@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:drag_select_grid_view/drag_select_grid_view.dart';
 
@@ -8,10 +7,7 @@ import 'selection_app_bar.dart';
 void main() {
   runApp(
     MaterialApp(
-      home: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle(statusBarColor: Colors.grey[200]),
-        child: MyApp(),
-      ),
+      home: MyApp(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.white,
