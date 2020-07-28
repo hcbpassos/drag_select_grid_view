@@ -1,3 +1,7 @@
+## [0.2.1] - 28/07/2020
+
+*  Fix `DragSelectGridViewController` dispose ([#13](https://github.com/hugocbpassos/drag_select_grid_view/issues/13)).
+
 ## [0.2.0] - 05/04/2020
 
 * Improve code safety with `assert`s.
