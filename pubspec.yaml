@@ -11,11 +11,10 @@ dependencies:
   flutter:
     sdk: flutter
 
-  collection: ^1.14.11
+  collection: ^1.14.13
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  meta: ^1.1.8
-  effective_dart: ^1.2.1
+  effective_dart: ^1.2.4
