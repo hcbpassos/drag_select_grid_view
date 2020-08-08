@@ -894,114 +894,118 @@ void main() {
       );
     });
 
-    testWidgets(
-      "Given that the grid should unselect when trying to pop the route, "
-      "and that an item of the grid was selected, "
-      "when trying to pop the route, "
-      "then the item gets UNSELECTED.",
-      (tester) async {
-        await setUp(tester, unselectOnWillPop: true);
+    group('Selecting through grid-controller.', () {
+      testWidgets(
+        "When selecting the items 0 and 1 through the grid-controller, "
+        "then the items 0 and 1 get selected in the grid-state.",
+        (tester) async {
+          final gridController = DragSelectGridViewController();
+          await setUp(tester, gridController: gridController);
 
-        // Given that an item of the grid was selected,
-        await tester.longPress(firstItemFinder);
-        await tester.pump();
+          // When selecting the items 0 and 1 through the grid-controller,
+          gridController.value = Selection({0, 1});
+          await tester.pump();
 
-        // when trying to pop the route,
-        await tester.binding.handlePopRoute();
+          // then the items 0 and 1 get selected in the grid-state.
+          expect(dragSelectState.isDragging, isFalse);
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {0, 1});
+        },
+        skip: false,
+      );
 
-        // then the item gets UNSELECTED.
-        expect(dragSelectState.isSelecting, isFalse);
-        expect(dragSelectState.selectedIndexes, <int>{});
-      },
-      skip: false,
-    );
+      testWidgets(
+        "Given that the grid has 4 columns and 3 lines, "
+        "and that the first item was long-pressed and selected, "
+        "and that the second item was selected by dragging, "
+        ""
+        "when selecting the items 2 and 3 through the grid-controller, "
+        ""
+        "then the drag gets interrupted, "
+        "then the items 0 and 1 get UNSELECTED in the grid-state, "
+        "and the items 2 and 3 get selected in the grid-state.",
+        (tester) async {
+          final gridController = DragSelectGridViewController();
 
-    testWidgets(
-      "Given that the grid should NOT unselect when trying to pop the route, "
-      "and that an item of the grid was selected, "
-      "when trying to pop the route, "
-      "then the item doesn't get UNSELECTED.",
-      (tester) async {
-        await setUp(tester, unselectOnWillPop: false);
+          // Given that the grid has 4 columns and 3 lines,
+          await setUp(tester, gridController: gridController);
 
-        // Given that an item of the grid was selected,
-        await tester.longPress(firstItemFinder);
-        await tester.pump();
+          // and that the first item was long-pressed and selected,
+          var gesture = await longPressDown(
+            tester: tester,
+            finder: firstItemFinder,
+          );
+          await tester.pump();
 
-        // when trying to pop the route,
-        await tester.binding.handlePopRoute();
+          // and that the second item was selected by dragging,
+          gesture = await dragDown(
+            tester: tester,
+            previousGesture: gesture,
+            offset: mainAxisItemsDistance,
+          );
+          await tester.pump();
 
-        // then the item doesn't get UNSELECTED.
-        expect(dragSelectState.isSelecting, isTrue);
-        expect(dragSelectState.selectedIndexes, {0});
-      },
-      skip: false,
-    );
+          // when selecting the items 2 and 3 through the grid-controller,
+          expect(dragSelectState.isDragging, isTrue);
+          gridController.value = Selection({2, 3});
+          await tester.pump();
 
-    testWidgets(
-      "When selecting the items 0 and 1 through the grid-controller, "
-      "then the items 0 and 1 get selected in the grid-state.",
-      (tester) async {
-        final gridController = DragSelectGridViewController();
-        await setUp(tester, gridController: gridController);
+          // then the drag gets interrupted,
+          // then the items 0 and 1 get UNSELECTED in the grid-state,
+          // and the items 2 and 3 get selected in the grid-state."
+          expect(dragSelectState.isDragging, isFalse);
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {2, 3});
+        },
+        skip: false,
+      );
+    });
 
-        // When selecting the items 0 and 1 through the grid-controller,
-        gridController.value = Selection({0, 1});
-        await tester.pump();
+    group("Pop scope.", () {
+      testWidgets(
+        "Given that the grid should unselect when trying to pop the route, "
+        "and that an item of the grid was selected, "
+        "when trying to pop the route, "
+        "then the item gets UNSELECTED.",
+        (tester) async {
+          await setUp(tester, unselectOnWillPop: true);
 
-        // then the items 0 and 1 get selected in the grid-state.
-        expect(dragSelectState.isDragging, isFalse);
-        expect(dragSelectState.isSelecting, isTrue);
-        expect(dragSelectState.selectedIndexes, {0, 1});
-      },
-      skip: false,
-    );
+          // Given that an item of the grid was selected,
+          await tester.longPress(firstItemFinder);
+          await tester.pump();
 
-    testWidgets(
-      "Given that the grid has 4 columns and 3 lines, "
-      "and that the first item was long-pressed and selected, "
-      "and that the second item was selected by dragging, "
-      ""
-      "when selecting the items 2 and 3 through the grid-controller, "
-      ""
-      "then the drag gets interrupted, "
-      "then the items 0 and 1 get UNSELECTED in the grid-state, "
-      "and the items 2 and 3 get selected in the grid-state.",
-      (tester) async {
-        final gridController = DragSelectGridViewController();
+          // when trying to pop the route,
+          await tester.binding.handlePopRoute();
 
-        // Given that the grid has 4 columns and 3 lines,
-        await setUp(tester, gridController: gridController);
+          // then the item gets UNSELECTED.
+          expect(dragSelectState.isSelecting, isFalse);
+          expect(dragSelectState.selectedIndexes, <int>{});
+        },
+        skip: false,
+      );
 
-        // and that the first item was long-pressed and selected,
-        var gesture = await longPressDown(
-          tester: tester,
-          finder: firstItemFinder,
-        );
-        await tester.pump();
+      testWidgets(
+        "Given that the grid should NOT unselect when trying to pop the route, "
+        "and that an item of the grid was selected, "
+        "when trying to pop the route, "
+        "then the item doesn't get UNSELECTED.",
+        (tester) async {
+          await setUp(tester, unselectOnWillPop: false);
 
-        // and that the second item was selected by dragging,
-        gesture = await dragDown(
-          tester: tester,
-          previousGesture: gesture,
-          offset: mainAxisItemsDistance,
-        );
-        await tester.pump();
+          // Given that an item of the grid was selected,
+          await tester.longPress(firstItemFinder);
+          await tester.pump();
 
-        // when selecting the items 2 and 3 through the grid-controller,
-        expect(dragSelectState.isDragging, isTrue);
-        gridController.value = Selection({2, 3});
-        await tester.pump();
+          // when trying to pop the route,
+          await tester.binding.handlePopRoute();
 
-        // then the drag gets interrupted,
-        // then the items 0 and 1 get UNSELECTED in the grid-state,
-        // and the items 2 and 3 get selected in the grid-state."
-        expect(dragSelectState.isDragging, isFalse);
-        expect(dragSelectState.isSelecting, isTrue);
-        expect(dragSelectState.selectedIndexes, {2, 3});
-      },
-      skip: false,
-    );
+          // then the item doesn't get UNSELECTED.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {0});
+        },
+        skip: false,
+      );
+    });
   });
 
   group("Auto-scrolling integration tests.", () {
