@@ -467,27 +467,30 @@ void main() {
       );
     });
 
-    test("`operator ==` and `hashCode`.", () {
+    group("`operator ==` and `hashCode`.", () {
       final selection = Selection({0, 1, 2});
       final equalSelection = Selection({0, 1, 2});
       final anotherEqualSelection = Selection({0, 1, 2});
-      final differentSelection = Selection.empty;
+      const differentSelection = Selection.empty;
 
-      // Reflexivity
-      expect(selection, selection);
-      expect(selection.hashCode, selection.hashCode);
+      test('Reflexivity.', () {
+        expect(selection, selection);
+        expect(selection.hashCode, selection.hashCode);
+      });
 
-      // Symmetry
-      expect(selection, isNot(differentSelection));
-      expect(differentSelection, isNot(selection));
+      test('Symmetry.', () {
+        expect(selection, isNot(differentSelection));
+        expect(differentSelection, isNot(selection));
+      });
 
-      // Transitivity
-      expect(selection, equalSelection);
-      expect(equalSelection, anotherEqualSelection);
-      expect(selection, anotherEqualSelection);
-      expect(selection.hashCode, equalSelection.hashCode);
-      expect(equalSelection.hashCode, anotherEqualSelection.hashCode);
-      expect(selection.hashCode, anotherEqualSelection.hashCode);
+      test('Transitivity.', () {
+        expect(selection, equalSelection);
+        expect(equalSelection, anotherEqualSelection);
+        expect(selection, anotherEqualSelection);
+        expect(selection.hashCode, equalSelection.hashCode);
+        expect(equalSelection.hashCode, anotherEqualSelection.hashCode);
+        expect(selection.hashCode, anotherEqualSelection.hashCode);
+      });
     });
   });
 }

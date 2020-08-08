@@ -75,7 +75,7 @@ void main() {
       );
     });
 
-    test("`operator ==` and `hashCode`.", () {
+    group("`operator ==` and `hashCode`.", () {
       final autoScroll =
           AutoScroll.stopped(direction: AutoScrollDirection.forward);
 
@@ -90,21 +90,24 @@ void main() {
         duration: const Duration(seconds: 1),
       );
 
-      // Reflexivity
-      expect(autoScroll, autoScroll);
-      expect(autoScroll.hashCode, autoScroll.hashCode);
+      test('Reflexivity.', () {
+        expect(autoScroll, autoScroll);
+        expect(autoScroll.hashCode, autoScroll.hashCode);
+      });
 
-      // Symmetry
-      expect(autoScroll, isNot(differentAutoScroll));
-      expect(differentAutoScroll, isNot(autoScroll));
+      test('Symmetry.', () {
+        expect(autoScroll, isNot(differentAutoScroll));
+        expect(differentAutoScroll, isNot(autoScroll));
+      });
 
-      // Transitivity
-      expect(autoScroll, equalAutoScroll);
-      expect(equalAutoScroll, anotherEqualAutoScroll);
-      expect(autoScroll, anotherEqualAutoScroll);
-      expect(autoScroll.hashCode, equalAutoScroll.hashCode);
-      expect(equalAutoScroll.hashCode, anotherEqualAutoScroll.hashCode);
-      expect(autoScroll.hashCode, anotherEqualAutoScroll.hashCode);
+      test('Transitivity.', () {
+        expect(autoScroll, equalAutoScroll);
+        expect(equalAutoScroll, anotherEqualAutoScroll);
+        expect(autoScroll, anotherEqualAutoScroll);
+        expect(autoScroll.hashCode, equalAutoScroll.hashCode);
+        expect(equalAutoScroll.hashCode, anotherEqualAutoScroll.hashCode);
+        expect(autoScroll.hashCode, anotherEqualAutoScroll.hashCode);
+      });
     });
   });
 
@@ -144,27 +147,30 @@ void main() {
       );
     });
 
-    test("`operator ==` and `hashCode`.", () {
+    group("`operator ==` and `hashCode`.", () {
       final stopEvent = StopAutoScrollEvent();
       final equalStopEvent = StopAutoScrollEvent();
       final anotherEqualStopEvent = StopAutoScrollEvent();
       final differentStopEvent = StopAutoScrollEvent.consumed();
 
-      // Reflexivity
-      expect(stopEvent, stopEvent);
-      expect(stopEvent.hashCode, stopEvent.hashCode);
+      test('Reflexivity.', () {
+        expect(stopEvent, stopEvent);
+        expect(stopEvent.hashCode, stopEvent.hashCode);
+      });
 
-      // Symmetry
-      expect(stopEvent, isNot(differentStopEvent));
-      expect(differentStopEvent, isNot(stopEvent));
+      test('Symmetry.', () {
+        expect(stopEvent, isNot(differentStopEvent));
+        expect(differentStopEvent, isNot(stopEvent));
+      });
 
-      // Transitivity
-      expect(stopEvent, equalStopEvent);
-      expect(equalStopEvent, anotherEqualStopEvent);
-      expect(stopEvent, anotherEqualStopEvent);
-      expect(stopEvent.hashCode, equalStopEvent.hashCode);
-      expect(equalStopEvent.hashCode, anotherEqualStopEvent.hashCode);
-      expect(stopEvent.hashCode, anotherEqualStopEvent.hashCode);
+      test('Transitivity.', () {
+        expect(stopEvent, equalStopEvent);
+        expect(equalStopEvent, anotherEqualStopEvent);
+        expect(stopEvent, anotherEqualStopEvent);
+        expect(stopEvent.hashCode, equalStopEvent.hashCode);
+        expect(equalStopEvent.hashCode, anotherEqualStopEvent.hashCode);
+        expect(stopEvent.hashCode, anotherEqualStopEvent.hashCode);
+      });
     });
   });
 }
