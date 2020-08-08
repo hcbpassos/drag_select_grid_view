@@ -425,17 +425,17 @@ void main() {
   group("`Selection` tests", () {
     test(
       "When a `Selection` is created with null `selectedIndexes`, "
-      "then an `AssertionError` is thrown.",
+      "then an error is thrown.",
       () {
         expect(
           () => Selection(null),
-          throwsAssertionError,
+          throwsNoSuchMethodError,
         );
       },
     );
 
     test("`Selection.empty` has empty `selectedIndexes`.", () {
-      expect(Selection.empty.selectedIndexes, <int>{});
+      expect(const Selection.empty().selectedIndexes, <int>{});
     });
 
     test(
@@ -443,7 +443,7 @@ void main() {
       "then `isSelecting` is false.",
       () {
         expect(
-          Selection.empty.isSelecting,
+          const Selection.empty().isSelecting,
           isFalse,
         );
       },
@@ -460,9 +460,32 @@ void main() {
       },
     );
 
+    test(
+      "When the `Set` passed to `Selection` is modified, "
+      "then `selectedIndexes` is not modified.",
+      () {
+        final selectedIndexes = {0, 1};
+        final selection = Selection(selectedIndexes);
+        selectedIndexes.remove(0);
+        expect(selection.selectedIndexes, {0, 1});
+      },
+    );
+
+    test(
+      "When the `Set` got from `Selection` is modified, "
+      "then an error is thrown.",
+      () {
+        final selection = Selection({0, 1});
+        expect(
+          () => selection.selectedIndexes.remove(0),
+          throwsA(isA<UnsupportedError>()),
+        );
+      },
+    );
+
     test("`toString()`.", () {
       expect(
-        Selection.empty.toString(),
+        const Selection.empty().toString(),
         isNot("Instance of 'Selection'"),
       );
     });
@@ -471,7 +494,7 @@ void main() {
       final selection = Selection({0, 1, 2});
       final equalSelection = Selection({0, 1, 2});
       final anotherEqualSelection = Selection({0, 1, 2});
-      const differentSelection = Selection.empty;
+      const differentSelection = Selection.empty();
 
       test('Reflexivity.', () {
         expect(selection, selection);

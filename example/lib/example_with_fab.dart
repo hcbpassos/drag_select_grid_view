@@ -75,7 +75,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void onPressed() => controller.selection =
-      const Selection({15, 20, 25, 21, 22, 17, 27, 19, 24, 29});
+      Selection({15, 20, 25, 21, 22, 17, 27, 19, 24, 29});
 
   void scheduleRebuild() => setState(() {});
 }

@@ -27,10 +27,10 @@ class DragSelectGridViewController extends ChangeNotifier {
     notifyListeners();
   }
 
-  var _selection = Selection.empty;
+  var _selection = const Selection.empty();
 
   /// Clears the grid selection.
   ///
   /// The listeners are going to be notified about this change.
-  void clear() => selection = Selection.empty;
+  void clear() => selection = const Selection.empty();
 }

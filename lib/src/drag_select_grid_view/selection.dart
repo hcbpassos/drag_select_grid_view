@@ -130,11 +130,12 @@ class SelectionManager {
 /// Information about the grid selection.
 @immutable
 class Selection {
-  /// Information about a grid with no items selected.
-  static const empty = Selection({});
-
   /// Creates a new [Selection].
-  const Selection(this.selectedIndexes) : assert(selectedIndexes != null);
+  Selection(Set<int> selectedIndexes)
+      : selectedIndexes = UnmodifiableSetView(Set.of(selectedIndexes));
+
+  /// Creates a new [Selection] with no selected items.
+  const Selection.empty() : selectedIndexes = const {};
 
   /// Grid indexes that are selected.
   final Set<int> selectedIndexes;

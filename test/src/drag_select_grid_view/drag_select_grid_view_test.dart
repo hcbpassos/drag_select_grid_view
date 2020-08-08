@@ -946,7 +946,7 @@ void main() {
         await setUp(tester, gridController: gridController);
 
         // When selecting the items 0 and 1 through the grid-controller,
-        gridController.selection = const Selection({0, 1});
+        gridController.selection = Selection({0, 1});
         await tester.pump();
 
         // then the items 0 and 1 get selected in the grid-state.
@@ -990,7 +990,7 @@ void main() {
 
         // when selecting the items 2 and 3 through the grid-controller,
         expect(dragSelectState.isDragging, isTrue);
-        gridController.selection = const Selection({2, 3});
+        gridController.selection =  Selection({2, 3});
         await tester.pump();
 
         // then the drag gets interrupted,
