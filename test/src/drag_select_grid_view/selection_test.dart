@@ -424,7 +424,7 @@ void main() {
 
   group("`Selection` tests", () {
     test(
-      "When an `Selection` is created with null `selectedIndexes`, "
+      "When a `Selection` is created with null `selectedIndexes`, "
       "then an `AssertionError` is thrown.",
       () {
         expect(
@@ -439,7 +439,7 @@ void main() {
     });
 
     test(
-      "When an `Selection` has an empty `selectedIndexes`, "
+      "When a `Selection` has an empty `selectedIndexes`, "
       "then `isSelecting` is false.",
       () {
         expect(
@@ -450,7 +450,7 @@ void main() {
     );
 
     test(
-      "When an `Selection` has a non-empty `selectedIndexes`, "
+      "When a `Selection` has a non-empty `selectedIndexes`, "
       "then `isSelecting` is true.",
       () {
         expect(
