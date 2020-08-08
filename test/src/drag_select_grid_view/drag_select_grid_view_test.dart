@@ -75,13 +75,13 @@ void main() {
 
     if (mainAxisItemsDistance == null) {
       final secondItemFinder = find.byKey(const ValueKey('grid-item-1'));
-      mainAxisItemsDistance ??= tester.getCenter(secondItemFinder) -
+      mainAxisItemsDistance = tester.getCenter(secondItemFinder) -
           tester.getCenter(firstItemFinder);
     }
 
     if (crossAxisItemsDistance == null) {
       final fifthItemFinder = find.byKey(const ValueKey('grid-item-4'));
-      crossAxisItemsDistance ??=
+      crossAxisItemsDistance =
           tester.getCenter(fifthItemFinder) - tester.getCenter(firstItemFinder);
     }
   }
