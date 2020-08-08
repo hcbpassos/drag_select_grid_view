@@ -3,31 +3,19 @@ import 'package:drag_select_grid_view/src/drag_select_grid_view/selection.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test(
-    "When setting a new selection, "
-    "then those who are listening get notified about the new selection.",
-    () {
-      var selectionChangeCount = 0;
+  test("No initial selection specified.", () {
+    expect(DragSelectGridViewController().value, const Selection.empty());
+  });
 
-      final controller = DragSelectGridViewController()
-        ..addListener(() => selectionChangeCount++);
+  test("Specified initial selection.", () {
+    expect(
+      DragSelectGridViewController(Selection({42})).value,
+      Selection({42}),
+    );
+  });
 
-      controller.selection = Selection({0});
-      expect(selectionChangeCount, 1);
-    },
-  );
-
-  test(
-    "When clearing the selection, "
-    "then those who are listening get notified about the new selection.",
-    () {
-      var selectionChangeCount = 0;
-
-      final controller = DragSelectGridViewController()
-        ..addListener(() => selectionChangeCount++);
-
-      controller.clear();
-      expect(selectionChangeCount, 1);
-    },
-  );
+  test("Clears the grid selection.", () {
+    final controller = DragSelectGridViewController(Selection({42}))..clear();
+    expect(controller.value, const Selection.empty());
+  });
 }

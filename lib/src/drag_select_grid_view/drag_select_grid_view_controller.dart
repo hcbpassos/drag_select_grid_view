@@ -1,36 +1,25 @@
 import 'package:flutter/widgets.dart';
 
+import 'drag_select_grid_view.dart';
 import 'selection.dart';
 
 /// Function signature for notifying whenever the selection changes.
 typedef SelectionChangedCallback = void Function(Selection selection);
 
-/// Controls the selection of the grid.
+/// A controller for [DragSelectGridView].
 ///
 /// This provides information that can be used to update the UI to indicate
 /// whether there are selected items and how many are selected.
 ///
 /// It also allows to directly update the selected items.
-class DragSelectGridViewController extends ChangeNotifier {
-  /// Gets the current grid selection.
+class DragSelectGridViewController extends ValueNotifier<Selection> {
+  /// Creates a controller for [DragSelectGridView].
   ///
-  /// Use [addListener] to be notified whenever this field changes. This can be
-  /// used to update the UI to indicate whether there are selected items and how
-  /// many are selected.
-  Selection get selection => _selection;
-
-  /// Sets the grid selection.
-  ///
-  /// The listeners are going to be notified about this change.
-  set selection(Selection selection) {
-    _selection = selection;
-    notifyListeners();
-  }
-
-  var _selection = const Selection.empty();
+  /// The initial selection is [Selection.empty], unless a different one is 
+  /// provided.
+  DragSelectGridViewController([Selection selection])
+      : super(selection ?? const Selection.empty());
 
   /// Clears the grid selection.
-  ///
-  /// The listeners are going to be notified about this change.
-  void clear() => selection = const Selection.empty();
+  void clear() => value = const Selection.empty();
 }

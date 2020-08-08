@@ -272,7 +272,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   }
 
   void _onSelectionChanged() {
-    final controllerSelectedIndexes = _gridController.selection.selectedIndexes;
+    final controllerSelectedIndexes = _gridController.value.selectedIndexes;
     if (!setEquals(controllerSelectedIndexes, selectedIndexes)) {
       _selectionManager.selectedIndexes = controllerSelectedIndexes;
     }
@@ -360,6 +360,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     return (element == null) ? -1 : element.widget.index;
   }
 
-  void _notifySelectionChange() =>
-      _gridController?.selection = Selection(_selectionManager.selectedIndexes);
+  void _notifySelectionChange() {
+    _gridController?.value = Selection(_selectionManager.selectedIndexes);
+  }
 }

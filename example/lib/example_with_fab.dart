@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SelectionAppBar(
-        selection: controller.selection,
+        selection: controller.value,
         title: const Text('Grid Example'),
       ),
       floatingActionButton: FloatingActionButton(
@@ -74,8 +74,9 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void onPressed() => controller.selection =
-      Selection({15, 20, 25, 21, 22, 17, 27, 19, 24, 29});
+  void onPressed() {
+    controller.value = Selection({15, 20, 25, 21, 22, 17, 27, 19, 24, 29});
+  }
 
   void scheduleRebuild() => setState(() {});
 }

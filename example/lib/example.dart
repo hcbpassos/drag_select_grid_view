@@ -43,7 +43,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SelectionAppBar(
-        selection: controller.selection,
+        selection: controller.value,
         title: const Text('Grid Example'),
       ),
       body: DragSelectGridView(
