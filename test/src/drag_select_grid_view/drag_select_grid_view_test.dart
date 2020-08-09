@@ -959,6 +959,23 @@ void main() {
         },
         skip: false,
       );
+
+      testWidgets(
+        "When creating a grid with pre-selected items, "
+        "then the pre-selected items get selected in the grid-state.",
+        (tester) async {
+          // When creating a grid with pre-selected items,
+          final gridController =
+              DragSelectGridViewController(Selection({0, 1}));
+          await setUp(tester, gridController: gridController);
+
+          // then the pre-selected items get selected in the grid-state.
+          expect(dragSelectState.isDragging, isFalse);
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {0, 1});
+        },
+        skip: false,
+      );
     });
 
     group("Pop scope.", () {
