@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SelectionAppBar(
-        selection: controller.selection,
+        selection: controller.value,
       ),
       body: DragSelectGridView(
         gridController: controller,
@@ -74,7 +74,7 @@ The [example project](https://github.com/hugocbpassos/drag_select_grid_view/tree
 
 ## Advanced usage
  
-You can use the setter `DragSelectGridViewController.selection` to directly change the selection (I'm not quite sure why you'd need this, but I don't ask questions). 
+You can use the setter `DragSelectGridViewController.value` to directly change the selection (I'm not quite sure why you'd need this, but I don't ask questions). 
 
 It allows this sort of interaction:
 
