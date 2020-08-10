@@ -15,7 +15,7 @@ typedef SelectionChangedCallback = void Function(Selection selection);
 class DragSelectGridViewController extends ValueNotifier<Selection> {
   /// Creates a controller for [DragSelectGridView].
   ///
-  /// The initial selection is [Selection.empty], unless a different one is 
+  /// The initial selection is [Selection.empty], unless a different one is
   /// provided.
   DragSelectGridViewController([Selection selection])
       : super(selection ?? const Selection.empty());
