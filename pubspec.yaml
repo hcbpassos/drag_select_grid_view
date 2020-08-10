@@ -1,6 +1,6 @@
 name: drag_select_grid_view
 description: Grid that supports both dragging and tapping to select its items.
-version: 0.3.0
+version: 0.3.1
 homepage: https://github.com/hugocbpassos/drag_select_grid_view
 issue_tracker: https://github.com/hugocbpassos/drag_select_grid_view/issues
 

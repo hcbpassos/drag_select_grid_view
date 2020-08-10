@@ -1,3 +1,7 @@
+## [0.3.1] - 10/08/2020
+
+* Fix format.
+
 ## [0.3.0] - 08/08/2020
 
 * **Breaking change**. Fix the constructor of `Selection`, which now creates a copy of the received `Set`. Consequently, the constructor is no longer constant. To keep `Selection.empty` constant, another constructor has been created: `Selection.empty()`. 
