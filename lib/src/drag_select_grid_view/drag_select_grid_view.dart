@@ -38,6 +38,7 @@ typedef SelectableWidgetBuilder = Widget Function(
 ///
 /// A long-press enables selection. The user may select/unselect any item by
 /// tapping on it. Dragging allows cascade select/unselect.
+/// The above behaviour can be altered by enabling single click selection.
 ///
 /// Through auto-scroll, this widget adds the ability to select items that go
 /// beyond screen bounds without having to stop the drag. To do so, this widget
@@ -87,6 +88,7 @@ class DragSelectGridView extends StatefulWidget {
     this.addSemanticIndexes = true,
     this.cacheExtent,
     this.semanticChildCount,
+    this.singleClickSelection = false,
   })  : assert(itemBuilder != null),
         autoScrollHotspotHeight =
             autoScrollHotspotHeight ?? defaultAutoScrollHotspotHeight,
@@ -172,6 +174,10 @@ class DragSelectGridView extends StatefulWidget {
 
   /// Refer to [ScrollView.semanticChildCount].
   final int semanticChildCount;
+
+  /// Whether to switch to selection mode by long click or single click
+  /// By default is single click selection is disabled.
+  final bool singleClickSelection;
 
   @override
   DragSelectGridViewState createState() => DragSelectGridViewState();
@@ -292,13 +298,13 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   }
 
   void _handleTapUp(TapUpDetails details) {
-    if (!isSelecting) return;
+    if (isSelecting || widget.singleClickSelection) {
+      final tapIndex = _findIndexOfSelectable(details.localPosition);
 
-    final tapIndex = _findIndexOfSelectable(details.localPosition);
-
-    if (tapIndex != -1) {
-      setState(() => _selectionManager.tap(tapIndex));
-      _notifySelectionChange();
+      if (tapIndex != -1) {
+        setState(() => _selectionManager.tap(tapIndex));
+        _notifySelectionChange();
+      }
     }
   }
 
