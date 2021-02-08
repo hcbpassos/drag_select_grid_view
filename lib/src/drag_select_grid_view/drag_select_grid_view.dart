@@ -206,12 +206,10 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   ScrollController get scrollController => widget.scrollController;
 
   @override
-  VoidCallback get scrollCallback {
-    return () {
-      if (_lastMoveUpdateDetails != null) {
-        _handleLongPressMoveUpdate(_lastMoveUpdateDetails);
-      }
-    };
+  void handleScroll() {
+    if (_lastMoveUpdateDetails != null) {
+      _handleLongPressMoveUpdate(_lastMoveUpdateDetails);
+    }
   }
 
   @override
