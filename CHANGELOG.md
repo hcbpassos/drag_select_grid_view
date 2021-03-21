@@ -1,3 +1,7 @@
+## [0.4.0] - 21/03/2021
+
+* Migrate to null safety.
+
 ## [0.3.1] - 10/08/2020
 
 * Fix format.

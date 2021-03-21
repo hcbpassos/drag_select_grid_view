@@ -22,10 +22,10 @@ import 'package:flutter/material.dart';
 
 class SelectableItem extends StatefulWidget {
   const SelectableItem({
-    Key key,
-    @required this.index,
-    @required this.color,
-    @required this.selected,
+    Key? key,
+    required this.index,
+    required this.color,
+    required this.selected,
   }) : super(key: key);
 
   final int index;
@@ -38,8 +38,8 @@ class SelectableItem extends StatefulWidget {
 
 class _SelectableItemState extends State<SelectableItem>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  Animation<double> _scaleAnimation;
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
@@ -106,7 +106,7 @@ class _SelectableItemState extends State<SelectableItem>
     );
   }
 
-  Color calculateColor() {
+  Color? calculateColor() {
     return Color.lerp(
       widget.color.shade500,
       widget.color.shade900,

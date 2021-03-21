@@ -25,7 +25,7 @@ class AutoScroller {
   /// The [controller] allows the actual scroll, but also provides some
   /// information, like the current position of the scroll-view.
   AutoScroller(this.autoScroll, this.controller)
-      : currentPosition = controller.hasClients ? controller.offset : null;
+      : currentPosition = controller.hasClients ? controller.offset : 0;
 
   /// Information about the scroll that is possibly going to be performed.
   final AutoScroll autoScroll;
@@ -34,9 +34,6 @@ class AutoScroller {
   final ScrollController controller;
 
   /// Current scroll position of the scrollable widget.
-  ///
-  /// May be null if [controller] has no [ScrollPosition] attached to
-  /// [controller].
   final double currentPosition;
 
   /// Returns whether auto-scroll must be performed.
@@ -70,8 +67,7 @@ class AutoScroller {
   /// Errors are guaranteed to be thrown when trying to perform auto-scroll when
   /// this method returns `false`.
   @visibleForTesting
-  bool get isAbleToScroll =>
-      currentPosition != null && autoScroll.direction != null;
+  bool get isAbleToScroll => autoScroll.direction != null;
 
   /// Returns whether there's anything to scroll.
   ///

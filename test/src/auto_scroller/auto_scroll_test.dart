@@ -4,34 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group("AutoScroll", () {
     test(
-      "When an `AutoScroll` is created with null `direction`, "
-      "then an `AssertionError` is thrown.",
-      () {
-        expect(
-          () => AutoScroll(
-            duration: const Duration(seconds: 1),
-            direction: null,
-          ),
-          throwsAssertionError,
-        );
-      },
-    );
-
-    test(
-      "When an `AutoScroll` is created with null `duration`, "
-      "then an `AssertionError` is thrown.",
-      () {
-        expect(
-          () => AutoScroll(
-            direction: AutoScrollDirection.forward,
-            duration: null,
-          ),
-          throwsAssertionError,
-        );
-      },
-    );
-
-    test(
       "When an `AutoScroll` is created with `duration` zero, "
       "then an `AssertionError` is thrown.",
       () {

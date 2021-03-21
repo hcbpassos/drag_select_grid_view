@@ -10,8 +10,8 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   @visibleForTesting
   AutoScroll autoScroll = AutoScroll.stopped();
 
-  double _widgetHeight;
-  double _widgetWidth;
+  late double _widgetHeight;
+  late double _widgetWidth;
 
   /// The height of the auto-scroll hotspot.
   ///
@@ -43,9 +43,9 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
+    WidgetsBinding.instance!.addPostFrameCallback(
       (callback) {
-        final widgetSize = context.size;
+        final widgetSize = context.size!;
         _widgetHeight = widgetSize.height;
         _widgetWidth = widgetSize.width;
         if (scrollController.hasClients) {
@@ -74,7 +74,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   Widget build(BuildContext context) {
     final scroller = AutoScroller(autoScroll, scrollController);
     if (scroller.mustScroll) scroller.scroll();
-    return null;
+    return Container();
   }
 
   /// Returns whether the [localPosition] is in upper-hotspot's bounds.
