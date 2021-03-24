@@ -26,8 +26,7 @@ class SelectionAppBar extends StatelessWidget implements PreferredSizeWidget {
     Key? key,
     this.title,
     this.selection = const Selection.empty(),
-  })  : assert(selection != null),
-        super(key: key);
+  }) : super(key: key);
 
   final Widget? title;
   final Selection selection;
