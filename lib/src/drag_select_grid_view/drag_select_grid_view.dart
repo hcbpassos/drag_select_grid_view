@@ -205,18 +205,17 @@ class DragSelectGridViewState extends State<DragSelectGridView>
 
   @override
   void handleScroll() {
-    if (_lastMoveUpdateDetails != null) {
-      _handleLongPressMoveUpdate(_lastMoveUpdateDetails!);
-    }
+    final details = _lastMoveUpdateDetails;
+    if (details != null) _handleLongPressMoveUpdate(details);
   }
 
   @override
   void initState() {
     super.initState();
-    if (_gridController != null) {
-      _gridController!.addListener(_onSelectionChanged);
-      _selectionManager.selectedIndexes =
-          _gridController!.value.selectedIndexes;
+    final controller = _gridController;
+    if (controller != null) {
+      controller.addListener(_onSelectionChanged);
+      _selectionManager.selectedIndexes = controller.value.selectedIndexes;
     }
   }
 
@@ -272,8 +271,9 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   }
 
   void _onSelectionChanged() {
-    if (_gridController != null) {
-      final controllerSelectedIndexes = _gridController!.value.selectedIndexes;
+    final controller = _gridController;
+    if (controller != null) {
+      final controllerSelectedIndexes = controller.value.selectedIndexes;
       if (!setEquals(controllerSelectedIndexes, selectedIndexes)) {
         _selectionManager.selectedIndexes = controllerSelectedIndexes;
       }
