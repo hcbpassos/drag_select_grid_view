@@ -33,11 +33,11 @@ typedef ElementUpdateCallback = void Function(SelectableElement);
 class Selectable extends ProxyWidget {
   /// Creates a [Selectable].
   const Selectable({
-    Key key,
-    @required this.index,
-    @required this.onMountElement,
-    @required this.onUnmountElement,
-    @required Widget child,
+    Key? key,
+    required this.index,
+    required this.onMountElement,
+    required this.onUnmountElement,
+    required Widget child,
   }) : super(key: key, child: child);
 
   /// Widget index inside the grid.
@@ -63,19 +63,19 @@ class SelectableElement extends ProxyElement {
   Selectable get widget => super.widget as Selectable;
 
   @override
-  void mount(Element parent, dynamic newSlot) {
+  void mount(Element? parent, dynamic newSlot) {
     super.mount(parent, newSlot);
-    widget.onMountElement?.call(this);
+    widget.onMountElement.call(this);
   }
 
   @override
   void unmount() {
-    widget.onUnmountElement?.call(this);
+    widget.onUnmountElement.call(this);
     super.unmount();
   }
 
   /// Whether the [offset] is in the bounds of this element.
-  bool containsOffset(RenderObject ancestor, Offset offset) {
+  bool containsOffset(RenderObject? ancestor, Offset offset) {
     final box = renderObject as RenderBox;
     final rect = box.localToGlobal(Offset.zero, ancestor: ancestor) & box.size;
     return rect.contains(offset);

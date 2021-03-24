@@ -26,10 +26,10 @@ enum AutoScrollDirection {
 @immutable
 class AutoScroll {
   /// Creates a new [AutoScroll].
-  AutoScroll({@required this.direction, @required this.duration})
-      : assert(direction != null),
-        assert(duration != null),
-        assert(duration != Duration.zero),
+  AutoScroll({
+    required AutoScrollDirection this.direction,
+    required Duration this.duration,
+  })   : assert(duration != Duration.zero),
         isScrolling = true,
         stopEvent = StopAutoScrollEvent.consumed();
 
@@ -57,14 +57,14 @@ class AutoScroll {
   final StopAutoScrollEvent stopEvent;
 
   /// The direction of the auto-scroll.
-  final AutoScrollDirection direction;
+  final AutoScrollDirection? direction;
 
   /// The duration of the auto-scroll.
   ///
   /// The longer the duration, the slower the scrolling.
   ///
   /// The shorter the duration, the faster the scrolling.
-  final Duration duration;
+  final Duration? duration;
 
   @override
   String toString() => 'AutoScroll{'
