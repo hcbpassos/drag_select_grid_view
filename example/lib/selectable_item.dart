@@ -38,8 +38,8 @@ class SelectableItem extends StatefulWidget {
 
 class _SelectableItemState extends State<SelectableItem>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
 
   @override
   void initState() {

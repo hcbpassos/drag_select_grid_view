@@ -10,8 +10,8 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   @visibleForTesting
   AutoScroll autoScroll = AutoScroll.stopped();
 
-  late double _widgetHeight;
-  late double _widgetWidth;
+  late final double _widgetHeight;
+  late final double _widgetWidth;
 
   /// The height of the auto-scroll hotspot.
   ///
