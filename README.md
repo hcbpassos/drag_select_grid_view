@@ -11,7 +11,7 @@ A grid that supports both dragging and tapping to select its items.
   
 ## Basic usage  
   
-First of all, `DragSelectGridView` constructor is very similar to [`GridView.builder`](https://api.flutter.dev/flutter/widgets/GridView/GridView.builder.html), so you should take your time to understand the latter before diving into this library. 
+`DragSelectGridView` constructor is very similar to [`GridView.builder`](https://api.flutter.dev/flutter/widgets/GridView/GridView.builder.html), so you should take your time to understand the latter before diving into this library. 
 
 Once you are familiar with [`GridView.builder`](https://api.flutter.dev/flutter/widgets/GridView/GridView.builder.html), probably the only additional piece of information you'll need is `DragSelectGridViewController`. With it, you're able to know which indexes are selected.
 
