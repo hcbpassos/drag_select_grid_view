@@ -25,7 +25,7 @@ class AutoScroller {
   /// The [controller] allows the actual scroll, but also provides some
   /// information, like the current position of the scroll-view.
   AutoScroller(this.autoScroll, this.controller)
-      : currentPosition = controller.hasClients ? controller.offset : 0;
+      : currentPosition = controller.hasClients ? controller.offset : null;
 
   /// Information about the scroll that is possibly going to be performed.
   final AutoScroll autoScroll;
@@ -34,7 +34,10 @@ class AutoScroller {
   final ScrollController controller;
 
   /// Current scroll position of the scrollable widget.
-  final double currentPosition;
+  ///
+  /// May be null if [controller] has no [ScrollPosition] attached to
+  /// [controller].
+  final double? currentPosition;
 
   /// Returns whether auto-scroll must be performed.
   bool get mustScroll =>
@@ -45,8 +48,8 @@ class AutoScroller {
   @visibleForTesting
   double get positionAfterOverscroll =>
       autoScroll.direction == AutoScrollDirection.forward
-          ? currentPosition + amountOfOverscrollOnScrollStop
-          : currentPosition - amountOfOverscrollOnScrollStop;
+          ? currentPosition! + amountOfOverscrollOnScrollStop
+          : currentPosition! - amountOfOverscrollOnScrollStop;
 
   /// Returns the target position of the auto-scroll.
   ///
@@ -67,7 +70,8 @@ class AutoScroller {
   /// Errors are guaranteed to be thrown when trying to perform auto-scroll when
   /// this method returns `false`.
   @visibleForTesting
-  bool get isAbleToScroll => autoScroll.direction != null;
+  bool get isAbleToScroll =>
+      currentPosition != null && autoScroll.direction != null;
 
   /// Returns whether there's anything to scroll.
   ///
@@ -78,9 +82,9 @@ class AutoScroller {
   @visibleForTesting
   bool get hasAnythingLeftToScroll =>
       ((autoScroll.direction == AutoScrollDirection.forward) &&
-          (currentPosition < controller.position.maxScrollExtent)) ||
+          (currentPosition! < controller.position.maxScrollExtent)) ||
       ((autoScroll.direction == AutoScrollDirection.backward) &&
-          (currentPosition > 0));
+          (currentPosition! > 0));
 
   /// Performs a scroll or, if the user stopped dragging, an elegant overscroll.
   ///
@@ -150,7 +154,7 @@ class AutoScroller {
   Duration calculateScrollDurationWithUniformScrollSpeed(
     double targetPosition,
   ) {
-    final amountToBeScrolled = (targetPosition - currentPosition).abs();
+    final amountToBeScrolled = (targetPosition - currentPosition!).abs();
 
     final scrollDurationInMs =
         (amountToBeScrolled * scrollDurationPerPixelInMs).toInt();

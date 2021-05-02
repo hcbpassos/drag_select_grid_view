@@ -46,8 +46,6 @@ void main() {
 
         expect(autoScroller.isAbleToScroll, isFalse);
       },
-      // FIXME: It's not clear why it should not be able to scroll
-      skip: true,
     );
 
     testWidgets(
