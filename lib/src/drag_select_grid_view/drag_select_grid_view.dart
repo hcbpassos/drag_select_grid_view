@@ -39,7 +39,7 @@ typedef SelectableWidgetBuilder = Widget Function(
 ///
 /// By default, a long-press enables selection. The user may select/unselect any
 /// item by tapping on it. Dragging allows cascade select/unselect. The flag
-/// [triggerSelectionOnTap] allows selection to be enabled with a regular press.
+/// [triggerSelectionOnTap] allows selection to be enabled by tapping.
 ///
 /// Through auto-scroll, this widget adds the ability to select items that go
 /// beyond screen bounds without having to stop the drag. To do so, this widget
@@ -173,8 +173,9 @@ class DragSelectGridView extends StatefulWidget {
   /// Refer to [ScrollView.semanticChildCount].
   final int? semanticChildCount;
 
-  /// Whether to switch to selection mode by long press or single tap
-  /// By default triggerSelectionOnTap is disabled.
+  /// Whether should start selection by tapping instead of long-pressing.
+  ///
+  /// Defaults to false.
   final bool triggerSelectionOnTap;
 
   @override
