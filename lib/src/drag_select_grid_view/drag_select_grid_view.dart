@@ -76,7 +76,6 @@ class DragSelectGridView extends StatefulWidget {
     double? autoScrollHotspotHeight,
     ScrollController? scrollController,
     this.gridController,
-    this.unselectOnWillPop = true,
     this.triggerSelectionOnTap = false,
     this.reverse = false,
     this.primary,
@@ -122,17 +121,6 @@ class DragSelectGridView extends StatefulWidget {
   /// since [DragSelectGridViewController.dispose] will get called and the
   /// listeners are going to be cleaned up.
   final DragSelectGridViewController? gridController;
-
-  /// Whether the items should be unselected when trying to pop the route.
-  ///
-  /// Normally, this is used to unselect the items when Android users tap the
-  /// back-button in the navigation bar.
-  ///
-  /// By leaving this false, you may implement your own on-pop unselecting logic
-  /// with [gridController]'s help.
-  ///
-  /// Defaults to true.
-  final bool unselectOnWillPop;
 
   /// Whether should start selection by tapping instead of long-pressing.
   ///
@@ -207,6 +195,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   final _elements = <SelectableElement>{};
   final _selectionManager = SelectionManager();
   LongPressMoveUpdateDetails? _lastMoveUpdateDetails;
+  LocalHistoryEntry? _historyEntry;
 
   DragSelectGridViewController? get _gridController => widget.gridController;
 
@@ -252,47 +241,44 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return WillPopScope(
-      onWillPop: _handleWillPop,
-      child: GestureDetector(
-        onTapUp: _handleTapUp,
-        onLongPressStart: _handleLongPressStart,
-        onLongPressMoveUpdate: _handleLongPressMoveUpdate,
-        onLongPressEnd: _handleLongPressEnd,
-        behavior: HitTestBehavior.translucent,
-        child: IgnorePointer(
-          ignoring: isSelecting || widget.triggerSelectionOnTap,
-          child: GridView.builder(
-            controller: widget.scrollController,
-            reverse: widget.reverse,
-            primary: widget.primary,
-            physics: widget.physics,
-            shrinkWrap: widget.shrinkWrap,
-            padding: widget.padding,
-            gridDelegate: widget.gridDelegate,
-            itemCount: widget.itemCount,
-            addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
-            addRepaintBoundaries: widget.addRepaintBoundaries,
-            addSemanticIndexes: widget.addSemanticIndexes,
-            cacheExtent: widget.cacheExtent,
-            semanticChildCount: widget.semanticChildCount,
-            dragStartBehavior: widget.dragStartBehavior,
-            keyboardDismissBehavior: widget.keyboardDismissBehavior,
-            restorationId: widget.restorationId,
-            clipBehavior: widget.clipBehavior,
-            itemBuilder: (context, index) {
-              return Selectable(
-                index: index,
-                onMountElement: _elements.add,
-                onUnmountElement: _elements.remove,
-                child: widget.itemBuilder(
-                  context,
-                  index,
-                  selectedIndexes.contains(index),
-                ),
-              );
-            },
-          ),
+    return GestureDetector(
+      onTapUp: _handleTapUp,
+      onLongPressStart: _handleLongPressStart,
+      onLongPressMoveUpdate: _handleLongPressMoveUpdate,
+      onLongPressEnd: _handleLongPressEnd,
+      behavior: HitTestBehavior.translucent,
+      child: IgnorePointer(
+        ignoring: isSelecting || widget.triggerSelectionOnTap,
+        child: GridView.builder(
+          controller: widget.scrollController,
+          reverse: widget.reverse,
+          primary: widget.primary,
+          physics: widget.physics,
+          shrinkWrap: widget.shrinkWrap,
+          padding: widget.padding,
+          gridDelegate: widget.gridDelegate,
+          itemCount: widget.itemCount,
+          addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
+          addRepaintBoundaries: widget.addRepaintBoundaries,
+          addSemanticIndexes: widget.addSemanticIndexes,
+          cacheExtent: widget.cacheExtent,
+          semanticChildCount: widget.semanticChildCount,
+          dragStartBehavior: widget.dragStartBehavior,
+          keyboardDismissBehavior: widget.keyboardDismissBehavior,
+          restorationId: widget.restorationId,
+          clipBehavior: widget.clipBehavior,
+          itemBuilder: (context, index) {
+            return Selectable(
+              index: index,
+              onMountElement: _elements.add,
+              onUnmountElement: _elements.remove,
+              child: widget.itemBuilder(
+                context,
+                index,
+                selectedIndexes.contains(index),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -308,16 +294,6 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     }
   }
 
-  Future<bool> _handleWillPop() async {
-    if (isSelecting && widget.unselectOnWillPop) {
-      setState(_selectionManager.clear);
-      _notifySelectionChange();
-      return false;
-    } else {
-      return true;
-    }
-  }
-
   void _handleTapUp(TapUpDetails details) {
     if (isSelecting || widget.triggerSelectionOnTap) {
       final tapIndex = _findIndexOfSelectable(details.localPosition);
@@ -325,6 +301,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
       if (tapIndex != -1) {
         setState(() => _selectionManager.tap(tapIndex));
         _notifySelectionChange();
+        _updateLocalHistory();
       }
     }
   }
@@ -335,6 +312,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     if (pressIndex != -1) {
       setState(() => _selectionManager.startDrag(pressIndex));
       _notifySelectionChange();
+      _updateLocalHistory();
     }
   }
 
@@ -369,6 +347,29 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   void _handleLongPressEnd(LongPressEndDetails details) {
     setState(_selectionManager.endDrag);
     stopScrolling();
+  }
+
+  void _updateLocalHistory() {
+    final route = ModalRoute.of(context);
+    if (route == null) return;
+
+    if (isSelecting) {
+      if (_historyEntry == null) {
+        final entry = LocalHistoryEntry(onRemove: () {
+          setState(_selectionManager.clear);
+          _notifySelectionChange();
+          _historyEntry = null;
+        });
+        route.addLocalHistoryEntry(entry);
+        _historyEntry = entry;
+      }
+    } else {
+      final entry = _historyEntry;
+      if (entry != null) {
+        route.removeLocalHistoryEntry(entry);
+        _historyEntry = null;
+      }
+    }
   }
 
   int _findIndexOfSelectable(Offset offset) {

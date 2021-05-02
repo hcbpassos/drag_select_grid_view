@@ -24,7 +24,6 @@ void main() {
   Widget createWidget({
     DragSelectGridViewController? gridController,
     bool? reverse,
-    bool? unselectOnWillPop,
     bool? triggerSelectionOnTap,
   }) {
     return MaterialApp(
@@ -38,7 +37,6 @@ void main() {
           Expanded(
             child: DragSelectGridView(
               gridController: gridController,
-              unselectOnWillPop: unselectOnWillPop ?? true,
               reverse: reverse ?? false,
               itemCount: 12,
               itemBuilder: (_, index, __) => Container(
@@ -64,13 +62,11 @@ void main() {
     WidgetTester tester, {
     DragSelectGridViewController? gridController,
     bool? reverse,
-    bool? unselectOnWillPop,
     bool? triggerSelectionOnTap,
   }) async {
     widget = createWidget(
       gridController: gridController,
       reverse: reverse,
-      unselectOnWillPop: unselectOnWillPop,
       triggerSelectionOnTap: triggerSelectionOnTap,
     );
 
@@ -996,16 +992,15 @@ void main() {
       );
     });
 
-    group("Pop scope.", () {
+    group("Local history.", () {
       testWidgets(
-        "Given that the grid should unselect when trying to pop the route, "
-        "and that an item of the grid was selected, "
+        "Given that the grid has an item selected, "
         "when trying to pop the route, "
         "then the item gets UNSELECTED.",
         (tester) async {
-          await setUp(tester, unselectOnWillPop: true);
+          await setUp(tester);
 
-          // Given that an item of the grid was selected,
+          // Given that the grid has an item selected,
           await tester.longPress(firstItemFinder);
           await tester.pump();
 
@@ -1016,29 +1011,6 @@ void main() {
           // then the item gets UNSELECTED.
           expect(dragSelectState.isSelecting, isFalse);
           expect(dragSelectState.selectedIndexes, <int>{});
-        },
-        skip: false,
-      );
-
-      testWidgets(
-        "Given that the grid should NOT unselect when trying to pop the route, "
-        "and that an item of the grid was selected, "
-        "when trying to pop the route, "
-        "then the item doesn't get UNSELECTED.",
-        (tester) async {
-          await setUp(tester, unselectOnWillPop: false);
-
-          // Given that an item of the grid was selected,
-          await tester.longPress(firstItemFinder);
-          await tester.pump();
-
-          // when trying to pop the route,
-          // ignore: invalid_use_of_protected_member
-          await tester.binding.handlePopRoute();
-
-          // then the item doesn't get UNSELECTED.
-          expect(dragSelectState.isSelecting, isTrue);
-          expect(dragSelectState.selectedIndexes, {0});
         },
         skip: false,
       );
