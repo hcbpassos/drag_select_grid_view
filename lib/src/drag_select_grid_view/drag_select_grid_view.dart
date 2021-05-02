@@ -37,8 +37,9 @@ typedef SelectableWidgetBuilder = Widget Function(
 
 /// Grid that supports both dragging and tapping to select its items.
 ///
-/// A long-press enables selection. The user may select/unselect any item by
-/// tapping on it. Dragging allows cascade select/unselect.
+/// By default, a long-press enables selection. The user may select/unselect any
+/// item by tapping on it. Dragging allows cascade select/unselect. The flag
+/// [triggerSelectionOnTap] allows selection to be enabled with a regular press.
 ///
 /// Through auto-scroll, this widget adds the ability to select items that go
 /// beyond screen bounds without having to stop the drag. To do so, this widget
@@ -88,6 +89,7 @@ class DragSelectGridView extends StatefulWidget {
     this.addSemanticIndexes = true,
     this.cacheExtent,
     this.semanticChildCount,
+    this.triggerSelectionOnTap = false,
   })  : autoScrollHotspotHeight =
             autoScrollHotspotHeight ?? defaultAutoScrollHotspotHeight,
         scrollController = scrollController ?? ScrollController(),
@@ -170,6 +172,10 @@ class DragSelectGridView extends StatefulWidget {
 
   /// Refer to [ScrollView.semanticChildCount].
   final int? semanticChildCount;
+
+  /// Whether to switch to selection mode by long press or single tap
+  /// By default triggerSelectionOnTap is disabled.
+  final bool triggerSelectionOnTap;
 
   @override
   DragSelectGridViewState createState() => DragSelectGridViewState();
@@ -291,13 +297,13 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   }
 
   void _handleTapUp(TapUpDetails details) {
-    if (!isSelecting) return;
+    if (isSelecting || widget.triggerSelectionOnTap) {
+      final tapIndex = _findIndexOfSelectable(details.localPosition);
 
-    final tapIndex = _findIndexOfSelectable(details.localPosition);
-
-    if (tapIndex != -1) {
-      setState(() => _selectionManager.tap(tapIndex));
-      _notifySelectionChange();
+      if (tapIndex != -1) {
+        setState(() => _selectionManager.tap(tapIndex));
+        _notifySelectionChange();
+      }
     }
   }
 
