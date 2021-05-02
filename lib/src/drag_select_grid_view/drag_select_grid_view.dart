@@ -19,6 +19,7 @@
 // SOFTWARE.
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart' hide SelectionChangedCallback;
 import 'package:collection/collection.dart';
 
@@ -76,6 +77,7 @@ class DragSelectGridView extends StatefulWidget {
     ScrollController? scrollController,
     this.gridController,
     this.unselectOnWillPop = true,
+    this.triggerSelectionOnTap = false,
     this.reverse = false,
     this.primary,
     this.physics,
@@ -89,7 +91,10 @@ class DragSelectGridView extends StatefulWidget {
     this.addSemanticIndexes = true,
     this.cacheExtent,
     this.semanticChildCount,
-    this.triggerSelectionOnTap = false,
+    this.dragStartBehavior = DragStartBehavior.start,
+    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
+    this.restorationId,
+    this.clipBehavior = Clip.hardEdge,
   })  : autoScrollHotspotHeight =
             autoScrollHotspotHeight ?? defaultAutoScrollHotspotHeight,
         scrollController = scrollController ?? ScrollController(),
@@ -128,6 +133,11 @@ class DragSelectGridView extends StatefulWidget {
   ///
   /// Defaults to true.
   final bool unselectOnWillPop;
+
+  /// Whether should start selection by tapping instead of long-pressing.
+  ///
+  /// Defaults to false.
+  final bool triggerSelectionOnTap;
 
   /// Refer to [ScrollView.reverse].
   final bool reverse;
@@ -173,10 +183,17 @@ class DragSelectGridView extends StatefulWidget {
   /// Refer to [ScrollView.semanticChildCount].
   final int? semanticChildCount;
 
-  /// Whether should start selection by tapping instead of long-pressing.
-  ///
-  /// Defaults to false.
-  final bool triggerSelectionOnTap;
+  /// Refer to [ScrollView.dragStartBehavior].
+  final DragStartBehavior dragStartBehavior;
+
+  /// Refer to [ScrollView.keyboardDismissBehavior].
+  final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
+
+  /// Refer to [ScrollView.restorationId].
+  final String? restorationId;
+
+  /// Refer to [ScrollView.clipBehavior].
+  final Clip clipBehavior;
 
   @override
   DragSelectGridViewState createState() => DragSelectGridViewState();
@@ -259,6 +276,10 @@ class DragSelectGridViewState extends State<DragSelectGridView>
             addSemanticIndexes: widget.addSemanticIndexes,
             cacheExtent: widget.cacheExtent,
             semanticChildCount: widget.semanticChildCount,
+            dragStartBehavior: widget.dragStartBehavior,
+            keyboardDismissBehavior: widget.keyboardDismissBehavior,
+            restorationId: widget.restorationId,
+            clipBehavior: widget.clipBehavior,
             itemBuilder: (context, index) {
               return Selectable(
                 index: index,
