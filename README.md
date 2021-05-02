@@ -1,7 +1,7 @@
 # drag_select_grid_view  
   
 [![Pub package](https://img.shields.io/pub/v/drag_select_grid_view.svg)](https://pub.dartlang.org/packages/drag_select_grid_view)
-[![CI workflow](https://github.com/hugocbpassos/drag_select_grid_view/workflows/CI/badge.svg)](https://github.com/hugocbpassos/drag_select_grid_view/actions?workflow=CI)
+[![CI workflow](https://github.com/hcbpassos/drag_select_grid_view/workflows/CI/badge.svg)](https://github.com/hcbpassos/drag_select_grid_view/actions?workflow=CI)
 [![Awesome](https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square)](https://github.com/Solido/awesome-flutter)
 [![style: effective dart](https://img.shields.io/badge/style-effective_dart-40c4ff.svg)](https://github.com/tenhobi/effective_dart)
   
@@ -70,7 +70,7 @@ As you may have noticed in the code above, `DragSelectGridView` must be used alo
     
   * `SelectionAppBar`: A custom `AppBar`, which shows the amount of selected items and an option to unselect them.
       
-The [example project](https://github.com/hugocbpassos/drag_select_grid_view/tree/master/example/lib) provides some samples of those widgets. I won't add them to the library, since they are unrelated to the grid itself, but feel free to copy them into your project, as long as you respect the license terms. 
+The [example project](https://github.com/hcbpassos/drag_select_grid_view/tree/master/example/lib) provides some samples of those widgets. I won't add them to the library, since they are unrelated to the grid itself, but feel free to copy them into your project, as long as you respect the license terms. 
 
 ## Advanced usage
  
@@ -80,7 +80,7 @@ It allows this sort of interaction:
 
 ![Directly changing selection](media/directly-changing-selection.gif)
 
-You can check the code [here](https://github.com/hugocbpassos/drag_select_grid_view/blob/master/example/lib/example_with_fab.dart).
+You can check the code [here](https://github.com/hcbpassos/drag_select_grid_view/blob/master/example/lib/example_with_fab.dart).
 
 There are some other minor settings you can do to make `DragSelectGridView` fit your needs, like `DragSelectGridView.autoScrollHotspotHeight` and `DragSelectGridView.unselectOnWillPop`. Those features are well documented, so I'll let you take your discovery time.
 

@@ -30,7 +30,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   /// Cannot return null.
   ///
   /// Introduced in:
-  /// https://github.com/hugocbpassos/drag_select_grid_view/issues/2
+  /// https://github.com/hcbpassos/drag_select_grid_view/issues/2
   void handleScroll();
 
   /// Stores the size of the widget.
