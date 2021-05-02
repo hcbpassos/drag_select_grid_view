@@ -1,3 +1,10 @@
+## [0.5.0] - 02/05/2021
+
+* Support selection trigger on tap instead of on long-press.
+* Add missing `GridView` fields.
+* Replace `WillPopScope` widget by adding entry on local-history. This fixes iOS route navigation (swipe left to pop). 
+* **Breaking change**. Remove `DragSelectiGridView.unselectOnWillPop`: turn this behavior mandatory. 
+
 ## [0.4.0] - 21/03/2021
 
 * Migrate to null safety.
