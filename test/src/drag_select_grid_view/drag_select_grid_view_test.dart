@@ -25,6 +25,7 @@ void main() {
     DragSelectGridViewController? gridController,
     bool? reverse,
     bool? unselectOnWillPop,
+    bool? triggerSelectionOnTap,
   }) {
     return MaterialApp(
       home: Row(
@@ -46,6 +47,7 @@ void main() {
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
               ),
+              triggerSelectionOnTap: triggerSelectionOnTap ?? false,
             ),
           )
         ],
@@ -63,19 +65,21 @@ void main() {
     DragSelectGridViewController? gridController,
     bool? reverse,
     bool? unselectOnWillPop,
+    bool? triggerSelectionOnTap,
   }) async {
     widget = createWidget(
       gridController: gridController,
       reverse: reverse,
       unselectOnWillPop: unselectOnWillPop,
+      triggerSelectionOnTap: triggerSelectionOnTap,
     );
 
     await tester.pumpWidget(widget);
     dragSelectState = tester.state(gridFinder);
 
     final secondItemFinder = find.byKey(const ValueKey('grid-item-1'));
-    mainAxisItemsDistance = tester.getCenter(secondItemFinder) -
-        tester.getCenter(firstItemFinder);
+    mainAxisItemsDistance =
+        tester.getCenter(secondItemFinder) - tester.getCenter(firstItemFinder);
 
     final fifthItemFinder = find.byKey(const ValueKey('grid-item-4'));
     crossAxisItemsDistance =
@@ -126,20 +130,54 @@ void main() {
   group("Drag-select-grid-view integration tests.", () {
     group("Select by pressing.", () {
       testWidgets(
-        "When an item of DragSelectGridView is long-pressed down, "
-        "then `isDragging` becomes true.",
+        "Given that `triggerSelectionOnTap` is false, "
+        "when an item of DragSelectGridView is long-pressed down, "
+        "then `isSelecting` and `isDragging` become true.",
         (tester) async {
           await setUp(tester);
 
-          // Initially, `isDragging` is false.
+          // Initially, `isSelecting` and `isDragging` are false.
+          expect(dragSelectState.isSelecting, isFalse);
           expect(dragSelectState.isDragging, isFalse);
+
+          // Given that `triggerSelectionOnTap` is false,
+          expect(dragSelectState.widget.triggerSelectionOnTap, isFalse);
 
           // When an item of DragSelectGridView is long-pressed down,
           await longPressDown(tester: tester, finder: gridFinder);
           await tester.pump();
 
-          // then `isDragging` becomes true.
+          // then `isSelecting` and `isDragging` become true.
+          expect(dragSelectState.isSelecting, isTrue);
           expect(dragSelectState.isDragging, isTrue);
+        },
+        skip: false,
+      );
+
+      testWidgets(
+        "Given that `triggerSelectionOnTap` is true, "
+        "when an item of DragSelectGridView is tapped, "
+        "then `isSelecting` becomes true "
+        "and `isDragging` continues false.",
+        (tester) async {
+          await setUp(tester, triggerSelectionOnTap: true);
+
+          // Initially, `isSelecting` and `isDragging` are false.
+          expect(dragSelectState.isSelecting, isFalse);
+          expect(dragSelectState.isDragging, isFalse);
+
+          // Given that `triggerSelectionOnTap` is true,
+          expect(dragSelectState.widget.triggerSelectionOnTap, isTrue);
+
+          // When an item of DragSelectGridView is tapped,
+          await tester.tap(gridFinder);
+          await tester.pump();
+
+          // then `isSelecting` becomes true
+          expect(dragSelectState.isSelecting, isTrue);
+
+          // and `isDragging` continues false.
+          expect(dragSelectState.isDragging, isFalse);
         },
         skip: false,
       );
