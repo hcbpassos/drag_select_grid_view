@@ -16,11 +16,9 @@ const screenWidth = 800.0;
 ///
 /// Most code was copied from [WidgetTester.longPressAt].
 Future<TestGesture> longPressDown({
-  @required WidgetTester tester,
-  @required Finder finder,
+  required WidgetTester tester,
+  required Finder finder,
 }) {
-  assert(tester != null);
-  assert(finder != null);
 
   return TestAsyncUtils.guard<TestGesture>(() async {
     final pressPosition = tester.getCenter(finder);
@@ -32,9 +30,9 @@ Future<TestGesture> longPressDown({
 
 /// Performs a long-press, and then a drag, without releasing the pointer.
 Future<TestGesture> longPressDownAndDrag({
-  @required WidgetTester tester,
-  @required Finder finder,
-  @required Offset offset,
+  required WidgetTester tester,
+  required Finder finder,
+  required Offset offset,
 }) async {
   final gesture = await longPressDown(tester: tester, finder: finder);
   return dragDown(
@@ -51,13 +49,11 @@ Future<TestGesture> longPressDownAndDrag({
 ///
 /// Most code was copied from [WidgetTester.dragFrom].
 Future<TestGesture> dragDown({
-  @required WidgetTester tester,
-  Finder finder,
-  TestGesture previousGesture,
-  @required Offset offset,
+  required WidgetTester tester,
+  Finder? finder,
+  TestGesture? previousGesture,
+  required Offset offset,
 }) {
-  assert(tester != null);
-  assert(offset != null);
   assert((finder != null) || (previousGesture != null));
 
   return TestAsyncUtils.guard<TestGesture>(() async {
@@ -65,8 +61,7 @@ Future<TestGesture> dragDown({
     final touchSlopY = kDragSlopDefault;
 
     final gesture =
-        previousGesture ?? await tester.startGesture(tester.getCenter(finder));
-    assert(gesture != null);
+        previousGesture ?? await tester.startGesture(tester.getCenter(finder!));
     await tester.pump(kLongPressTimeout + kPressTimeout);
 
     final xSign = offset.dx.sign;

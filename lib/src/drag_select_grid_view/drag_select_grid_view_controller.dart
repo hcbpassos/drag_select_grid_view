@@ -17,7 +17,7 @@ class DragSelectGridViewController extends ValueNotifier<Selection> {
   ///
   /// The initial selection is [Selection.empty], unless a different one is
   /// provided.
-  DragSelectGridViewController([Selection selection])
+  DragSelectGridViewController([Selection? selection])
       : super(selection ?? const Selection.empty());
 
   /// Clears the grid selection.

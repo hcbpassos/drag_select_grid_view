@@ -423,17 +423,6 @@ void main() {
   });
 
   group("`Selection` tests", () {
-    test(
-      "When a `Selection` is created with null `selectedIndexes`, "
-      "then an error is thrown.",
-      () {
-        expect(
-          () => Selection(null),
-          throwsNoSuchMethodError,
-        );
-      },
-    );
-
     test("`Selection.empty` has empty `selectedIndexes`.", () {
       expect(const Selection.empty().selectedIndexes, <int>{});
     });

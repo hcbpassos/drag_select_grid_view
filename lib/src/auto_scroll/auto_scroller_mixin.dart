@@ -10,8 +10,8 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   @visibleForTesting
   AutoScroll autoScroll = AutoScroll.stopped();
 
-  double _widgetHeight;
-  double _widgetWidth;
+  late final double _widgetHeight;
+  late final double _widgetWidth;
 
   /// The height of the auto-scroll hotspot.
   ///
@@ -23,7 +23,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   /// Used to perform the auto-scroll and notify about scrolling.
   ScrollController get scrollController;
 
-  /// Callback for notifying whenever the scroll-position changes.
+  /// Handles changes on scroll-position.
   ///
   /// Used in the grid to update the selected items when auto-scrolling.
   ///
@@ -31,7 +31,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   ///
   /// Introduced in:
   /// https://github.com/hugocbpassos/drag_select_grid_view/issues/2
-  VoidCallback get scrollCallback;
+  void handleScroll();
 
   /// Stores the size of the widget.
   ///
@@ -43,13 +43,13 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
+    WidgetsBinding.instance!.addPostFrameCallback(
       (callback) {
-        final widgetSize = context.size;
+        final widgetSize = context.size!;
         _widgetHeight = widgetSize.height;
         _widgetWidth = widgetSize.width;
         if (scrollController.hasClients) {
-          scrollController.position.addListener(scrollCallback);
+          scrollController.position.addListener(handleScroll);
         }
       },
     );
@@ -58,7 +58,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   @override
   void dispose() {
     if (scrollController.hasClients) {
-      scrollController.position.removeListener(scrollCallback);
+      scrollController.position.removeListener(handleScroll);
     }
     super.dispose();
   }
@@ -74,7 +74,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   Widget build(BuildContext context) {
     final scroller = AutoScroller(autoScroll, scrollController);
     if (scroller.mustScroll) scroller.scroll();
-    return null;
+    return Container();
   }
 
   /// Returns whether the [localPosition] is in upper-hotspot's bounds.
