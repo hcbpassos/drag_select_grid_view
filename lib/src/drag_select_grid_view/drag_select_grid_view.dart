@@ -248,7 +248,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
       onLongPressEnd: _handleLongPressEnd,
       behavior: HitTestBehavior.translucent,
       child: IgnorePointer(
-        ignoring: isSelecting || widget.triggerSelectionOnTap,
+        ignoring: isDragging,
         child: GridView.builder(
           controller: widget.scrollController,
           reverse: widget.reverse,
@@ -268,14 +268,17 @@ class DragSelectGridViewState extends State<DragSelectGridView>
           restorationId: widget.restorationId,
           clipBehavior: widget.clipBehavior,
           itemBuilder: (context, index) {
-            return Selectable(
-              index: index,
-              onMountElement: _elements.add,
-              onUnmountElement: _elements.remove,
-              child: widget.itemBuilder(
-                context,
-                index,
-                selectedIndexes.contains(index),
+            return IgnorePointer(
+              ignoring: isSelecting || widget.triggerSelectionOnTap,
+              child: Selectable(
+                index: index,
+                onMountElement: _elements.add,
+                onUnmountElement: _elements.remove,
+                child: widget.itemBuilder(
+                  context,
+                  index,
+                  selectedIndexes.contains(index),
+                ),
               ),
             );
           },
