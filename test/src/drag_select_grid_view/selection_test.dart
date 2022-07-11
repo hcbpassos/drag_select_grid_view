@@ -1,4 +1,3 @@
-import 'package:drag_select_grid_view/drag_select_grid_view.dart';
 import 'package:drag_select_grid_view/src/drag_select_grid_view/selection.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -443,7 +442,7 @@ void main() {
       "then `isSelecting` is true.",
       () {
         expect(
-          Selection({0, 1}).isSelecting,
+          Selection(const {0, 1}).isSelecting,
           isTrue,
         );
       },
@@ -464,7 +463,7 @@ void main() {
       "When the `Set` got from `Selection` is modified, "
       "then an error is thrown.",
       () {
-        final selection = Selection({0, 1});
+        final selection = Selection(const {0, 1});
         expect(
           () => selection.selectedIndexes.remove(0),
           throwsA(isA<UnsupportedError>()),
@@ -480,9 +479,9 @@ void main() {
     });
 
     group("`operator ==` and `hashCode`.", () {
-      final selection = Selection({0, 1, 2});
-      final equalSelection = Selection({0, 1, 2});
-      final anotherEqualSelection = Selection({0, 1, 2});
+      final selection = Selection(const {0, 1, 2});
+      final equalSelection = Selection(const {0, 1, 2});
+      final anotherEqualSelection = Selection(const {0, 1, 2});
       const differentSelection = Selection.empty();
 
       test('Reflexivity.', () {

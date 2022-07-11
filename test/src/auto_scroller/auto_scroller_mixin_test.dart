@@ -25,8 +25,8 @@ void main() {
             Expanded(
               child: DragSelectGridView(
                 itemCount: 0,
-                itemBuilder: (_, __, ___) => SizedBox(),
-                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                itemBuilder: (_, __, ___) => const SizedBox(),
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 1,
                 ),
               ),
@@ -51,7 +51,7 @@ void main() {
         final state =
             tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
 
-        final offset = Offset(0, 0);
+        const offset = Offset(0, 0);
 
         expect(state.isInsideUpperAutoScrollHotspot(offset), isTrue);
         expect(state.isInsideLowerAutoScrollHotspot(offset), isFalse);
@@ -67,7 +67,7 @@ void main() {
 
         final state =
             tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
-        final offset = Offset(0, widgetHeight);
+        const offset = Offset(0, widgetHeight);
 
         expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
         expect(state.isInsideLowerAutoScrollHotspot(offset), isTrue);
@@ -83,7 +83,7 @@ void main() {
 
         final state =
             tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
-        final offset = Offset(0, -1);
+        const offset = Offset(0, -1);
 
         expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
         expect(state.isInsideLowerAutoScrollHotspot(offset), isFalse);
@@ -99,7 +99,7 @@ void main() {
 
         final state =
             tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
-        final offset = Offset(0, widgetHeight + 1);
+        const offset = Offset(0, widgetHeight + 1);
 
         expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
         expect(state.isInsideLowerAutoScrollHotspot(offset), isFalse);
@@ -115,7 +115,7 @@ void main() {
 
         final state =
             tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
-        final offset = Offset(-1, 0);
+        const offset = Offset(-1, 0);
 
         expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
         expect(state.isInsideLowerAutoScrollHotspot(offset), isFalse);
@@ -131,7 +131,7 @@ void main() {
 
         final state =
             tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
-        final offset = Offset(widgetWidth + 1, 0);
+        const offset = Offset(widgetWidth + 1, 0);
 
         expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
         expect(state.isInsideLowerAutoScrollHotspot(offset), isFalse);

@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart' hide SelectionChangedCallback;
-import 'package:flutter_test/flutter_test.dart';
 import 'package:drag_select_grid_view/drag_select_grid_view.dart';
 import 'package:drag_select_grid_view/src/auto_scroll/auto_scroll.dart';
 import 'package:drag_select_grid_view/src/drag_select_grid_view/drag_select_grid_view.dart';
+import 'package:flutter/material.dart' hide SelectionChangedCallback;
+import 'package:flutter_test/flutter_test.dart';
 
 import '../test_utils.dart';
 
@@ -29,8 +29,8 @@ void main() {
     return MaterialApp(
       home: Row(
         children: [
-          SizedBox(
-            key: const ValueKey('empty-space'),
+          const SizedBox(
+            key: ValueKey('empty-space'),
             height: double.infinity,
             width: 10,
           ),
@@ -42,7 +42,7 @@ void main() {
               itemBuilder: (_, index, __) => Container(
                 key: ValueKey('grid-item-$index'),
               ),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
               ),
               triggerSelectionOnTap: triggerSelectionOnTap ?? false,
@@ -917,7 +917,7 @@ void main() {
           await setUp(tester, gridController: gridController);
 
           // When selecting the items 0 and 1 through the grid-controller,
-          gridController.value = Selection({0, 1});
+          gridController.value = Selection(const {0, 1});
           await tester.pump();
 
           // then the items 0 and 1 get selected in the grid-state.
@@ -961,7 +961,7 @@ void main() {
 
           // when selecting the items 2 and 3 through the grid-controller,
           expect(dragSelectState.isDragging, isTrue);
-          gridController.value = Selection({2, 3});
+          gridController.value = Selection(const {2, 3});
           await tester.pump();
 
           // then the drag gets interrupted,
@@ -980,7 +980,7 @@ void main() {
         (tester) async {
           // When creating a grid with pre-selected items,
           final gridController =
-              DragSelectGridViewController(Selection({0, 1}));
+              DragSelectGridViewController(Selection(const {0, 1}));
           await setUp(tester, gridController: gridController);
 
           // then the pre-selected items get selected in the grid-state.
