@@ -1,3 +1,9 @@
+## [0.6.0] - 11/06/2022
+
+* **Breaking change**. Drop support for flutter < 3.0.0.
+* Fix null aware operator warning ([#13](https://github.com/hcbpassos/drag_select_grid_view/issues/28)).
+* Use `flutter_lints`.
+
 ## [0.5.1] - 03/05/2021
 
 * Fix pointer ignoring when grid is in selection mode.
@@ -21,8 +27,7 @@
 
 * **Breaking change**. Fix the constructor of `Selection`, which now creates a copy of the received `Set`. Consequently, the constructor is no longer constant. To keep `Selection.empty` constant, another constructor has been created: `Selection.empty()`. 
 * **Breaking change**. Make `DragSelectGridViewController` extend `ValueNotifier` instead of `ChangeNotifier`. The getter and setter `selection` are now `ValueNotifier`'s default: `value`.
-* Support initial selection ([#14](https://github.com/hcbpassos
-  /drag_select_grid_view/issues/14)). 
+* Support initial selection ([#14](https://github.com/hcbpassos/drag_select_grid_view/issues/14)).
 
 ## [0.2.1] - 28/07/2020
 
