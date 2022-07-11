@@ -15,9 +15,9 @@ void main() {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.white,
-        accentColor: Colors.white,
         scaffoldBackgroundColor: Colors.white,
         appBarTheme: const AppBarTheme(elevation: 2),
+        colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.white),
       ),
     ),
   );
