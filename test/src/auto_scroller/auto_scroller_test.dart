@@ -246,7 +246,7 @@ void main() {
         expect(mockAutoScroller.performScrollCount, 0);
         expect(
           mockAutoScroller.positionAfterOverscroll,
-          greaterThan(mockAutoScroller.currentPosition),
+          greaterThan(mockAutoScroller.currentPosition ?? 0),
         );
       },
     );
@@ -277,7 +277,7 @@ void main() {
         expect(mockAutoScroller.performScrollCount, 0);
         expect(
           mockAutoScroller.positionAfterOverscroll,
-          lessThan(mockAutoScroller.currentPosition),
+          lessThan(mockAutoScroller.currentPosition ?? 0),
         );
       },
     );

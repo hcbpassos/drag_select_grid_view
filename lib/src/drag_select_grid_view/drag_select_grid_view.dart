@@ -18,10 +18,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart' hide SelectionChangedCallback;
-import 'package:collection/collection.dart';
 
 import '../auto_scroll/auto_scroller_mixin.dart';
 import '../drag_select_grid_view/selectable.dart';

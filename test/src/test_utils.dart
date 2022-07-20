@@ -1,5 +1,4 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Flutter's default value for `testWidgets()`.
@@ -57,8 +56,8 @@ Future<TestGesture> dragDown({
   assert((finder != null) || (previousGesture != null));
 
   return TestAsyncUtils.guard<TestGesture>(() async {
-    final touchSlopX = kDragSlopDefault;
-    final touchSlopY = kDragSlopDefault;
+    const touchSlopX = kDragSlopDefault;
+    const touchSlopY = kDragSlopDefault;
 
     final gesture =
         previousGesture ?? await tester.startGesture(tester.getCenter(finder!));
@@ -76,7 +75,7 @@ Future<TestGesture> dragDown({
     if (separateY || separateX) {
       final offsetSlope = offsetY / offsetX;
       final inverseOffsetSlope = offsetX / offsetY;
-      final slopSlope = touchSlopY / touchSlopX;
+      const slopSlope = touchSlopY / touchSlopX;
       final absoluteOffsetSlope = offsetSlope.abs();
       final signedSlopX = touchSlopX * xSign;
       final signedSlopY = touchSlopY * ySign;
