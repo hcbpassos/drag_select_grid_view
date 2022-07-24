@@ -18,7 +18,6 @@ Future<TestGesture> longPressDown({
   required WidgetTester tester,
   required Finder finder,
 }) {
-
   return TestAsyncUtils.guard<TestGesture>(() async {
     final pressPosition = tester.getCenter(finder);
     final gesture = await tester.startGesture(pressPosition);

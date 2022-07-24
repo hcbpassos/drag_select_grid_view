@@ -1,3 +1,7 @@
+## [0.6.1] - 24/07/2022
+
+* Fix format.
+
 ## [0.6.0] - 11/06/2022
 
 * **Breaking change**. Drop support for flutter < 3.0.0.

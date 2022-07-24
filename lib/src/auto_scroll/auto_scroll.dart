@@ -29,7 +29,7 @@ class AutoScroll {
   AutoScroll({
     required AutoScrollDirection this.direction,
     required Duration this.duration,
-  })   : assert(duration != Duration.zero),
+  })  : assert(duration != Duration.zero),
         isScrolling = true,
         stopEvent = StopAutoScrollEvent.consumed();
 

@@ -14,7 +14,8 @@ void main() {
   });
 
   test("Clears the grid selection.", () {
-    final controller = DragSelectGridViewController(Selection(const {42}))..clear();
+    final controller = DragSelectGridViewController(Selection(const {42}))
+      ..clear();
     expect(controller.value, const Selection.empty());
   });
 }
