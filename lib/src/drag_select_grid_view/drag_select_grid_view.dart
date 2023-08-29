@@ -94,6 +94,7 @@ class DragSelectGridView extends StatefulWidget {
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.restorationId,
     this.clipBehavior = Clip.hardEdge,
+    this.impliesAppBarDismissal = true,
   })  : autoScrollHotspotHeight =
             autoScrollHotspotHeight ?? defaultAutoScrollHotspotHeight,
         scrollController = scrollController ?? ScrollController(),
@@ -182,6 +183,9 @@ class DragSelectGridView extends StatefulWidget {
 
   /// Refer to [ScrollView.clipBehavior].
   final Clip clipBehavior;
+
+  /// Refer to [LocalHistoryEntry.impliesAppBarDismissal].
+  final bool impliesAppBarDismissal;
 
   @override
   DragSelectGridViewState createState() => DragSelectGridViewState();
@@ -359,11 +363,14 @@ class DragSelectGridViewState extends State<DragSelectGridView>
 
     if (isSelecting) {
       if (_historyEntry == null) {
-        final entry = LocalHistoryEntry(onRemove: () {
-          setState(_selectionManager.clear);
-          _notifySelectionChange();
-          _historyEntry = null;
-        });
+        final entry = LocalHistoryEntry(
+          impliesAppBarDismissal: widget.impliesAppBarDismissal,
+          onRemove: () {
+            setState(_selectionManager.clear);
+            _notifySelectionChange();
+            _historyEntry = null;
+          },
+        );
         route.addLocalHistoryEntry(entry);
         _historyEntry = entry;
       }
