@@ -1,3 +1,9 @@
+## [0.6.2] - 29/08/2023
+
+* Bump Dart SDK constraints.
+* Support `LocalHistoryEntry.impliesAppBarDismissal` ([#31](https://github.com/hcbpassos/drag_select_grid_view/issues/31)).
+* Fix lack of local history update on controller changes ([#31](https://github.com/hcbpassos/drag_select_grid_view/issues/31)).
+
 ## [0.6.1] - 24/07/2022
 
 * Fix format.
@@ -5,7 +11,7 @@
 ## [0.6.0] - 11/06/2022
 
 * **Breaking change**. Drop support for flutter < 3.0.0.
-* Fix null aware operator warning ([#13](https://github.com/hcbpassos/drag_select_grid_view/issues/28)).
+* Fix null aware operator warning ([#28](https://github.com/hcbpassos/drag_select_grid_view/issues/28)).
 * Use `flutter_lints`.
 
 ## [0.5.1] - 03/05/2021
