@@ -293,6 +293,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
       final controllerSelectedIndexes = controller.value.selectedIndexes;
       if (!setEquals(controllerSelectedIndexes, selectedIndexes)) {
         _selectionManager.selectedIndexes = controllerSelectedIndexes;
+        _updateLocalHistory();
       }
     }
   }

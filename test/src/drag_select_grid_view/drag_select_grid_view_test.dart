@@ -13,7 +13,6 @@ void main() {
   final firstItemFinder = find.byKey(const ValueKey('grid-item-0'));
   final lastItemFinder = find.byKey(const ValueKey('grid-item-11'));
 
-  Widget widget;
   late DragSelectGridViewState dragSelectState;
 
   late Offset mainAxisItemsDistance;
@@ -64,7 +63,7 @@ void main() {
     bool? reverse,
     bool? triggerSelectionOnTap,
   }) async {
-    widget = createWidget(
+    final widget = createWidget(
       gridController: gridController,
       reverse: reverse,
       triggerSelectionOnTap: triggerSelectionOnTap,
@@ -1011,6 +1010,28 @@ void main() {
           // then the item gets UNSELECTED.
           expect(dragSelectState.isSelecting, isFalse);
           expect(dragSelectState.selectedIndexes, <int>{});
+        },
+        skip: false,
+      );
+
+      testWidgets(
+        "Given that the grid has an item selected, "
+        "when clearing the selection through the controller, "
+        "then the widget removes the local history entry.",
+        (tester) async {
+          final controller = DragSelectGridViewController();
+          await setUp(tester, gridController: controller);
+
+          // Given that the grid has an item selected,
+          await tester.longPress(firstItemFinder);
+          await tester.pump();
+
+          // when clearing the selection through the controller,
+          controller.clear();
+
+          // then the widget removes the local history entry.
+          final route = ModalRoute.of(dragSelectState.context);
+          expect(route!.willHandlePopInternally, isFalse);
         },
         skip: false,
       );
