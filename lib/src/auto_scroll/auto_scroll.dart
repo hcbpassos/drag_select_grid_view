@@ -27,6 +27,7 @@ enum AutoScrollDirection {
 class AutoScroll {
   /// Creates a new [AutoScroll].
   AutoScroll({
+    this.speed = 1,
     required AutoScrollDirection this.direction,
     required Duration this.duration,
   })  : assert(duration != Duration.zero),
@@ -44,11 +45,15 @@ class AutoScroll {
   /// consumed, assuming that you don't want [AutoScroller] to make a
   /// stop-scrolling-animation.
   AutoScroll.stopped({this.direction})
-      : isScrolling = false,
+      : speed = 0,
+        isScrolling = false,
         duration = null,
         stopEvent = direction == null
             ? StopAutoScrollEvent.consumed()
             : StopAutoScrollEvent();
+
+  /// scroll speed
+  final double speed;
 
   /// Whether it is auto-scrolling or not.
   final bool isScrolling;
@@ -78,6 +83,7 @@ class AutoScroll {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is AutoScroll &&
+          speed == other.speed &&
           runtimeType == other.runtimeType &&
           isScrolling == other.isScrolling &&
           stopEvent == other.stopEvent &&

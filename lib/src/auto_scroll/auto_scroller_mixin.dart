@@ -78,23 +78,33 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   }
 
   /// Returns whether the [localPosition] is in upper-hotspot's bounds.
-  bool isInsideUpperAutoScrollHotspot(Offset localPosition) =>
-      _isInsideWidget(localPosition) &&
-      localPosition.dy <= autoScrollHotspotHeight;
+  bool isInsideUpperAutoScrollHotspot(
+    Offset localPosition, {
+    bool checkIfInsideWidget = true,
+  }) =>
+      checkIfInsideWidget
+          ? _isInsideWidget(localPosition)
+          : true && localPosition.dy <= autoScrollHotspotHeight;
 
   /// Returns whether the [localPosition] is in lower-hotspot's bounds.
-  bool isInsideLowerAutoScrollHotspot(Offset localPosition) =>
-      _isInsideWidget(localPosition) &&
-      localPosition.dy > (_widgetHeight - autoScrollHotspotHeight);
+  bool isInsideLowerAutoScrollHotspot(
+    Offset localPosition, {
+    bool checkIfInsideWidget = true,
+  }) =>
+      checkIfInsideWidget
+          ? _isInsideWidget(localPosition)
+          : true &&
+              localPosition.dy > (_widgetHeight - autoScrollHotspotHeight);
 
   /// Scrolls forward indefinitely.
   ///
   /// Nothing is done if forward auto-scroll is already being performed.
-  void startAutoScrollingForward() {
+  void startAutoScrollingForward([double speed = 1]) {
     _updateAutoScrollIfDifferent(
       AutoScroll(
         direction: AutoScrollDirection.forward,
         duration: const Duration(seconds: 3),
+        speed: speed,
       ),
     );
   }
@@ -102,11 +112,12 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   /// Scrolls backward indefinitely.
   ///
   /// Nothing is done if backward auto-scroll is already being performed.
-  void startAutoScrollingBackward() {
+  void startAutoScrollingBackward([double speed = 1]) {
     _updateAutoScrollIfDifferent(
       AutoScroll(
         direction: AutoScrollDirection.backward,
         duration: const Duration(seconds: 3),
+        speed: speed,
       ),
     );
   }
