@@ -380,6 +380,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
         final entry = LocalHistoryEntry(
           impliesAppBarDismissal: widget.impliesAppBarDismissal,
           onRemove: () {
+            if (!mounted) return;
             setState(_selectionManager.clear);
             _notifySelectionChange();
             _historyEntry = null;
