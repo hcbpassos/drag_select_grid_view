@@ -133,6 +133,7 @@ class AutoScroller {
       curve: Curves.linear,
       duration: calculateScrollDurationWithUniformScrollSpeed(
         targetPositionOfTheAutoScroll,
+        autoScroll.speed,
       ),
     );
   }
@@ -153,11 +154,14 @@ class AutoScroller {
   @visibleForTesting
   Duration calculateScrollDurationWithUniformScrollSpeed(
     double targetPosition,
+    double speed,
   ) {
     final amountToBeScrolled = (targetPosition - currentPosition!).abs();
 
-    final scrollDurationInMs =
-        (amountToBeScrolled * scrollDurationPerPixelInMs).toInt();
+    final scrollDurationInMs = (amountToBeScrolled *
+            scrollDurationPerPixelInMs /
+            (speed.isFinite ? speed : 1))
+        .toInt();
 
     return Duration(milliseconds: scrollDurationInMs);
   }

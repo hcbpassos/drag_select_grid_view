@@ -95,6 +95,8 @@ class DragSelectGridView extends StatefulWidget {
     this.restorationId,
     this.clipBehavior = Clip.hardEdge,
     this.impliesAppBarDismissal = true,
+    this.scrollSpeedCallback,
+    this.checkIfInsideWidget = true,
   })  : autoScrollHotspotHeight =
             autoScrollHotspotHeight ?? defaultAutoScrollHotspotHeight,
         scrollController = scrollController ?? ScrollController(),
@@ -107,6 +109,9 @@ class DragSelectGridView extends StatefulWidget {
   ///
   /// Defaults to [defaultAutoScrollHotspotHeight].
   final double autoScrollHotspotHeight;
+
+  /// scroll speed callback
+  final double Function()? scrollSpeedCallback;
 
   /// Refer to [ScrollView.controller].
   final ScrollController scrollController;
@@ -127,6 +132,9 @@ class DragSelectGridView extends StatefulWidget {
   ///
   /// Defaults to false.
   final bool triggerSelectionOnTap;
+
+  /// should check if gesture detection is inside widget
+  final bool checkIfInsideWidget;
 
   /// Refer to [ScrollView.reverse].
   final bool reverse;
@@ -335,17 +343,23 @@ class DragSelectGridViewState extends State<DragSelectGridView>
       _notifySelectionChange();
     }
 
-    if (isInsideUpperAutoScrollHotspot(details.localPosition)) {
+    if (isInsideUpperAutoScrollHotspot(
+      details.localPosition,
+      checkIfInsideWidget: widget.checkIfInsideWidget,
+    )) {
       if (widget.reverse) {
-        startAutoScrollingForward();
+        startAutoScrollingForward(widget.scrollSpeedCallback?.call() ?? 1);
       } else {
-        startAutoScrollingBackward();
+        startAutoScrollingBackward(widget.scrollSpeedCallback?.call() ?? 1);
       }
-    } else if (isInsideLowerAutoScrollHotspot(details.localPosition)) {
+    } else if (isInsideLowerAutoScrollHotspot(
+      details.localPosition,
+      checkIfInsideWidget: widget.checkIfInsideWidget,
+    )) {
       if (widget.reverse) {
-        startAutoScrollingBackward();
+        startAutoScrollingBackward(widget.scrollSpeedCallback?.call() ?? 1);
       } else {
-        startAutoScrollingForward();
+        startAutoScrollingForward(widget.scrollSpeedCallback?.call() ?? 1);
       }
     } else {
       stopScrolling();
@@ -366,6 +380,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
         final entry = LocalHistoryEntry(
           impliesAppBarDismissal: widget.impliesAppBarDismissal,
           onRemove: () {
+            if (!mounted) return;
             setState(_selectionManager.clear);
             _notifySelectionChange();
             _historyEntry = null;
