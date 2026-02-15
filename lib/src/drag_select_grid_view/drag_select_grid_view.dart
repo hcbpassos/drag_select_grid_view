@@ -229,11 +229,13 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   @override
   void initState() {
     super.initState();
-    final controller = _gridController;
-    if (controller != null) {
-      controller.addListener(_onSelectionChanged);
-      _selectionManager.selectedIndexes = controller.value.selectedIndexes;
-    }
+    _gridController?.addListener(_onSelectionChanged);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _onSelectionChanged();
   }
 
   @override
@@ -298,6 +300,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
       if (!setEquals(controllerSelectedIndexes, selectedIndexes)) {
         _selectionManager.selectedIndexes = controllerSelectedIndexes;
         _updateLocalHistory();
+        setState(() {});
       }
     }
   }
