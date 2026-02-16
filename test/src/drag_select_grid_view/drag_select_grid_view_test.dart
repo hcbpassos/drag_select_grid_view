@@ -209,7 +209,7 @@ void main() {
           expect(dragSelectState.isDragging, isFalse);
 
           // When an empty space of DragSelectGridView is long-pressed.
-          await tester.longPress(emptySpaceFinder);
+          await tester.longPress(emptySpaceFinder, warnIfMissed: false);
           await tester.pump();
 
           // then `isDragging` doesn't change.
@@ -239,7 +239,7 @@ void main() {
           expect(dragSelectState.selectedIndexes, <int>{});
 
           // when the first item of the grid is long-pressed,
-          await tester.longPress(firstItemFinder);
+          await tester.longPress(firstItemFinder, warnIfMissed: false);
           await tester.pump();
 
           // then the item gets selected.
@@ -267,7 +267,7 @@ void main() {
           expect(dragSelectState.selectedIndexes, <int>{});
 
           // when the first item of the grid is tapped,
-          await tester.tap(firstItemFinder);
+          await tester.tap(firstItemFinder, warnIfMissed: false);
           await tester.pump();
 
           // then the item stills UNSELECTED.
@@ -289,11 +289,11 @@ void main() {
           await setUp(tester);
 
           // and that the first item of the grid is selected,
-          await tester.longPress(firstItemFinder);
+          await tester.longPress(firstItemFinder, warnIfMissed: false);
           await tester.pump();
 
           // when the first item is long-pressed,
-          await tester.longPress(firstItemFinder);
+          await tester.longPress(firstItemFinder, warnIfMissed: false);
           await tester.pump();
 
           // then the item stills selected.
@@ -315,11 +315,11 @@ void main() {
           await setUp(tester);
 
           // and that the first item of the grid is selected,
-          await tester.longPress(firstItemFinder);
+          await tester.longPress(firstItemFinder, warnIfMissed: false);
           await tester.pump();
 
           // when the item is tapped,
-          await tester.tap(firstItemFinder);
+          await tester.tap(firstItemFinder, warnIfMissed: false);
           await tester.pump();
 
           // then the item stills selected.
@@ -1000,7 +1000,7 @@ void main() {
           await setUp(tester);
 
           // Given that the grid has an item selected,
-          await tester.longPress(firstItemFinder);
+          await tester.longPress(firstItemFinder, warnIfMissed: false);
           await tester.pump();
 
           // when trying to pop the route,
@@ -1023,7 +1023,7 @@ void main() {
           await setUp(tester, gridController: controller);
 
           // Given that the grid has an item selected,
-          await tester.longPress(firstItemFinder);
+          await tester.longPress(firstItemFinder, warnIfMissed: false);
           await tester.pump();
 
           // when clearing the selection through the controller,

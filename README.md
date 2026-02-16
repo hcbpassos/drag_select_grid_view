@@ -85,6 +85,14 @@ There are some other minor settings you can do to make `DragSelectGridView` fit 
 
 Hopefully, this is everything you need to know to use this library. 
   
+## Running the example
+
+```bash
+cd example
+flutter create .
+flutter run
+```
+
 ## Thanks ❤️  
   
 Once upon a time I asked at [Flutter Study Group](https://flutterstudygroup.com/) how to implement a specific feature that I intended to add to this library. [Simon Lightfoot](https://github.com/slightfoot) offered to help me and effortlessly implemented what eventually became part of this library ([check this gist](https://gist.github.com/slightfoot/a002dd1e031f5f012f810c6d5da14a11)). A big thanks to him.  

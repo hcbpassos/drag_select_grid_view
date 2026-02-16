@@ -23,10 +23,10 @@ import 'package:drag_select_grid_view/drag_select_grid_view.dart';
 
 class SelectionAppBar extends StatelessWidget implements PreferredSizeWidget {
   const SelectionAppBar({
-    Key? key,
+    super.key,
     this.title,
     this.selection = const Selection.empty(),
-  }) : super(key: key);
+  });
 
   final Widget? title;
   final Selection selection;

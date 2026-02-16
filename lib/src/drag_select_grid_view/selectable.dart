@@ -32,12 +32,12 @@ typedef ElementUpdateCallback = void Function(SelectableElement);
 class Selectable extends ProxyWidget {
   /// Creates a [Selectable].
   const Selectable({
-    Key? key,
+    super.key,
     required this.index,
     required this.onMountElement,
     required this.onUnmountElement,
-    required Widget child,
-  }) : super(key: key, child: child);
+    required super.child,
+  });
 
   /// Widget index inside the grid.
   final int index;
@@ -56,7 +56,7 @@ class Selectable extends ProxyWidget {
 class SelectableElement extends ProxyElement {
   /// Creates the element for a widget that helps to track the elements of the
   /// grid items.
-  SelectableElement(Selectable widget) : super(widget);
+  SelectableElement(super.widget);
 
   @override
   Selectable get widget => super.widget as Selectable;

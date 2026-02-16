@@ -11,21 +11,22 @@ void main() {
   );
   runApp(
     MaterialApp(
-      home: MyApp(),
+      home: const MyApp(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Colors.white,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         scaffoldBackgroundColor: Colors.white,
         appBarTheme: const AppBarTheme(elevation: 2),
-        colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.white),
       ),
     ),
   );
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {

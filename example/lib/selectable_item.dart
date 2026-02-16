@@ -22,18 +22,18 @@ import 'package:flutter/material.dart';
 
 class SelectableItem extends StatefulWidget {
   const SelectableItem({
-    Key? key,
+    super.key,
     required this.index,
     required this.color,
     required this.selected,
-  }) : super(key: key);
+  });
 
   final int index;
   final MaterialColor color;
   final bool selected;
 
   @override
-  _SelectableItemState createState() => _SelectableItemState();
+  State<SelectableItem> createState() => _SelectableItemState();
 }
 
 class _SelectableItemState extends State<SelectableItem>
@@ -82,16 +82,14 @@ class _SelectableItemState extends State<SelectableItem>
     return AnimatedBuilder(
       animation: _scaleAnimation,
       builder: (context, child) {
-        return Container(
-          child: Transform.scale(
-            scale: _scaleAnimation.value,
-            child: DecoratedBox(
-              child: child,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(2),
-                color: calculateColor(),
-              ),
+        return Transform.scale(
+          scale: _scaleAnimation.value,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(2),
+              color: calculateColor(),
             ),
+            child: child,
           ),
         );
       },
