@@ -72,7 +72,7 @@ class DragSelectGridView extends StatefulWidget {
   /// For information about the clause of the other parameters, refer to
   /// [GridView.builder].
   DragSelectGridView({
-    Key? key,
+    super.key,
     double? autoScrollHotspotHeight,
     ScrollController? scrollController,
     this.gridController,
@@ -97,8 +97,7 @@ class DragSelectGridView extends StatefulWidget {
     this.impliesAppBarDismissal = true,
   })  : autoScrollHotspotHeight =
             autoScrollHotspotHeight ?? defaultAutoScrollHotspotHeight,
-        scrollController = scrollController ?? ScrollController(),
-        super(key: key);
+        scrollController = scrollController ?? ScrollController();
 
   /// The height of the hotspot that enables auto-scroll.
   ///

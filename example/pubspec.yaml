@@ -9,12 +9,12 @@ dependencies:
   flutter:
     sdk: flutter
 
+  drag_select_grid_view:
+    path: ../
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  drag_select_grid_view:
-    path: ../
 
 flutter:
   uses-material-design: true

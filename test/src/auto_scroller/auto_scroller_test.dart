@@ -289,8 +289,7 @@ class MockAutoScroller extends AutoScroller {
   int performOverscrollOfScrollStopCount = 0;
   int performScrollCount = 0;
 
-  MockAutoScroller(AutoScroll autoScroll, ScrollController controller)
-      : super(autoScroll, controller);
+  MockAutoScroller(super.autoScroll, super.controller);
 
   @override
   Future<void> performOverscrollOfScrollStop() {
