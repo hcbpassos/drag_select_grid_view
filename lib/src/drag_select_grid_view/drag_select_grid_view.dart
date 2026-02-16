@@ -472,24 +472,29 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     return (element == null) ? -1 : element.widget.index;
   }
 
-  /// Finds the index of the last item when the drag position is in empty space.
+  /// Finds the nearest item index when the drag position is outside all items.
   ///
-  /// This handles the case where the grid's last row is not completely filled
-  /// and the user drags into the trailing empty space. The empty space is
-  /// resolved to the last item's index so that all remaining items get selected.
-  ///
-  /// Returns -1 if the offset is not in the trailing empty space.
+  /// Returns -1 if the offset is not in any empty space around the items.
   int _findIndexOfSelectableInEmptySpace(Offset offset) {
     final ancestor = context.findRenderObject();
     if (ancestor == null || _elements.isEmpty) return -1;
 
+    return _findLastIndexPastItems(ancestor, offset) ??
+        _findFirstIndexBeforeItems(ancestor, offset) ??
+        -1;
+  }
+
+  /// Returns the last item's index if [offset] is past or beside it,
+  /// or `null` otherwise.
+  ///
+  /// Handles trailing empty space in a partial last row and offsets
+  /// that are entirely past all items.
+  int? _findLastIndexPastItems(RenderObject ancestor, Offset offset) {
     final lastElement = _elements.reduce(
       (a, b) => a.widget.index > b.widget.index ? a : b,
     );
 
-    final lastBox = lastElement.renderObject as RenderBox;
-    final lastRect =
-        lastBox.localToGlobal(Offset.zero, ancestor: ancestor) & lastBox.size;
+    final lastRect = _elementRect(lastElement, ancestor);
 
     final isOnSameRow =
         offset.dy >= lastRect.top && offset.dy < lastRect.bottom;
@@ -503,7 +508,28 @@ class DragSelectGridViewState extends State<DragSelectGridView>
       return lastElement.widget.index;
     }
 
-    return -1;
+    return null;
+  }
+
+  /// Returns the first item's index if [offset] is before all items,
+  /// or `null` otherwise.
+  int? _findFirstIndexBeforeItems(RenderObject ancestor, Offset offset) {
+    final firstElement = _elements.reduce(
+      (a, b) => a.widget.index < b.widget.index ? a : b,
+    );
+
+    final firstRect = _elementRect(firstElement, ancestor);
+
+    final isBeforeAllItems = widget.reverse
+        ? offset.dy >= firstRect.bottom
+        : offset.dy < firstRect.top;
+
+    return isBeforeAllItems ? firstElement.widget.index : null;
+  }
+
+  Rect _elementRect(SelectableElement element, RenderObject ancestor) {
+    final box = element.renderObject as RenderBox;
+    return box.localToGlobal(Offset.zero, ancestor: ancestor) & box.size;
   }
 
   void _notifySelectionChange() {

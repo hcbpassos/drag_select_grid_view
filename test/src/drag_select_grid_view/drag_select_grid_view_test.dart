@@ -1306,6 +1306,48 @@ void main() {
       },
       skip: false,
     );
+
+    testWidgets(
+      "Given a grid with 10 items in 4 columns (partial last row), "
+      "and the last item was long-pressed, "
+      ""
+      "when dragging above all items, "
+      ""
+      "then all items get selected.",
+      (tester) async {
+        await setUpPartialRow(tester);
+
+        final lastItem = find.byKey(const ValueKey('grid-item-9'));
+        final firstItem = find.byKey(const ValueKey('grid-item-0'));
+
+        // Long-press the last item.
+        var gesture = await longPressDown(
+          tester: tester,
+          finder: lastItem,
+        );
+        await tester.pump();
+
+        // Drag above all items (from last item to above the first item).
+        final offset = tester.getCenter(firstItem) -
+            tester.getCenter(lastItem) -
+            partialRowCrossAxisDist;
+
+        gesture = await dragDown(
+          tester: tester,
+          previousGesture: gesture,
+          offset: offset,
+        );
+        await gesture.up();
+        await tester.pump();
+
+        expect(partialRowState.isSelecting, isTrue);
+        expect(
+          partialRowState.selectedIndexes,
+          {0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+        );
+      },
+      skip: false,
+    );
   });
 
   group("Horizontal auto-scrolling integration tests.", () {
