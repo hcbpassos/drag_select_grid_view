@@ -82,6 +82,64 @@ void main() {
   }
 
   testWidgets(
+    "When DragSelectGridView is created with zero items, "
+    "then it renders without errors.",
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: DragSelectGridView(
+            itemCount: 0,
+            itemBuilder: (_, index, __) => Container(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(DragSelectGridView), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    "When DragSelectGridView is created with a single item, "
+    "then tapping it selects it.",
+    (tester) async {
+      final controller = DragSelectGridViewController();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: DragSelectGridView(
+            gridController: controller,
+            triggerSelectionOnTap: true,
+            itemCount: 1,
+            itemBuilder: (_, index, __) => Container(
+              key: ValueKey('item-$index'),
+            ),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+            ),
+          ),
+        ),
+      );
+
+      final state = tester.state(find.byType(DragSelectGridView))
+          as DragSelectGridViewState;
+
+      expect(state.isSelecting, isFalse);
+
+      await tester.tap(
+        find.byKey(const ValueKey('item-0')),
+        warnIfMissed: false,
+      );
+      await tester.pump();
+
+      expect(state.isSelecting, isTrue);
+      expect(state.selectedIndexes, {0});
+    },
+  );
+
+  testWidgets(
     "When DragSelectGridView is initiated, "
     "then it starts listening to the controller.",
     (tester) async {

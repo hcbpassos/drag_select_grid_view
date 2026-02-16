@@ -18,8 +18,10 @@ Check this example:
 
 ```dart
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -52,7 +54,7 @@ class _MyAppState extends State<MyApp> {
             selected: selected,
           );
         },
-        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent: 80,
         ),
       ),
