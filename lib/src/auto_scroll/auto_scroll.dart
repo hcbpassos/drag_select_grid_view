@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import 'auto_scroller.dart';
 
 /// Possible directions of auto-scroll.
@@ -20,10 +18,9 @@ enum AutoScrollDirection {
 
 /// Helper class that holds information created and used by [AutoScroller].
 ///
-/// Since this class has the mutable field [stopEvent], which also overrides
-/// operator [==] and [hashCode], you should not use it inside collections. See:
+/// This class is intentionally mutable due to the [stopEvent] consume pattern.
+/// It should not be used inside collections. See:
 /// https://dart.dev/guides/language/effective-dart/design#avoid-defining-custom-equality-for-mutable-classes
-@immutable
 class AutoScroll {
   /// Creates a new [AutoScroll].
   AutoScroll({

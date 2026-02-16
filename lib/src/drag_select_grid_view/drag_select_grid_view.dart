@@ -99,7 +99,8 @@ class DragSelectGridView extends StatefulWidget {
     this.impliesAppBarDismissal = true,
   })  : autoScrollHotspotHeight =
             autoScrollHotspotHeight ?? defaultAutoScrollHotspotHeight,
-        scrollController = scrollController ?? ScrollController();
+        scrollController = scrollController ?? ScrollController(),
+        _ownsScrollController = scrollController == null;
 
   /// The height of the hotspot that enables auto-scroll.
   ///
@@ -113,6 +114,10 @@ class DragSelectGridView extends StatefulWidget {
   ///
   /// Refer to [ScrollView.controller].
   final ScrollController scrollController;
+
+  /// Whether the [scrollController] was created internally and should be
+  /// disposed when the widget is removed from the tree.
+  final bool _ownsScrollController;
 
   /// Controller of the grid.
   ///
@@ -276,12 +281,17 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   @override
   void dispose() {
     _gridController?.removeListener(_onSelectionChanged);
+    if (widget._ownsScrollController) {
+      scrollController.dispose();
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      triggerAutoScrollIfNeeded();
+    });
     return GestureDetector(
       onTapUp: _handleTapUp,
       onLongPressStart: _handleLongPressStart,
@@ -424,12 +434,14 @@ class DragSelectGridViewState extends State<DragSelectGridView>
 
   int _findIndexOfSelectable(Offset offset) {
     final ancestor = context.findRenderObject();
-    var elementFinder = Set.of(_elements).firstWhereOrNull;
+    if (ancestor == null) return -1;
+    
+    var elementFinder = _elements.firstWhereOrNull;
 
     // Conceptually, `Set.singleWhere()` is the safer option, however we're
     // avoiding to iterate over the whole `Set` to improve the performance.
     assert(() {
-      elementFinder = Set.of(_elements).singleWhereOrNull;
+      elementFinder = _elements.singleWhereOrNull;
       return true;
     }());
 

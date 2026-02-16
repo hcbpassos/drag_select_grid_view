@@ -82,6 +82,64 @@ void main() {
   }
 
   testWidgets(
+    "When DragSelectGridView is created with zero items, "
+    "then it renders without errors.",
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: DragSelectGridView(
+            itemCount: 0,
+            itemBuilder: (_, index, __) => Container(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(DragSelectGridView), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    "When DragSelectGridView is created with a single item, "
+    "then tapping it selects it.",
+    (tester) async {
+      final controller = DragSelectGridViewController();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: DragSelectGridView(
+            gridController: controller,
+            triggerSelectionOnTap: true,
+            itemCount: 1,
+            itemBuilder: (_, index, __) => Container(
+              key: ValueKey('item-$index'),
+            ),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+            ),
+          ),
+        ),
+      );
+
+      final state = tester.state(find.byType(DragSelectGridView))
+          as DragSelectGridViewState;
+
+      expect(state.isSelecting, isFalse);
+
+      await tester.tap(
+        find.byKey(const ValueKey('item-0')),
+        warnIfMissed: false,
+      );
+      await tester.pump();
+
+      expect(state.isSelecting, isTrue);
+      expect(state.selectedIndexes, {0});
+    },
+  );
+
+  testWidgets(
     "When DragSelectGridView is initiated, "
     "then it starts listening to the controller.",
     (tester) async {
@@ -99,6 +157,65 @@ void main() {
       expect(controller.hasListeners, isTrue);
     },
     skip: false,
+  );
+
+  testWidgets(
+    "When DragSelectGridView is created without a ScrollController, "
+    "then the internally created ScrollController is disposed "
+    "when the widget is removed from the tree.",
+    (tester) async {
+      await setUp(tester);
+
+      // Grab the internally created ScrollController.
+      final internalScrollController = dragSelectState.scrollController;
+
+      // Initially, the controller has clients (is attached).
+      expect(internalScrollController.hasClients, isTrue);
+
+      // When DragSelectGridView is removed from the tree,
+      await tester.pumpWidget(Container());
+
+      // then the internally created ScrollController should be disposed.
+      // Adding a listener on a disposed ChangeNotifier throws.
+      expect(
+        () => internalScrollController.addListener(() {}),
+        throwsFlutterError,
+      );
+    },
+  );
+
+  testWidgets(
+    "When DragSelectGridView is created with an external ScrollController, "
+    "then the external ScrollController is NOT disposed "
+    "when the widget is removed from the tree.",
+    (tester) async {
+      final externalController = ScrollController();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: DragSelectGridView(
+            scrollController: externalController,
+            itemCount: 12,
+            itemBuilder: (_, index, __) => Container(
+              key: ValueKey('grid-item-$index'),
+            ),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+            ),
+          ),
+        ),
+      );
+
+      // When DragSelectGridView is removed from the tree,
+      await tester.pumpWidget(Container());
+
+      // then the external ScrollController should NOT be disposed.
+      // We can still safely access it without throwing.
+      expect(() => externalController.hasClients, returnsNormally);
+
+      // Clean up.
+      externalController.dispose();
+    },
   );
 
   testWidgets(
