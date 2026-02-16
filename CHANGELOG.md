@@ -1,3 +1,12 @@
+## [0.7.2] - 16/02/2026
+
+* Fix memory leak when no `ScrollController` is provided.
+* Fix auto-scroll hotspot bounds going stale on widget resize.
+* Add null safety check for `findRenderObject()`.
+* Improve auto-scroll architecture (post-frame callback instead of build side effect).
+* Remove incorrect `@immutable` annotation from `AutoScroll`.
+* Improve element lookup performance during gestures.
+
 ## [0.7.1] - 16/02/2026
 
 * Fix README images not displaying on pub.dev.
