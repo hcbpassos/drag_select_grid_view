@@ -1,3 +1,8 @@
+## [0.7.6] - 16/02/2026
+
+* Fix back button popping the route instead of cancelling selection when the grid is created with a non-empty `GridController` ([#34](https://github.com/hcbpassos/drag_select_grid_view/pull/34)).
+* Fix grid not updating when selection is changed programmatically via `GridController` ([#34](https://github.com/hcbpassos/drag_select_grid_view/pull/34)).
+
 ## [0.7.5] - 16/02/2026
 
 * Fix auto-scroll stopping when dragging beyond the grid's area ([#5](https://github.com/hcbpassos/drag_select_grid_view/issues/5)).
@@ -5,11 +10,11 @@
 
 ## [0.7.4] - 16/02/2026
 
-* Support `ScrollView.scrollDirection` with axis-aware auto-scroll hotspots ([#4](https://github.com/hcbpassos/drag_select_grid_view/issues/4))
+* Support `ScrollView.scrollDirection` with axis-aware auto-scroll hotspots ([#4](https://github.com/hcbpassos/drag_select_grid_view/issues/4)).
 
 ## [0.7.3] - 16/02/2026
 
-* Select last item when dragging to trailing empty space in partial last row ([#1](https://github.com/hcbpassos/drag_select_grid_view/issues/1))
+* Select last item when dragging to trailing empty space in partial last row ([#1](https://github.com/hcbpassos/drag_select_grid_view/issues/1)).
 
 ## [0.7.2] - 16/02/2026
 
