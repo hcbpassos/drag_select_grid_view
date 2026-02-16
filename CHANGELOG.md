@@ -1,3 +1,7 @@
+## [0.7.3] - 16/02/2026
+
+* Select last item when dragging to trailing empty space in partial last row.
+
 ## [0.7.2] - 16/02/2026
 
 * Fix memory leak when no `ScrollController` is provided.
