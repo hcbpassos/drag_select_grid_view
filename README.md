@@ -81,7 +81,7 @@ It allows this sort of interaction:
 
 You can check the code [here](https://github.com/hcbpassos/drag_select_grid_view/blob/master/example/lib/example_with_fab.dart).
 
-There are some other minor settings you can do to make `DragSelectGridView` fit your needs, like `DragSelectGridView.autoScrollHotspotHeight` and `DragSelectGridView.unselectOnWillPop`. Those features are well documented, so I'll let you take your discovery time.
+There are some other minor settings you can do to make `DragSelectGridView` fit your needs, like `DragSelectGridView.autoScrollHotspotHeight`. Those features are well documented, so I'll let you take your discovery time.
 
 Hopefully, this is everything you need to know to use this library. 
   
