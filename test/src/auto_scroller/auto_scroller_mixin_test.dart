@@ -52,8 +52,7 @@ void main() {
                   scrollDirection: Axis.horizontal,
                   itemCount: 0,
                   itemBuilder: (_, __, ___) => const SizedBox(),
-                  gridDelegate:
-                      const SliverGridDelegateWithMaxCrossAxisExtent(
+                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 1,
                   ),
                 ),

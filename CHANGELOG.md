@@ -1,3 +1,7 @@
+## [0.7.4] - 16/02/2026
+
+* Support `ScrollView.scrollDirection` with axis-aware auto-scroll hotspots.
+
 ## [0.7.3] - 16/02/2026
 
 * Select last item when dragging to trailing empty space in partial last row.
