@@ -85,6 +85,7 @@ class DragSelectGridView extends StatefulWidget {
     required this.gridDelegate,
     required this.itemBuilder,
     this.itemCount,
+    this.findChildIndexCallback,
     this.addAutomaticKeepAlives = true,
     this.addRepaintBoundaries = true,
     this.addSemanticIndexes = true,
@@ -94,6 +95,7 @@ class DragSelectGridView extends StatefulWidget {
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.restorationId,
     this.clipBehavior = Clip.hardEdge,
+    this.hitTestBehavior = HitTestBehavior.opaque,
     this.impliesAppBarDismissal = true,
   })  : autoScrollHotspotHeight =
             autoScrollHotspotHeight ?? defaultAutoScrollHotspotHeight,
@@ -107,6 +109,8 @@ class DragSelectGridView extends StatefulWidget {
   /// Defaults to [defaultAutoScrollHotspotHeight].
   final double autoScrollHotspotHeight;
 
+  /// {@macro flutter.widgets.scroll_view.controller}
+  ///
   /// Refer to [ScrollView.controller].
   final ScrollController scrollController;
 
@@ -127,15 +131,23 @@ class DragSelectGridView extends StatefulWidget {
   /// Defaults to false.
   final bool triggerSelectionOnTap;
 
+  /// {@macro flutter.widgets.scroll_view.reverse}
+  ///
   /// Refer to [ScrollView.reverse].
   final bool reverse;
 
+  /// {@macro flutter.widgets.scroll_view.primary}
+  ///
   /// Refer to [ScrollView.primary].
   final bool? primary;
 
+  /// {@macro flutter.widgets.scroll_view.physics}
+  ///
   /// Refer to [ScrollView.physics].
   final ScrollPhysics? physics;
 
+  /// {@macro flutter.widgets.scroll_view.shrinkWrap}
+  ///
   /// Refer to [ScrollView.shrinkWrap].
   final bool shrinkWrap;
 
@@ -156,32 +168,58 @@ class DragSelectGridView extends StatefulWidget {
   /// Refer to [SliverChildBuilderDelegate.childCount].
   final int? itemCount;
 
+  /// {@macro flutter.widgets.SliverChildBuilderDelegate.findChildIndexCallback}
+  ///
+  /// Refer to [SliverChildBuilderDelegate.findChildIndexCallback].
+  final ChildIndexGetter? findChildIndexCallback;
+
+  /// {@macro flutter.widgets.SliverChildBuilderDelegate.addAutomaticKeepAlives}
+  ///
   /// Refer to [SliverChildBuilderDelegate.addAutomaticKeepAlives].
   final bool addAutomaticKeepAlives;
 
+  /// {@macro flutter.widgets.SliverChildBuilderDelegate.addRepaintBoundaries}
+  ///
   /// Refer to [SliverChildBuilderDelegate.addRepaintBoundaries].
   final bool addRepaintBoundaries;
 
+  /// {@macro flutter.widgets.SliverChildBuilderDelegate.addSemanticIndexes}
+  ///
   /// Refer to [SliverChildBuilderDelegate.addSemanticIndexes].
   final bool addSemanticIndexes;
 
+  /// {@macro flutter.rendering.RenderViewportBase.cacheExtent}
+  ///
   /// Refer to [ScrollView.cacheExtent].
   final double? cacheExtent;
 
   /// Refer to [ScrollView.semanticChildCount].
   final int? semanticChildCount;
 
+  /// {@macro flutter.widgets.scrollable.dragStartBehavior}
+  ///
   /// Refer to [ScrollView.dragStartBehavior].
   final DragStartBehavior dragStartBehavior;
 
+  /// {@macro flutter.widgets.scroll_view.keyboardDismissBehavior}
+  ///
   /// Refer to [ScrollView.keyboardDismissBehavior].
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
 
+  /// {@macro flutter.widgets.scrollable.restorationId}
+  ///
   /// Refer to [ScrollView.restorationId].
   final String? restorationId;
 
+  /// {@macro flutter.material.Material.clipBehavior}
+  ///
   /// Refer to [ScrollView.clipBehavior].
   final Clip clipBehavior;
+
+  /// {@macro flutter.widgets.scrollable.hitTestBehavior}
+  ///
+  /// Refer to [ScrollView.hitTestBehavior].
+  final HitTestBehavior hitTestBehavior;
 
   /// Refer to [LocalHistoryEntry.impliesAppBarDismissal].
   final bool impliesAppBarDismissal;
@@ -261,6 +299,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
           padding: widget.padding,
           gridDelegate: widget.gridDelegate,
           itemCount: widget.itemCount,
+          findChildIndexCallback: widget.findChildIndexCallback,
           addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
           addRepaintBoundaries: widget.addRepaintBoundaries,
           addSemanticIndexes: widget.addSemanticIndexes,
@@ -270,6 +309,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
           keyboardDismissBehavior: widget.keyboardDismissBehavior,
           restorationId: widget.restorationId,
           clipBehavior: widget.clipBehavior,
+          hitTestBehavior: widget.hitTestBehavior,
           itemBuilder: (context, index) {
             return IgnorePointer(
               ignoring: isSelecting || widget.triggerSelectionOnTap,
