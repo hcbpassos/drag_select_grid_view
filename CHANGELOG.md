@@ -1,3 +1,10 @@
+## [0.7.0] - 16/02/2026
+
+* **Breaking change**. Drop support for Dart < 3.0.0.
+* Bump dependencies (`collection` ^1.18.0, `flutter_lints` ^6.0.0).
+* Adopt Dart 3 language features (super parameters, remove unnecessary library directive).
+* Add pub.dev topics for discoverability.
+
 ## [0.6.2] - 29/08/2023
 
 * Bump Dart SDK constraints.
