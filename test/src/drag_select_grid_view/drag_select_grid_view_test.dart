@@ -10,8 +10,8 @@ void main() {
   final gridFinder = find.byType(DragSelectGridView);
   final emptySpaceFinder = find.byKey(const ValueKey('empty-space'));
 
-  final firstItemFinder = find.byKey(const ValueKey('grid-item-0'));
-  final lastItemFinder = find.byKey(const ValueKey('grid-item-11'));
+  final firstItemFinder = find.byKey(_itemKey(0));
+  final lastItemFinder = find.byKey(_itemKey(11));
 
   late DragSelectGridViewState dragSelectState;
 
@@ -40,9 +40,8 @@ void main() {
               scrollDirection: scrollDirection ?? Axis.vertical,
               reverse: reverse ?? false,
               itemCount: 12,
-              itemBuilder: (_, index, __) => Container(
-                key: ValueKey('grid-item-$index'),
-              ),
+              itemBuilder: (_, index, selected) =>
+                  TestItem(index: index, selected: selected),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
               ),
@@ -76,11 +75,11 @@ void main() {
     await tester.pumpWidget(widget);
     dragSelectState = tester.state(gridFinder);
 
-    final secondItemFinder = find.byKey(const ValueKey('grid-item-1'));
+    final secondItemFinder = find.byKey(_itemKey(1));
     mainAxisItemsDistance =
         tester.getCenter(secondItemFinder) - tester.getCenter(firstItemFinder);
 
-    final fifthItemFinder = find.byKey(const ValueKey('grid-item-4'));
+    final fifthItemFinder = find.byKey(_itemKey(4));
     crossAxisItemsDistance =
         tester.getCenter(fifthItemFinder) - tester.getCenter(firstItemFinder);
   }
@@ -1096,19 +1095,53 @@ void main() {
 
       testWidgets(
         "When creating a grid with pre-selected items, "
-        "then the pre-selected items get selected in the grid-state.",
+        "then the pre-selected items get selected in the grid-state, "
+        "and LocalHistory entry is created.",
         (tester) async {
           // When creating a grid with pre-selected items,
           final gridController =
               DragSelectGridViewController(Selection(const {0, 1}));
           await setUp(tester, gridController: gridController);
 
-          // then the pre-selected items get selected in the grid-state.
+          // then the pre-selected items get selected in the grid-state,
           expect(dragSelectState.isDragging, isFalse);
           expect(dragSelectState.isSelecting, isTrue);
           expect(dragSelectState.selectedIndexes, {0, 1});
+
+          // and LocalHistory entry is created.
+          final route = ModalRoute.of(tester.element(gridFinder));
+          expect(route!.canPop, isTrue);
         },
         skip: false,
+      );
+
+      testWidgets(
+        "Given a grid with a gridController, "
+        "and selection is already active"
+        "when the user updates the selection controller, "
+        "then the grid-state is updated accordingly.",
+        (tester) async {
+          // Given a grid with a gridController
+          final gridController = DragSelectGridViewController(
+            Selection(const {0}),
+          );
+          await setUp(tester, gridController: gridController);
+
+          // and selection is already active
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(findItem(tester, 0).selected, isTrue);
+
+          // when the user updates the selection controller,
+          gridController.value = Selection(const {1, 3});
+          await tester.pumpAndSettle();
+
+          // then the grid-state is updated accordingly.
+          expect(dragSelectState.isSelecting, isTrue);
+          expect(dragSelectState.selectedIndexes, {1, 3});
+          expect(findItem(tester, 0).selected, isFalse);
+          expect(findItem(tester, 1).selected, isTrue);
+          expect(findItem(tester, 3).selected, isTrue);
+        },
       );
     });
 
@@ -1714,4 +1747,27 @@ void main() {
       skip: false,
     );
   });
+}
+
+class TestItem extends StatelessWidget {
+  final int index;
+  final bool selected;
+
+  TestItem({
+    required this.index,
+    required this.selected,
+  }) : super(key: _itemKey(index));
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+TestItem findItem(WidgetTester tester, int i) {
+  return tester.widget(find.byKey(_itemKey(i)));
+}
+
+Key _itemKey(int index) {
+  return ValueKey('grid-item-$index');
 }
