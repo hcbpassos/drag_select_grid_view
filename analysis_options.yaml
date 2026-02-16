@@ -1,6 +1,1 @@
 include: package:flutter_lints/flutter.yaml
-
-linter:
-  rules:
-    - prefer_typing_uninitialized_variables
-    - use_function_type_syntax_for_parameters
