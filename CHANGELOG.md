@@ -1,3 +1,7 @@
+## [0.7.1] - 16/02/2026
+
+* Fix README images not displaying on pub.dev.
+
 ## [0.7.0] - 16/02/2026
 
 * **Breaking change**. Drop support for Dart < 3.0.0.

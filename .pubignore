@@ -1,6 +1,7 @@
 MODERNIZATION_PLAN.md
 coverage/
 build/
+media/
 .metadata
 
 # Example build artifacts and platform dirs

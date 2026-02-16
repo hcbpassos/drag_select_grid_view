@@ -6,7 +6,7 @@
   
 A grid that supports both dragging and tapping to select its items.  
 
-![Selecting](media/selecting.gif)
+![Selecting](https://raw.githubusercontent.com/hcbpassos/drag_select_grid_view/master/media/selecting.gif)
   
 ## Basic usage  
   
@@ -77,7 +77,7 @@ You can use the setter `DragSelectGridViewController.value` to directly change t
 
 It allows this sort of interaction:
 
-![Directly changing selection](media/directly-changing-selection.gif)
+![Directly changing selection](https://raw.githubusercontent.com/hcbpassos/drag_select_grid_view/master/media/directly-changing-selection.gif)
 
 You can check the code [here](https://github.com/hcbpassos/drag_select_grid_view/blob/master/example/lib/example_with_fab.dart).
 
