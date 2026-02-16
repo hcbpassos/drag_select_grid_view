@@ -1,3 +1,8 @@
+## [0.7.5] - 16/02/2026
+
+* Fix auto-scroll stopping when dragging beyond the grid's area ([#5](https://github.com/hcbpassos/drag_select_grid_view/issues/5)).
+* Fix drag selection not reaching first items when pointer is above the grid.
+
 ## [0.7.4] - 16/02/2026
 
 * Support `ScrollView.scrollDirection` with axis-aware auto-scroll hotspots.
