@@ -1,7 +1,7 @@
 ## [0.7.6] - 16/02/2026
 
-* Fix back button popping the route instead of cancelling selection when the grid is created with a non-empty `GridController` ([#34](https://github.com/hcbpassos/drag_select_grid_view/pull/34)).
-* Fix grid not updating when selection is changed programmatically via `GridController` ([#34](https://github.com/hcbpassos/drag_select_grid_view/pull/34)).
+* Fix back button popping the route instead of cancelling selection when the grid is created with a non-empty controller ([#34](https://github.com/hcbpassos/drag_select_grid_view/pull/34)).
+* Fix grid not updating when selection is changed programmatically via controller ([#34](https://github.com/hcbpassos/drag_select_grid_view/pull/34)).
 
 ## [0.7.5] - 16/02/2026
 
