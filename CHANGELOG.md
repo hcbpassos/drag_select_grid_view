@@ -5,11 +5,11 @@
 
 ## [0.7.4] - 16/02/2026
 
-* Support `ScrollView.scrollDirection` with axis-aware auto-scroll hotspots.
+* Support `ScrollView.scrollDirection` with axis-aware auto-scroll hotspots ([#4](https://github.com/hcbpassos/drag_select_grid_view/issues/4))
 
 ## [0.7.3] - 16/02/2026
 
-* Select last item when dragging to trailing empty space in partial last row.
+* Select last item when dragging to trailing empty space in partial last row ([#1](https://github.com/hcbpassos/drag_select_grid_view/issues/1))
 
 ## [0.7.2] - 16/02/2026
 

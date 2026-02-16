@@ -76,7 +76,6 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   /// For vertical scrolling, this is the top hotspot.
   /// For horizontal scrolling, this is the left hotspot.
   bool isInsideStartAutoScrollHotspot(Offset localPosition) {
-    if (!_isInsideWidget(localPosition)) return false;
     return switch (scrollDirection) {
       Axis.vertical => localPosition.dy <= autoScrollHotspotHeight,
       Axis.horizontal => localPosition.dx <= autoScrollHotspotHeight,
@@ -90,7 +89,6 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   bool isInsideEndAutoScrollHotspot(Offset localPosition) {
     final widgetSize = context.size;
     if (widgetSize == null) return false;
-    if (!_isInsideWidget(localPosition)) return false;
     return switch (scrollDirection) {
       Axis.vertical =>
         localPosition.dy > (widgetSize.height - autoScrollHotspotHeight),
@@ -132,15 +130,6 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
         AutoScroll.stopped(direction: autoScroll.direction),
       );
     }
-  }
-
-  bool _isInsideWidget(Offset localPosition) {
-    final widgetSize = context.size;
-    if (widgetSize == null) return false;
-    return (localPosition.dy >= 0) &&
-        (widgetSize.height - localPosition.dy >= 0) &&
-        (localPosition.dx >= 0) &&
-        (widgetSize.width - localPosition.dx >= 0);
   }
 
   void _updateAutoScrollIfDifferent(AutoScroll newAutoScroll) {
