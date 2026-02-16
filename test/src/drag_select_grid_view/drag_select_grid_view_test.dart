@@ -22,6 +22,7 @@ void main() {
   /// [screenHeight] and [screenWidth].
   Widget createWidget({
     DragSelectGridViewController? gridController,
+    Axis? scrollDirection,
     bool? reverse,
     bool? triggerSelectionOnTap,
   }) {
@@ -36,6 +37,7 @@ void main() {
           Expanded(
             child: DragSelectGridView(
               gridController: gridController,
+              scrollDirection: scrollDirection ?? Axis.vertical,
               reverse: reverse ?? false,
               itemCount: 12,
               itemBuilder: (_, index, __) => Container(
@@ -60,11 +62,13 @@ void main() {
   Future<void> setUp(
     WidgetTester tester, {
     DragSelectGridViewController? gridController,
+    Axis? scrollDirection,
     bool? reverse,
     bool? triggerSelectionOnTap,
   }) async {
     final widget = createWidget(
       gridController: gridController,
+      scrollDirection: scrollDirection,
       reverse: reverse,
       triggerSelectionOnTap: triggerSelectionOnTap,
     );
@@ -1298,6 +1302,168 @@ void main() {
         expect(
           partialRowState.selectedIndexes,
           {0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+        );
+      },
+      skip: false,
+    );
+  });
+
+  group("Horizontal auto-scrolling integration tests.", () {
+    testWidgets(
+      "Given a horizontal scroll direction, "
+      "when there's a long-press and drag to the left-hotspot, "
+      "then backward auto-scroll is triggered.",
+      (tester) async {
+        await setUp(tester, scrollDirection: Axis.horizontal);
+
+        expect(dragSelectState.autoScroll, AutoScroll.stopped());
+
+        await longPressDownAndDrag(
+          tester: tester,
+          finder: gridFinder,
+          offset: Offset(-(dragSelectState.context.size!.width / 2) + 1, 0),
+        );
+        await tester.pump();
+
+        expect(
+          dragSelectState.autoScroll.direction,
+          AutoScrollDirection.backward,
+        );
+      },
+      skip: false,
+    );
+
+    testWidgets(
+      "Given a horizontal scroll direction and reversed, "
+      "when there's a long-press and drag to the left-hotspot, "
+      "then forward auto-scroll is triggered.",
+      (tester) async {
+        await setUp(
+          tester,
+          scrollDirection: Axis.horizontal,
+          reverse: true,
+        );
+
+        await longPressDownAndDrag(
+          tester: tester,
+          finder: gridFinder,
+          offset: Offset(-(dragSelectState.context.size!.width / 2) + 1, 0),
+        );
+        await tester.pump();
+
+        expect(
+          dragSelectState.autoScroll.direction,
+          AutoScrollDirection.forward,
+        );
+      },
+      skip: false,
+    );
+
+    testWidgets(
+      "Given a horizontal scroll direction, "
+      "when there's a long-press and drag to the right-hotspot, "
+      "then forward auto-scroll is triggered.",
+      (tester) async {
+        await setUp(tester, scrollDirection: Axis.horizontal);
+
+        await longPressDownAndDrag(
+          tester: tester,
+          finder: gridFinder,
+          offset: Offset(dragSelectState.context.size!.width / 2, 0),
+        );
+        await tester.pump();
+
+        expect(
+          dragSelectState.autoScroll.direction,
+          AutoScrollDirection.forward,
+        );
+      },
+      skip: false,
+    );
+
+    testWidgets(
+      "Given a horizontal scroll direction and reversed, "
+      "when there's a long-press and drag to the right-hotspot, "
+      "then backward auto-scroll is triggered.",
+      (tester) async {
+        await setUp(
+          tester,
+          scrollDirection: Axis.horizontal,
+          reverse: true,
+        );
+
+        await longPressDownAndDrag(
+          tester: tester,
+          finder: gridFinder,
+          offset: Offset(dragSelectState.context.size!.width / 2, 0),
+        );
+        await tester.pump();
+
+        expect(
+          dragSelectState.autoScroll.direction,
+          AutoScrollDirection.backward,
+        );
+      },
+      skip: false,
+    );
+
+    testWidgets(
+      "Given a horizontal scroll direction, "
+      "given that there were a long-press and drag to the left-hotspot, "
+      "when the long-press is released, "
+      "then the auto-scroll is disabled with `AutoScrollDirection.backward` "
+      "and stop-event unconsumed.",
+      (tester) async {
+        await setUp(tester, scrollDirection: Axis.horizontal);
+
+        final gesture = await longPressDownAndDrag(
+          tester: tester,
+          finder: gridFinder,
+          offset: Offset(-(dragSelectState.context.size!.width / 2) + 1, 0),
+        );
+        await tester.pump();
+        expect(
+          dragSelectState.autoScroll.direction,
+          AutoScrollDirection.backward,
+        );
+
+        await gesture.up();
+        await tester.pump();
+
+        expect(
+          dragSelectState.autoScroll,
+          AutoScroll.stopped(direction: AutoScrollDirection.backward),
+        );
+      },
+      skip: false,
+    );
+
+    testWidgets(
+      "Given a horizontal scroll direction, "
+      "given that there were a long-press and drag to the right-hotspot, "
+      "when dragged out of the right-hotspot, "
+      "then the auto-scroll is disabled with `AutoScrollDirection.forward` "
+      "and stop-event unconsumed.",
+      (tester) async {
+        await setUp(tester, scrollDirection: Axis.horizontal);
+
+        final gesture = await longPressDownAndDrag(
+          tester: tester,
+          finder: gridFinder,
+          offset: Offset(dragSelectState.context.size!.width / 2, 0),
+        );
+        await tester.pump();
+        expect(
+          dragSelectState.autoScroll.direction,
+          AutoScrollDirection.forward,
+        );
+
+        await gesture.moveTo(tester.getCenter(gridFinder));
+        await tester.pump();
+
+        expect(
+          dragSelectState.autoScroll,
+          AutoScroll.stopped(direction: AutoScrollDirection.forward),
         );
       },
       skip: false,

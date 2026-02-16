@@ -47,8 +47,13 @@ typedef SelectableWidgetBuilder = Widget Function(
 /// creates two imaginary zones that, if reached by the pointer while dragging,
 /// triggers the auto-scroll.
 ///
-/// The first zone is at the top, and triggers backward auto-scrolling.
-/// The second is at the bottom, and triggers forward auto-scrolling.
+/// For vertical scrolling, the first zone is at the top, and triggers backward
+/// auto-scrolling. The second is at the bottom, and triggers forward
+/// auto-scrolling.
+///
+/// For horizontal scrolling, the first zone is at the left, and triggers
+/// backward auto-scrolling. The second is at the right, and triggers forward
+/// auto-scrolling.
 class DragSelectGridView extends StatefulWidget {
   /// Default height of the hotspot that enables auto-scroll.
   static const defaultAutoScrollHotspotHeight = 64.0;
@@ -77,6 +82,7 @@ class DragSelectGridView extends StatefulWidget {
     ScrollController? scrollController,
     this.gridController,
     this.triggerSelectionOnTap = false,
+    this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.primary,
     this.physics,
@@ -102,10 +108,11 @@ class DragSelectGridView extends StatefulWidget {
         scrollController = scrollController ?? ScrollController(),
         _ownsScrollController = scrollController == null;
 
-  /// The height of the hotspot that enables auto-scroll.
+  /// The extent of the hotspot that enables auto-scroll, measured along the
+  /// scroll axis.
   ///
-  /// This value is used for both top and bottom hotspots. The width is going to
-  /// match the width of the widget.
+  /// For vertical scrolling, this is the height of the top and bottom hotspots.
+  /// For horizontal scrolling, this is the width of the left and right hotspots.
   ///
   /// Defaults to [defaultAutoScrollHotspotHeight].
   final double autoScrollHotspotHeight;
@@ -135,6 +142,11 @@ class DragSelectGridView extends StatefulWidget {
   ///
   /// Defaults to false.
   final bool triggerSelectionOnTap;
+
+  /// {@macro flutter.widgets.scroll_view.scrollDirection}
+  ///
+  /// Refer to [ScrollView.scrollDirection].
+  final Axis scrollDirection;
 
   /// {@macro flutter.widgets.scroll_view.reverse}
   ///
@@ -260,6 +272,9 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   double get autoScrollHotspotHeight => widget.autoScrollHotspotHeight;
 
   @override
+  Axis get scrollDirection => widget.scrollDirection;
+
+  @override
   ScrollController get scrollController => widget.scrollController;
 
   @override
@@ -302,6 +317,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
         ignoring: isDragging,
         child: GridView.builder(
           controller: widget.scrollController,
+          scrollDirection: widget.scrollDirection,
           reverse: widget.reverse,
           primary: widget.primary,
           physics: widget.physics,
@@ -388,13 +404,13 @@ class DragSelectGridViewState extends State<DragSelectGridView>
       _notifySelectionChange();
     }
 
-    if (isInsideUpperAutoScrollHotspot(details.localPosition)) {
+    if (isInsideStartAutoScrollHotspot(details.localPosition)) {
       if (widget.reverse) {
         startAutoScrollingForward();
       } else {
         startAutoScrollingBackward();
       }
-    } else if (isInsideLowerAutoScrollHotspot(details.localPosition)) {
+    } else if (isInsideEndAutoScrollHotspot(details.localPosition)) {
       if (widget.reverse) {
         startAutoScrollingBackward();
       } else {

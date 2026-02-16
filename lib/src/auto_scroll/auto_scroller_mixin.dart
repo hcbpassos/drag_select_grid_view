@@ -19,6 +19,12 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   /// Used to check whether an offset is in hotspot's bounds.
   double get autoScrollHotspotHeight;
 
+  /// The scroll direction of the grid's scroll-view.
+  ///
+  /// Used to determine the axis along which the auto-scroll hotspots are
+  /// placed.
+  Axis get scrollDirection;
+
   /// The controller of the grid's scroll-view.
   ///
   /// Used to perform the auto-scroll and notify about scrolling.
@@ -65,17 +71,32 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
     if (scroller.mustScroll) scroller.scroll();
   }
 
-  /// Returns whether the [localPosition] is in upper-hotspot's bounds.
-  bool isInsideUpperAutoScrollHotspot(Offset localPosition) =>
-      _isInsideWidget(localPosition) &&
-      localPosition.dy <= autoScrollHotspotHeight;
+  /// Returns whether the [localPosition] is in start-hotspot's bounds.
+  ///
+  /// For vertical scrolling, this is the top hotspot.
+  /// For horizontal scrolling, this is the left hotspot.
+  bool isInsideStartAutoScrollHotspot(Offset localPosition) {
+    if (!_isInsideWidget(localPosition)) return false;
+    return switch (scrollDirection) {
+      Axis.vertical => localPosition.dy <= autoScrollHotspotHeight,
+      Axis.horizontal => localPosition.dx <= autoScrollHotspotHeight,
+    };
+  }
 
-  /// Returns whether the [localPosition] is in lower-hotspot's bounds.
-  bool isInsideLowerAutoScrollHotspot(Offset localPosition) {
-    final widgetHeight = context.size?.height;
-    if (widgetHeight == null) return false;
-    return _isInsideWidget(localPosition) &&
-        localPosition.dy > (widgetHeight - autoScrollHotspotHeight);
+  /// Returns whether the [localPosition] is in end-hotspot's bounds.
+  ///
+  /// For vertical scrolling, this is the bottom hotspot.
+  /// For horizontal scrolling, this is the right hotspot.
+  bool isInsideEndAutoScrollHotspot(Offset localPosition) {
+    final widgetSize = context.size;
+    if (widgetSize == null) return false;
+    if (!_isInsideWidget(localPosition)) return false;
+    return switch (scrollDirection) {
+      Axis.vertical =>
+        localPosition.dy > (widgetSize.height - autoScrollHotspotHeight),
+      Axis.horizontal =>
+        localPosition.dx > (widgetSize.width - autoScrollHotspotHeight),
+    };
   }
 
   /// Scrolls forward indefinitely.

@@ -39,6 +39,121 @@ void main() {
     );
   }
 
+  group('Horizontal hotspot presence tests', () {
+    Widget createHorizontalWidget() {
+      return MaterialApp(
+        home: Column(children: [
+          Container(height: distanceFromTop),
+          Expanded(
+            child: Row(children: [
+              Container(width: distanceFromLeft),
+              Expanded(
+                child: DragSelectGridView(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 0,
+                  itemBuilder: (_, __, ___) => const SizedBox(),
+                  gridDelegate:
+                      const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 1,
+                  ),
+                ),
+              ),
+              Container(width: distanceFromRight),
+            ]),
+          ),
+          Container(height: distanceFromBottom),
+        ]),
+      );
+    }
+
+    testWidgets(
+      "Given a horizontal scroll direction, "
+      "when the pointer gets inside the LEFT hotspot, "
+      "then `AutoScroller` detects the pointer in the START hotspot.",
+      (tester) async {
+        final widget = createHorizontalWidget();
+        await tester.pumpWidget(widget);
+
+        expect(dragSelectGridViewFinder, findsOneWidget);
+        final state =
+            tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
+
+        const offset = Offset(0, widgetHeight / 2);
+
+        expect(state.isInsideStartAutoScrollHotspot(offset), isTrue);
+        expect(state.isInsideEndAutoScrollHotspot(offset), isFalse);
+      },
+    );
+
+    testWidgets(
+      "Given a horizontal scroll direction, "
+      "when the pointer gets inside the RIGHT hotspot, "
+      "then `AutoScroller` detects the pointer in the END hotspot.",
+      (tester) async {
+        final widget = createHorizontalWidget();
+        await tester.pumpWidget(widget);
+
+        final state =
+            tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
+        const offset = Offset(widgetWidth, widgetHeight / 2);
+
+        expect(state.isInsideStartAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideEndAutoScrollHotspot(offset), isTrue);
+      },
+    );
+
+    testWidgets(
+      "Given a horizontal scroll direction, "
+      "when the pointer is in the vertical middle of the widget, "
+      "then `AutoScroller` detects the pointer in none of the hotspots.",
+      (tester) async {
+        final widget = createHorizontalWidget();
+        await tester.pumpWidget(widget);
+
+        final state =
+            tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
+        const offset = Offset(widgetWidth / 2, widgetHeight / 2);
+
+        expect(state.isInsideStartAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideEndAutoScrollHotspot(offset), isFalse);
+      },
+    );
+
+    testWidgets(
+      "Given a horizontal scroll direction, "
+      "when the pointer gets to the left of the widget, "
+      "then `AutoScroller` detects the pointer in none of the hotspots.",
+      (tester) async {
+        final widget = createHorizontalWidget();
+        await tester.pumpWidget(widget);
+
+        final state =
+            tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
+        const offset = Offset(-1, widgetHeight / 2);
+
+        expect(state.isInsideStartAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideEndAutoScrollHotspot(offset), isFalse);
+      },
+    );
+
+    testWidgets(
+      "Given a horizontal scroll direction, "
+      "when the pointer gets past the right edge of the widget, "
+      "then `AutoScroller` detects the pointer in none of the hotspots.",
+      (tester) async {
+        final widget = createHorizontalWidget();
+        await tester.pumpWidget(widget);
+
+        final state =
+            tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
+        const offset = Offset(widgetWidth + 1, widgetHeight / 2);
+
+        expect(state.isInsideStartAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideEndAutoScrollHotspot(offset), isFalse);
+      },
+    );
+  });
+
   group('Hotspot presence tests', () {
     testWidgets(
       "When the pointer gets inside the UPPER hotspot, "
@@ -53,8 +168,8 @@ void main() {
 
         const offset = Offset(0, 0);
 
-        expect(state.isInsideUpperAutoScrollHotspot(offset), isTrue);
-        expect(state.isInsideLowerAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideStartAutoScrollHotspot(offset), isTrue);
+        expect(state.isInsideEndAutoScrollHotspot(offset), isFalse);
       },
     );
 
@@ -69,8 +184,8 @@ void main() {
             tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
         const offset = Offset(0, widgetHeight);
 
-        expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
-        expect(state.isInsideLowerAutoScrollHotspot(offset), isTrue);
+        expect(state.isInsideStartAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideEndAutoScrollHotspot(offset), isTrue);
       },
     );
 
@@ -85,8 +200,8 @@ void main() {
             tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
         const offset = Offset(0, -1);
 
-        expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
-        expect(state.isInsideLowerAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideStartAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideEndAutoScrollHotspot(offset), isFalse);
       },
     );
 
@@ -101,8 +216,8 @@ void main() {
             tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
         const offset = Offset(0, widgetHeight + 1);
 
-        expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
-        expect(state.isInsideLowerAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideStartAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideEndAutoScrollHotspot(offset), isFalse);
       },
     );
 
@@ -117,8 +232,8 @@ void main() {
             tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
         const offset = Offset(-1, 0);
 
-        expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
-        expect(state.isInsideLowerAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideStartAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideEndAutoScrollHotspot(offset), isFalse);
       },
     );
 
@@ -133,8 +248,8 @@ void main() {
             tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
         const offset = Offset(widgetWidth + 1, 0);
 
-        expect(state.isInsideUpperAutoScrollHotspot(offset), isFalse);
-        expect(state.isInsideLowerAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideStartAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideEndAutoScrollHotspot(offset), isFalse);
       },
     );
   });
