@@ -6,6 +6,10 @@ import 'auto_scroller.dart';
 /// Mixin that collects UI information and gives them to UI-agnostic classes
 /// that handle auto-scrolling.
 mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
+  /// The duration of the auto-scroll animation from the current position
+  /// to the edge of the scroll view.
+  static const autoScrollDuration = Duration(seconds: 3);
+
   /// Information about the direction and duration of the scroll.
   @visibleForTesting
   AutoScroll autoScroll = AutoScroll.stopped();
@@ -91,7 +95,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
     _updateAutoScrollIfDifferent(
       AutoScroll(
         direction: AutoScrollDirection.forward,
-        duration: const Duration(seconds: 3),
+        duration: autoScrollDuration,
       ),
     );
   }
@@ -103,7 +107,7 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
     _updateAutoScrollIfDifferent(
       AutoScroll(
         direction: AutoScrollDirection.backward,
-        duration: const Duration(seconds: 3),
+        duration: autoScrollDuration,
       ),
     );
   }
