@@ -4,6 +4,7 @@
 * Bump dependencies (`collection` ^1.18.0, `flutter_lints` ^6.0.0).
 * Adopt Dart 3 language features (super parameters, remove unnecessary library directive).
 * Add pub.dev topics for discoverability.
+* Forward missing `GridView.builder` parameters: `findChildIndexCallback` and `hitTestBehavior`.
 
 ## [0.6.2] - 29/08/2023
 
