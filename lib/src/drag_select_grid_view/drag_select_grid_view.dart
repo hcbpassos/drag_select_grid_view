@@ -289,7 +289,9 @@ class DragSelectGridViewState extends State<DragSelectGridView>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      triggerAutoScrollIfNeeded();
+    });
     return GestureDetector(
       onTapUp: _handleTapUp,
       onLongPressStart: _handleLongPressStart,

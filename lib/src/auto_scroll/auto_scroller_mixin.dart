@@ -63,18 +63,15 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
     super.dispose();
   }
 
-  /// Triggers the auto-scroll.
+  /// Triggers the auto-scroll based on the current [autoScroll] state.
   ///
-  /// This method is going to get called right after calling
-  /// [startAutoScrollingForward] or [startAutoScrollingBackward], so it'll take
-  /// the updated [autoScroll] and, depending on the information it holds, start
-  /// or stop auto-scrolling.
-  @override
-  @mustCallSuper
-  Widget build(BuildContext context) {
+  /// Must be called at the start of the subclass's [build] method, since
+  /// the auto-scroll animation may be interrupted by rebuilds caused by
+  /// selection changes during scrolling.
+  @protected
+  void triggerAutoScrollIfNeeded() {
     final scroller = AutoScroller(autoScroll, scrollController);
     if (scroller.mustScroll) scroller.scroll();
-    return Container();
   }
 
   /// Returns whether the [localPosition] is in upper-hotspot's bounds.
