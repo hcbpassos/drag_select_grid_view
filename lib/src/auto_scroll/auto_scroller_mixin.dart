@@ -14,9 +14,6 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   @visibleForTesting
   AutoScroll autoScroll = AutoScroll.stopped();
 
-  late final double _widgetHeight;
-  late final double _widgetWidth;
-
   /// The height of the auto-scroll hotspot.
   ///
   /// Used to check whether an offset is in hotspot's bounds.
@@ -37,21 +34,11 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
   /// https://github.com/hcbpassos/drag_select_grid_view/issues/2
   void handleScroll();
 
-  /// Stores the size of the widget.
-  ///
-  /// Such information is used to check whether an offset is in hotspot's
-  /// bounds.
-  ///
-  /// By doing this once, we are assuming the widget will never change it's size
-  /// without calling this method again.
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
       (callback) {
-        final widgetSize = context.size!;
-        _widgetHeight = widgetSize.height;
-        _widgetWidth = widgetSize.width;
         if (scrollController.hasClients) {
           scrollController.position.addListener(handleScroll);
         }
@@ -84,9 +71,12 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
       localPosition.dy <= autoScrollHotspotHeight;
 
   /// Returns whether the [localPosition] is in lower-hotspot's bounds.
-  bool isInsideLowerAutoScrollHotspot(Offset localPosition) =>
-      _isInsideWidget(localPosition) &&
-      localPosition.dy > (_widgetHeight - autoScrollHotspotHeight);
+  bool isInsideLowerAutoScrollHotspot(Offset localPosition) {
+    final widgetHeight = context.size?.height;
+    if (widgetHeight == null) return false;
+    return _isInsideWidget(localPosition) &&
+        localPosition.dy > (widgetHeight - autoScrollHotspotHeight);
+  }
 
   /// Scrolls forward indefinitely.
   ///
@@ -123,11 +113,14 @@ mixin AutoScrollerMixin<T extends StatefulWidget> on State<T> {
     }
   }
 
-  bool _isInsideWidget(Offset localPosition) =>
-      (localPosition.dy >= 0) &&
-      (_widgetHeight - localPosition.dy >= 0) &&
-      (localPosition.dx >= 0) &&
-      (_widgetWidth - localPosition.dx >= 0);
+  bool _isInsideWidget(Offset localPosition) {
+    final widgetSize = context.size;
+    if (widgetSize == null) return false;
+    return (localPosition.dy >= 0) &&
+        (widgetSize.height - localPosition.dy >= 0) &&
+        (localPosition.dx >= 0) &&
+        (widgetSize.width - localPosition.dx >= 0);
+  }
 
   void _updateAutoScrollIfDifferent(AutoScroll newAutoScroll) {
     if (newAutoScroll != autoScroll) {
