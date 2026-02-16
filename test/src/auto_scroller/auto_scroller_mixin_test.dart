@@ -121,7 +121,7 @@ void main() {
     testWidgets(
       "Given a horizontal scroll direction, "
       "when the pointer gets to the left of the widget, "
-      "then `AutoScroller` detects the pointer in none of the hotspots.",
+      "then `AutoScroller` detects the pointer in the START hotspot.",
       (tester) async {
         final widget = createHorizontalWidget();
         await tester.pumpWidget(widget);
@@ -130,7 +130,7 @@ void main() {
             tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
         const offset = Offset(-1, widgetHeight / 2);
 
-        expect(state.isInsideStartAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideStartAutoScrollHotspot(offset), isTrue);
         expect(state.isInsideEndAutoScrollHotspot(offset), isFalse);
       },
     );
@@ -138,7 +138,7 @@ void main() {
     testWidgets(
       "Given a horizontal scroll direction, "
       "when the pointer gets past the right edge of the widget, "
-      "then `AutoScroller` detects the pointer in none of the hotspots.",
+      "then `AutoScroller` detects the pointer in the END hotspot.",
       (tester) async {
         final widget = createHorizontalWidget();
         await tester.pumpWidget(widget);
@@ -148,7 +148,7 @@ void main() {
         const offset = Offset(widgetWidth + 1, widgetHeight / 2);
 
         expect(state.isInsideStartAutoScrollHotspot(offset), isFalse);
-        expect(state.isInsideEndAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideEndAutoScrollHotspot(offset), isTrue);
       },
     );
   });
@@ -189,8 +189,8 @@ void main() {
     );
 
     testWidgets(
-      "When the pointer gets ABOVE both hotspots, "
-      "then `AutoScroller` detects the pointer in none of the hotspots.",
+      "When the pointer gets ABOVE the widget, "
+      "then `AutoScroller` detects the pointer in the START hotspot.",
       (tester) async {
         final widget = createWidget();
         await tester.pumpWidget(widget);
@@ -199,14 +199,14 @@ void main() {
             tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
         const offset = Offset(0, -1);
 
-        expect(state.isInsideStartAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideStartAutoScrollHotspot(offset), isTrue);
         expect(state.isInsideEndAutoScrollHotspot(offset), isFalse);
       },
     );
 
     testWidgets(
-      "When the pointer gets BELOW both hotspots, "
-      "then `AutoScroller` detects the pointer in none of the hotspots.",
+      "When the pointer gets BELOW the widget, "
+      "then `AutoScroller` detects the pointer in the END hotspot.",
       (tester) async {
         final widget = createWidget();
         await tester.pumpWidget(widget);
@@ -216,13 +216,14 @@ void main() {
         const offset = Offset(0, widgetHeight + 1);
 
         expect(state.isInsideStartAutoScrollHotspot(offset), isFalse);
-        expect(state.isInsideEndAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideEndAutoScrollHotspot(offset), isTrue);
       },
     );
 
     testWidgets(
-      "When the pointer gets to the left side of both hotspots, "
-      "then `AutoScroller` detects the pointer in none of the hotspots.",
+      "When the pointer gets to the left of the widget "
+      "while at the top, "
+      "then `AutoScroller` detects the pointer in the START hotspot.",
       (tester) async {
         final widget = createWidget();
         await tester.pumpWidget(widget);
@@ -231,14 +232,15 @@ void main() {
             tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
         const offset = Offset(-1, 0);
 
-        expect(state.isInsideStartAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideStartAutoScrollHotspot(offset), isTrue);
         expect(state.isInsideEndAutoScrollHotspot(offset), isFalse);
       },
     );
 
     testWidgets(
-      "When the pointer gets to the right side of both hotspots, "
-      "then `AutoScroller` detects the pointer in none of the hotspots.",
+      "When the pointer gets to the right of the widget "
+      "while at the top, "
+      "then `AutoScroller` detects the pointer in the START hotspot.",
       (tester) async {
         final widget = createWidget();
         await tester.pumpWidget(widget);
@@ -247,7 +249,7 @@ void main() {
             tester.state(dragSelectGridViewFinder) as DragSelectGridViewState;
         const offset = Offset(widgetWidth + 1, 0);
 
-        expect(state.isInsideStartAutoScrollHotspot(offset), isFalse);
+        expect(state.isInsideStartAutoScrollHotspot(offset), isTrue);
         expect(state.isInsideEndAutoScrollHotspot(offset), isFalse);
       },
     );
