@@ -99,7 +99,8 @@ class DragSelectGridView extends StatefulWidget {
     this.impliesAppBarDismissal = true,
   })  : autoScrollHotspotHeight =
             autoScrollHotspotHeight ?? defaultAutoScrollHotspotHeight,
-        scrollController = scrollController ?? ScrollController();
+        scrollController = scrollController ?? ScrollController(),
+        _ownsScrollController = scrollController == null;
 
   /// The height of the hotspot that enables auto-scroll.
   ///
@@ -113,6 +114,10 @@ class DragSelectGridView extends StatefulWidget {
   ///
   /// Refer to [ScrollView.controller].
   final ScrollController scrollController;
+
+  /// Whether the [scrollController] was created internally and should be
+  /// disposed when the widget is removed from the tree.
+  final bool _ownsScrollController;
 
   /// Controller of the grid.
   ///
@@ -276,6 +281,9 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   @override
   void dispose() {
     _gridController?.removeListener(_onSelectionChanged);
+    if (widget._ownsScrollController) {
+      scrollController.dispose();
+    }
     super.dispose();
   }
 

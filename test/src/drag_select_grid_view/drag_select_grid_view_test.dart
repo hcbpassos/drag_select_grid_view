@@ -102,6 +102,65 @@ void main() {
   );
 
   testWidgets(
+    "When DragSelectGridView is created without a ScrollController, "
+    "then the internally created ScrollController is disposed "
+    "when the widget is removed from the tree.",
+    (tester) async {
+      await setUp(tester);
+
+      // Grab the internally created ScrollController.
+      final internalScrollController = dragSelectState.scrollController;
+
+      // Initially, the controller has clients (is attached).
+      expect(internalScrollController.hasClients, isTrue);
+
+      // When DragSelectGridView is removed from the tree,
+      await tester.pumpWidget(Container());
+
+      // then the internally created ScrollController should be disposed.
+      // Adding a listener on a disposed ChangeNotifier throws.
+      expect(
+        () => internalScrollController.addListener(() {}),
+        throwsFlutterError,
+      );
+    },
+  );
+
+  testWidgets(
+    "When DragSelectGridView is created with an external ScrollController, "
+    "then the external ScrollController is NOT disposed "
+    "when the widget is removed from the tree.",
+    (tester) async {
+      final externalController = ScrollController();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: DragSelectGridView(
+            scrollController: externalController,
+            itemCount: 12,
+            itemBuilder: (_, index, __) => Container(
+              key: ValueKey('grid-item-$index'),
+            ),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+            ),
+          ),
+        ),
+      );
+
+      // When DragSelectGridView is removed from the tree,
+      await tester.pumpWidget(Container());
+
+      // then the external ScrollController should NOT be disposed.
+      // We can still safely access it without throwing.
+      expect(() => externalController.hasClients, returnsNormally);
+
+      // Clean up.
+      externalController.dispose();
+    },
+  );
+
+  testWidgets(
     "When DragSelectGridView is disposed, "
     "then it stops listening to the controller.",
     (tester) async {
