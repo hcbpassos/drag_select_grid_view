@@ -377,7 +377,11 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     if (!isDragging) return;
 
     _lastMoveUpdateDetails = details;
-    final dragIndex = _findIndexOfSelectable(details.localPosition);
+    var dragIndex = _findIndexOfSelectable(details.localPosition);
+
+    if (dragIndex == -1) {
+      dragIndex = _findIndexOfSelectableInEmptySpace(details.localPosition);
+    }
 
     if ((dragIndex != -1) && (dragIndex != _selectionManager.dragEndIndex)) {
       setState(() => _selectionManager.updateDrag(dragIndex));
@@ -450,6 +454,40 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     );
 
     return (element == null) ? -1 : element.widget.index;
+  }
+
+  /// Finds the index of the last item when the drag position is in empty space.
+  ///
+  /// This handles the case where the grid's last row is not completely filled
+  /// and the user drags into the trailing empty space. The empty space is
+  /// resolved to the last item's index so that all remaining items get selected.
+  ///
+  /// Returns -1 if the offset is not in the trailing empty space.
+  int _findIndexOfSelectableInEmptySpace(Offset offset) {
+    final ancestor = context.findRenderObject();
+    if (ancestor == null || _elements.isEmpty) return -1;
+
+    final lastElement = _elements.reduce(
+      (a, b) => a.widget.index > b.widget.index ? a : b,
+    );
+
+    final lastBox = lastElement.renderObject as RenderBox;
+    final lastRect =
+        lastBox.localToGlobal(Offset.zero, ancestor: ancestor) & lastBox.size;
+
+    final isOnSameRow =
+        offset.dy >= lastRect.top && offset.dy < lastRect.bottom;
+    final isPastLastItemHorizontally = offset.dx >= lastRect.right;
+
+    final isPastAllItems = widget.reverse
+        ? offset.dy < lastRect.top
+        : offset.dy >= lastRect.bottom;
+
+    if ((isOnSameRow && isPastLastItemHorizontally) || isPastAllItems) {
+      return lastElement.widget.index;
+    }
+
+    return -1;
   }
 
   void _notifySelectionChange() {

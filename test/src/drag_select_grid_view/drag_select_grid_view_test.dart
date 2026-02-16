@@ -1155,6 +1155,155 @@ void main() {
     });
   });
 
+  group("Dragging to empty space in partial last row.", () {
+    late DragSelectGridViewState partialRowState;
+    late Offset partialRowMainAxisDist;
+    late Offset partialRowCrossAxisDist;
+
+    /// Creates a [DragSelectGridView] with 4 columns and 10 items,
+    /// resulting in 2 full rows and 1 partial row with 2 items.
+    Future<void> setUpPartialRow(WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: DragSelectGridView(
+            itemCount: 10,
+            itemBuilder: (_, index, __) => Container(
+              key: ValueKey('grid-item-$index'),
+            ),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+            ),
+          ),
+        ),
+      );
+
+      partialRowState = tester.state(gridFinder);
+
+      final firstItem = find.byKey(const ValueKey('grid-item-0'));
+      final secondItem = find.byKey(const ValueKey('grid-item-1'));
+      final fifthItem = find.byKey(const ValueKey('grid-item-4'));
+
+      partialRowMainAxisDist =
+          tester.getCenter(secondItem) - tester.getCenter(firstItem);
+      partialRowCrossAxisDist =
+          tester.getCenter(fifthItem) - tester.getCenter(firstItem);
+    }
+
+    testWidgets(
+      "Given a grid with 10 items in 4 columns (partial last row), "
+      "and the first item was long-pressed, "
+      ""
+      "when dragging to the empty space in the last row, "
+      ""
+      "then all items get selected.",
+      (tester) async {
+        await setUpPartialRow(tester);
+
+        final firstItem = find.byKey(const ValueKey('grid-item-0'));
+        final lastItem = find.byKey(const ValueKey('grid-item-9'));
+
+        // Long-press the first item.
+        var gesture = await longPressDown(
+          tester: tester,
+          finder: firstItem,
+        );
+        await tester.pump();
+
+        // Drag to the empty space (one cell to the right of the last item).
+        final emptySpacePos =
+            tester.getCenter(lastItem) + partialRowMainAxisDist;
+        final offset = emptySpacePos - tester.getCenter(firstItem);
+
+        gesture = await dragDown(
+          tester: tester,
+          previousGesture: gesture,
+          offset: offset,
+        );
+        await gesture.up();
+        await tester.pump();
+
+        expect(partialRowState.isSelecting, isTrue);
+        expect(
+          partialRowState.selectedIndexes,
+          {0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+        );
+      },
+      skip: false,
+    );
+
+    testWidgets(
+      "Given a grid with 10 items in 4 columns (partial last row), "
+      "and the first item in the last row was long-pressed, "
+      ""
+      "when dragging to the empty space in the last row, "
+      ""
+      "then the remaining item in the last row gets selected.",
+      (tester) async {
+        await setUpPartialRow(tester);
+
+        final item8 = find.byKey(const ValueKey('grid-item-8'));
+
+        // Long-press item 8 (first in the last row).
+        var gesture = await longPressDown(
+          tester: tester,
+          finder: item8,
+        );
+        await tester.pump();
+
+        // Drag to the empty space (two cells to the right of item 8,
+        // which is past item 9).
+        gesture = await dragDown(
+          tester: tester,
+          previousGesture: gesture,
+          offset: partialRowMainAxisDist * 2,
+        );
+        await gesture.up();
+        await tester.pump();
+
+        expect(partialRowState.isSelecting, isTrue);
+        expect(partialRowState.selectedIndexes, {8, 9});
+      },
+      skip: false,
+    );
+
+    testWidgets(
+      "Given a grid with 10 items in 4 columns (partial last row), "
+      "and the first item was long-pressed, "
+      ""
+      "when dragging below all items, "
+      ""
+      "then all items get selected.",
+      (tester) async {
+        await setUpPartialRow(tester);
+
+        final firstItem = find.byKey(const ValueKey('grid-item-0'));
+
+        // Long-press the first item.
+        var gesture = await longPressDown(
+          tester: tester,
+          finder: firstItem,
+        );
+        await tester.pump();
+
+        // Drag below all items (3 rows down + extra).
+        gesture = await dragDown(
+          tester: tester,
+          previousGesture: gesture,
+          offset: partialRowCrossAxisDist * 3,
+        );
+        await gesture.up();
+        await tester.pump();
+
+        expect(partialRowState.isSelecting, isTrue);
+        expect(
+          partialRowState.selectedIndexes,
+          {0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+        );
+      },
+      skip: false,
+    );
+  });
+
   group("Auto-scrolling integration tests.", () {
     testWidgets(
       "When there's a long-press and drag to the upper-hotspot, "
