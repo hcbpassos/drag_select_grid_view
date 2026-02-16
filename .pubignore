@@ -1,0 +1,17 @@
+MODERNIZATION_PLAN.md
+coverage/
+build/
+.metadata
+
+# Example build artifacts and platform dirs
+example/.dart_tool/
+example/build/
+example/android/
+example/ios/
+example/macos/
+example/linux/
+example/windows/
+example/web/
+example/.flutter-plugins
+example/.flutter-plugins-dependencies
+example/.metadata
