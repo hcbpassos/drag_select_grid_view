@@ -14,10 +14,9 @@ void main() {
       home: MyApp(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Colors.white,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         scaffoldBackgroundColor: Colors.white,
         appBarTheme: const AppBarTheme(elevation: 2),
-        colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.white),
       ),
     ),
   );
