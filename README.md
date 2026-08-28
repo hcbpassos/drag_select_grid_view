@@ -85,6 +85,18 @@ You can check the code [here](https://github.com/hcbpassos/drag_select_grid_view
 
 There are some other minor settings you can do to make `DragSelectGridView` fit your needs, like `DragSelectGridView.autoScrollHotspotHeight`. Those features are well documented, so I'll let you take your discovery time.
 
+If your app enters selection mode explicitly (e.g. via a button, instead of only through a long-press), set `enableSelectionModeDrag: true` so that, once selection is active, an immediate drag along the axis perpendicular to `scrollDirection` continues range selection without requiring another long-press:
+
+```dart
+DragSelectGridView(
+  gridController: controller,
+  enableSelectionModeDrag: true,
+  // ...
+)
+```
+
+Long-press-and-drag keeps working in any direction regardless of this flag.
+
 Hopefully, this is everything you need to know to use this library. 
   
 ## Running the example

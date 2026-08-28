@@ -1,3 +1,7 @@
+## [Unreleased]
+
+* Add `DragSelectGridView.enableSelectionModeDrag` (defaults to `false`): once selection mode is active, an immediate drag along the axis perpendicular to `scrollDirection` continues range selection without requiring another long-press.
+
 ## [0.7.7] - 27/08/2026
 
 * Silence `cacheExtent` deprecation warnings introduced by Flutter 3.41, restoring the full pub.dev static analysis score. No functional changes.

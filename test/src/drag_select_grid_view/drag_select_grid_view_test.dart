@@ -25,6 +25,7 @@ void main() {
     Axis? scrollDirection,
     bool? reverse,
     bool? triggerSelectionOnTap,
+    bool? enableSelectionModeDrag,
   }) {
     return MaterialApp(
       home: Row(
@@ -47,6 +48,7 @@ void main() {
                 crossAxisCount: 4,
               ),
               triggerSelectionOnTap: triggerSelectionOnTap ?? false,
+              enableSelectionModeDrag: enableSelectionModeDrag ?? false,
             ),
           )
         ],
@@ -65,12 +67,14 @@ void main() {
     Axis? scrollDirection,
     bool? reverse,
     bool? triggerSelectionOnTap,
+    bool? enableSelectionModeDrag,
   }) async {
     final widget = createWidget(
       gridController: gridController,
       scrollDirection: scrollDirection,
       reverse: reverse,
       triggerSelectionOnTap: triggerSelectionOnTap,
+      enableSelectionModeDrag: enableSelectionModeDrag,
     );
 
     await tester.pumpWidget(widget);
@@ -1744,6 +1748,241 @@ void main() {
           dragSelectState.autoScroll,
           AutoScroll.stopped(direction: AutoScrollDirection.forward),
         );
+      },
+      skip: false,
+    );
+  });
+
+  group("Selection-mode drag integration tests.", () {
+    testWidgets(
+      "Given that `enableSelectionModeDrag` is false (the default), "
+      "and selection mode is already active via long-press, "
+      ""
+      "when an immediate horizontal drag starts without another long-press, "
+      ""
+      "then the selection is not extended.",
+      (tester) async {
+        await setUp(tester);
+
+        expect(dragSelectState.widget.enableSelectionModeDrag, isFalse);
+
+        // Given that selection mode is already active via long-press,
+        final pressGesture = await longPressDown(
+          tester: tester,
+          finder: firstItemFinder,
+        );
+        await tester.pump();
+        await pressGesture.up();
+        await tester.pump();
+
+        expect(dragSelectState.isSelecting, isTrue);
+        expect(dragSelectState.selectedIndexes, {0});
+
+        // when an immediate horizontal drag starts without another
+        // long-press,
+        final gesture = await tester.startGesture(
+          tester.getCenter(firstItemFinder),
+        );
+        await gesture.moveBy(mainAxisItemsDistance);
+        await tester.pump();
+        await gesture.up();
+        await tester.pump();
+
+        // then the selection is not extended.
+        expect(dragSelectState.isDragging, isFalse);
+        expect(dragSelectState.selectedIndexes, {0});
+      },
+      skip: false,
+    );
+
+    testWidgets(
+      "Given that `enableSelectionModeDrag` is true "
+      "and `scrollDirection` is vertical, "
+      "and selection mode is already active via long-press, "
+      ""
+      "when an immediate horizontal drag starts without another long-press, "
+      ""
+      "then it continues range selection.",
+      (tester) async {
+        await setUp(tester, enableSelectionModeDrag: true);
+
+        // Given that selection mode is already active via long-press,
+        final pressGesture = await longPressDown(
+          tester: tester,
+          finder: firstItemFinder,
+        );
+        await tester.pump();
+        await pressGesture.up();
+        await tester.pump();
+
+        expect(dragSelectState.isSelecting, isTrue);
+        expect(dragSelectState.isDragging, isFalse);
+        expect(dragSelectState.selectedIndexes, {0});
+
+        // when an immediate horizontal drag starts without another
+        // long-press. The move is split in two steps: the first crosses
+        // the recognizer's acceptance slop (consumed by gesture-arena
+        // resolution), and the second is the one that actually reaches
+        // the second item and triggers a drag-update.
+        final gesture = await tester.startGesture(
+          tester.getCenter(firstItemFinder),
+        );
+        const crossSlop = Offset(30, 0);
+        await gesture.moveBy(crossSlop);
+        await tester.pump();
+        await gesture.moveBy(mainAxisItemsDistance - crossSlop);
+        await tester.pump();
+        await gesture.up();
+        await tester.pump();
+
+        // then it continues range selection.
+        expect(dragSelectState.selectedIndexes, {0, 1});
+      },
+      skip: false,
+    );
+
+    testWidgets(
+      "Given that `enableSelectionModeDrag` is true "
+      "and `scrollDirection` is horizontal, "
+      "and selection mode is already active via long-press, "
+      ""
+      "when an immediate vertical drag starts without another long-press, "
+      ""
+      "then it continues range selection.",
+      (tester) async {
+        await setUp(
+          tester,
+          scrollDirection: Axis.horizontal,
+          enableSelectionModeDrag: true,
+        );
+
+        // Given that selection mode is already active via long-press,
+        final pressGesture = await longPressDown(
+          tester: tester,
+          finder: firstItemFinder,
+        );
+        await tester.pump();
+        await pressGesture.up();
+        await tester.pump();
+
+        expect(dragSelectState.isSelecting, isTrue);
+        expect(dragSelectState.isDragging, isFalse);
+        expect(dragSelectState.selectedIndexes, {0});
+
+        // when an immediate vertical drag starts without another
+        // long-press. On a horizontal grid, consecutive items are laid
+        // out along the vertical (cross) axis, so `mainAxisItemsDistance`
+        // is a vertical offset here. The move is split in two steps: the
+        // first crosses the recognizer's acceptance slop (consumed by
+        // gesture-arena resolution), and the second is the one that
+        // actually reaches the second item and triggers a drag-update.
+        final gesture = await tester.startGesture(
+          tester.getCenter(firstItemFinder),
+        );
+        const crossSlop = Offset(0, 30);
+        await gesture.moveBy(crossSlop);
+        await tester.pump();
+        await gesture.moveBy(mainAxisItemsDistance - crossSlop);
+        await tester.pump();
+        await gesture.up();
+        await tester.pump();
+
+        // then it continues range selection.
+        expect(dragSelectState.selectedIndexes, {0, 1});
+      },
+      skip: false,
+    );
+
+    testWidgets(
+      "Given that `enableSelectionModeDrag` is true "
+      "and selection mode is already active via long-press, "
+      ""
+      "when a new touch starts on an unselected item "
+      "and then drags along the grid's own scroll axis, "
+      ""
+      "then the constrained-axis recognizer loses the gesture arena "
+      "and neither selects that item nor leaves a stuck drag.",
+      (tester) async {
+        // This grid's content doesn't overflow its viewport, so there is
+        // no genuine competing scroll recognizer for the pointer to lose
+        // to — the constrained-axis regression this guards against only
+        // surfaces in exactly that situation.
+        await setUp(tester, enableSelectionModeDrag: true);
+
+        // Given that selection mode is already active via long-press,
+        final pressGesture = await longPressDown(
+          tester: tester,
+          finder: firstItemFinder,
+        );
+        await tester.pump();
+        await pressGesture.up();
+        await tester.pump();
+
+        expect(dragSelectState.selectedIndexes, {0});
+
+        // when a new touch starts on an unselected item and then drags
+        // along the grid's own scroll axis (vertical, for this
+        // vertical-scrolling grid),
+        final secondItemFinder = find.byKey(const ValueKey('grid-item-1'));
+        final gesture = await tester.startGesture(
+          tester.getCenter(secondItemFinder),
+        );
+        await gesture.moveBy(crossAxisItemsDistance);
+        await tester.pump();
+        await gesture.up();
+        await tester.pump();
+
+        // then the constrained-axis recognizer loses the gesture arena and
+        // neither selects that item nor leaves a stuck drag.
+        expect(dragSelectState.isDragging, isFalse);
+        expect(dragSelectState.selectedIndexes, {0});
+      },
+      skip: false,
+    );
+
+    testWidgets(
+      "Given that `enableSelectionModeDrag` is true "
+      "and selection mode is already active via long-press on another item, "
+      ""
+      "when an immediate drag starts on an unselected item "
+      "and its first move already lands on a further item, "
+      ""
+      "then the touched origin item is still included in the selection.",
+      (tester) async {
+        await setUp(tester, enableSelectionModeDrag: true);
+
+        // Given that selection mode is already active via long-press on
+        // another item,
+        final fifthItemFinder = find.byKey(const ValueKey('grid-item-4'));
+        final pressGesture = await longPressDown(
+          tester: tester,
+          finder: fifthItemFinder,
+        );
+        await tester.pump();
+        await pressGesture.up();
+        await tester.pump();
+
+        expect(dragSelectState.selectedIndexes, {4});
+
+        // when an immediate drag starts on an unselected item and its
+        // first move already lands on a further item — a single jump
+        // straight past the recognizer's acceptance slop, with no
+        // intermediate small move to resolve the gesture arena first,
+        final secondItemFinder = find.byKey(const ValueKey('grid-item-1'));
+        final thirdItemFinder = find.byKey(const ValueKey('grid-item-2'));
+        final gesture = await tester.startGesture(
+          tester.getCenter(firstItemFinder),
+        );
+        await gesture.moveTo(tester.getCenter(secondItemFinder));
+        await tester.pump();
+        await gesture.moveTo(tester.getCenter(thirdItemFinder));
+        await tester.pump();
+        await gesture.up();
+        await tester.pump();
+
+        // then the touched origin item is still included in the
+        // selection.
+        expect(dragSelectState.selectedIndexes, {0, 1, 2, 4});
       },
       skip: false,
     );
